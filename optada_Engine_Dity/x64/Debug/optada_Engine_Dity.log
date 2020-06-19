@@ -1,0 +1,4 @@
+﻿  Main.cpp
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(24,40): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(58,38): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
+  optada_Engine_Dity.vcxproj -> D:\GIT\Engine_Dity\optada_Engine_Dity\x64\Debug\optada_Engine_Dity.exe

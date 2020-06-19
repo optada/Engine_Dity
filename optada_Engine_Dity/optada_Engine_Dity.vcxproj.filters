@@ -4,24 +4,24 @@
     <Filter Include="Code">
       <UniqueIdentifier>{581cbf09-a67e-4217-9543-49430390d3cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Class_Window">
-      <UniqueIdentifier>{bad6a42a-9329-4583-8571-2604b6cc2533}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Main.cpp">
       <Filter>Code</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Class_Window\OPTada_Window.cpp">
-      <Filter>Code\Class_Window</Filter>
+    <ClCompile Include="Code\OPTada_Window.cpp">
+      <Filter>Code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\Class_Window\OPTada_Window.h">
-      <Filter>Code\Class_Window</Filter>
+    <ClInclude Include="Code\OPTada_Window.h">
+      <Filter>Code</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Class_Window\OPTada_Window_Settings.h">
-      <Filter>Code\Class_Window</Filter>
+    <ClInclude Include="Code\OPTada_Window_Settings.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Program_Logic.h">
+      <Filter>Code</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

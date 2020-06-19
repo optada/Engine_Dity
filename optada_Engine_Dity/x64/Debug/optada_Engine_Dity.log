@@ -1,4 +1,8 @@
 ﻿  Main.cpp
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(24,40): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(58,38): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
-  optada_Engine_Dity.vcxproj -> D:\GIT\Engine_Dity\optada_Engine_Dity\x64\Debug\optada_Engine_Dity.exe
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(232,5): error C2664: 'bool OPTada_Window::InitAndCreateStandartWindow(HINSTANCE,WNDPROC &)': cannot convert argument 2 from 'LRESULT (__cdecl *)(HWND,UINT,WPARAM,LPARAM)' to 'WNDPROC &'
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Window.h(56,7): message : see declaration of 'OPTada_Window::InitAndCreateStandartWindow'
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(233,40): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(267,38): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
+  OPTada_Window.cpp
+  Generating Code...
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Window.cpp(196): warning C4715: 'OPTada_Window::Change_DisplayOfWindow': not all control paths return a value

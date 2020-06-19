@@ -40,6 +40,7 @@ private:
 	HWND      main_window_handle    = nullptr; // window handle (links to access the window)
 	HINSTANCE main_window_hinstance = nullptr; // window procedure indicator
 
+
 	// set new parameters of window (for changing size) | widnowSize and workplaceSize
 	// [in] OPTadaS_Window_Size& new_WorkplaceSize_ // new workplace size
 	void Update_WindowSizeWithBorders();
@@ -50,8 +51,9 @@ public:
 
 
 	// method initializes the class and creates a standard window
-	// [in] HINSTANCE hinstance_ // hinstance_ of process
-	bool InitAndCreateStandartWindow(HINSTANCE hinstance_);
+	// [in] HINSTANCE hinstance_  // hinstance_ of process
+	// [in] WNDPROC& windowProc_ // event structure
+	bool InitAndCreateStandartWindow(HINSTANCE hinstance_, WNDPROC& windowProc_);
 
 	// method changes window display settings and window size
 	// [in] OPTadaE_WindowState_ForClassWindow new_WindowState_ // set new window state --> if NONE - not changing | other - new state
@@ -92,16 +94,3 @@ public:
 
 // Created class OPTada_Window for main window
 extern OPTada_Window global_Window;
-
-
-// --------------------------------------------------------------------------------------------
-
-
-// process messages of the main window
-static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-
-
-// --------------------------------------------------------------------------------------------
-
-
-////////// low-level keyboard processing is described in OPTada_Window.cpp ///////////

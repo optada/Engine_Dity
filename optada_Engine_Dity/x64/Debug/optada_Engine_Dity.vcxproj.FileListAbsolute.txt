@@ -1,2 +1,0 @@
-D:\GIT\Engine_Dity\optada_Engine_Dity\x64\Debug\optada_Engine_Dity.exe
-D:\GIT\Engine_Dity\optada_Engine_Dity\x64\Debug\optada_Engine_Dity.pdb

@@ -149,9 +149,9 @@
     <ClCompile Include="Code\OPTada_Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\OPTada_Instance.h" />
     <ClInclude Include="Code\OPTada_Window.h" />
     <ClInclude Include="Code\OPTada_Window_Settings.h" />
-    <ClInclude Include="Program_Logic.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

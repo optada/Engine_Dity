@@ -20,7 +20,7 @@
     <ClInclude Include="Code\OPTada_Window_Settings.h">
       <Filter>Code</Filter>
     </ClInclude>
-    <ClInclude Include="Program_Logic.h">
+    <ClInclude Include="Code\OPTada_Instance.h">
       <Filter>Code</Filter>
     </ClInclude>
   </ItemGroup>

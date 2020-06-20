@@ -42,7 +42,7 @@ void OPTada_Window::Update_WindowSizeWithBorders()
 }
 
 
-bool OPTada_Window::InitAndCreateStandartWindow(HINSTANCE hinstance_, WNDPROC& windowProc_)
+bool OPTada_Window::InitAndCreateStandartWindow(HINSTANCE hinstance_, WNDPROC windowProc_)
 {
 	WNDCLASSEX winclass; // this will hold the class we create
 	HWND	   hwnd;	 // generic window handle              
@@ -100,7 +100,7 @@ bool OPTada_Window::InitAndCreateStandartWindow(HINSTANCE hinstance_, WNDPROC& w
 
 	Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, workplaceSize);
 
-	return (1);
+	return true;
 }
 
 bool OPTada_Window::Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow new_WindowState_, OPTadaS_Window_Size& new_WorkplaceSize_)
@@ -110,89 +110,101 @@ bool OPTada_Window::Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow ne
 		return false;
 	}
 
-	workplaceSize.width  = new_WorkplaceSize_.width;
-	workplaceSize.height = new_WorkplaceSize_.height;
+	// switch OPTadaE_WindowState_ForClassWindow
+	switch (new_WindowState_)
+	{
 
-	if (new_WindowState_ != windowState) {
+	case NONE: break;
 
-		// switch OPTadaE_WindowState_ForClassWindow
-		switch (new_WindowState_)
-		{
+	case ENUM_WindowState_Windowed: {
 
-		case NONE: break;
+		workplaceSize.width = new_WorkplaceSize_.width;
+		workplaceSize.height = new_WorkplaceSize_.height;
 
-		case ENUM_WindowState_Windowed: {
+		// set monitor - windowed
+		ChangeDisplaySettings(NULL, 0);
 
-			// set monitor - windowed
-			ChangeDisplaySettings(NULL, 0);
+		// set styles for window mode with borders
+		SetWindowLong(main_window_handle, GWL_STYLE, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE);
+		// se window reaction
+		SetWindowPos(main_window_handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
 
-			// set styles for window mode with borders
-			SetWindowLong(main_window_handle, GWL_STYLE, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE);
-			// se window reaction
-			SetWindowPos(main_window_handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+		// restore the location of the window with the frame
+		SetWindowPlacement(main_window_handle, &windowPlacement_Windowed);
 
-			// restore the location of the window with the frame
-			SetWindowPlacement(main_window_handle, &windowPlacement_Windowed);
+		lastWindowedMode = new_WindowState_; // save last windowed mode
 
-			windowState = new_WindowState_; // save new window state
-			Update_WindowSizeWithBorders();
+		windowState = new_WindowState_; // save new window state
+		Update_WindowSizeWithBorders();
 
-		} break;
+		return true;
 
-		case ENUM_WindowState_WindowedWithNoBurders: {
+	} break;
 
-			// set monitor - windowed
-			ChangeDisplaySettings(NULL, 0);
+	case ENUM_WindowState_WindowedWithNoBurders: {
 
-			// set styles for window mode with borders
-			SetWindowLong(main_window_handle, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-			// se window reaction
-			SetWindowPos(main_window_handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+		workplaceSize.width = new_WorkplaceSize_.width;
+		workplaceSize.height = new_WorkplaceSize_.height;
 
-			// restore the location of the window with the frame
-			SetWindowPlacement(main_window_handle, &windowPlacement_Windowed);
+		// set monitor - windowed
+		ChangeDisplaySettings(NULL, 0);
 
-			windowState = new_WindowState_; // save new window state
-			Update_WindowSizeWithBorders();
+		// set styles for window mode with borders
+		SetWindowLong(main_window_handle, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+		// se window reaction
+		SetWindowPos(main_window_handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
 
-		} break;
+		// restore the location of the window with the frame
+		SetWindowPlacement(main_window_handle, &windowPlacement_Windowed);
 
-		case ENUM_WindowState_FullScreen: {
+		lastWindowedMode = new_WindowState_; // save last windowed mode
 
-			// save the location of the window with the frame
-			windowPlacement_Windowed.length = sizeof(WINDOWPLACEMENT);
-			GetWindowPlacement(main_window_handle, &windowPlacement_Windowed);
+		windowState = new_WindowState_; // save new window state
+		Update_WindowSizeWithBorders();
 
-			// set monitor - fullScreen
-			DEVMODE devMode = { 0 };
-			// OPTadaS_Window_Size monitorSize;
-			// Get_MonitorSize(monitorSize);
-			devMode.dmSize       = sizeof(DEVMODE);
-			devMode.dmPelsWidth  = workplaceSize.width;  // set max size of workplace // monitorSize.width;  - you can chage it on set max size of monitor
-			devMode.dmPelsHeight = workplaceSize.height; // set max size of workplace // monitorSize.height; - you can chage it on set max size of monitor
-			devMode.dmFields     = DM_PELSWIDTH | DM_PELSHEIGHT;
-			ChangeDisplaySettings(&devMode/*0*/, CDS_FULLSCREEN);
+		return true;
 
-			// set styles for full screen mode
-			SetWindowLong(main_window_handle, GWL_STYLE, WS_POPUP | WS_VISIBLE); 
-			// set window reaction and position on screen
-			SetWindowPos(main_window_handle, HWND_TOP, 0, 0, workplaceSize.width, workplaceSize.height, SWP_SHOWWINDOW);
+	} break;
 
-			// save the window layout in full screen mode
-			windowPlacement_FullScreen.length = sizeof(WINDOWPLACEMENT);
-			GetWindowPlacement(main_window_handle, &windowPlacement_FullScreen);
+	case ENUM_WindowState_FullScreen: {
 
-			windowState = new_WindowState_; // save new window state
+		workplaceSize.width = new_WorkplaceSize_.width;
+		workplaceSize.height = new_WorkplaceSize_.height;
 
-		} break;
+		// save the location of the window with the frame
+		windowPlacement_Windowed.length = sizeof(WINDOWPLACEMENT);
+		GetWindowPlacement(main_window_handle, &windowPlacement_Windowed);
 
-		default: {
-			return false; // error - have no new window state
-		} break;
+		// set monitor - fullScreen
+		DEVMODE devMode = { 0 };
+		// OPTadaS_Window_Size monitorSize;
+		// Get_MonitorSize(monitorSize);
+		devMode.dmSize = sizeof(DEVMODE);
+		devMode.dmPelsWidth = workplaceSize.width;  // set max size of workplace // monitorSize.width;  - you can chage it on set max size of monitor
+		devMode.dmPelsHeight = workplaceSize.height; // set max size of workplace // monitorSize.height; - you can chage it on set max size of monitor
+		devMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+		ChangeDisplaySettings(&devMode/*0*/, CDS_FULLSCREEN);
 
-		} // end switch
-	}
+		// set styles for full screen mode
+		SetWindowLong(main_window_handle, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+		// set window reaction and position on screen
+		SetWindowPos(main_window_handle, HWND_TOP, 0, 0, workplaceSize.width, workplaceSize.height, SWP_SHOWWINDOW);
 
+		// save the window layout in full screen mode
+		windowPlacement_FullScreen.length = sizeof(WINDOWPLACEMENT);
+		GetWindowPlacement(main_window_handle, &windowPlacement_FullScreen);
+
+		windowState = new_WindowState_; // save new window state
+
+		return true;
+
+	} break;
+
+	default: {
+		return false; // error - have no new window state
+	} break;
+
+	} // end switch
 }
 
 
@@ -232,35 +244,81 @@ HWND OPTada_Window::Get_MainWindowHandle()
 }
 
 
-void OPTada_Window::Do_FocusInFullScreenMode(bool haveFocus_)
+bool OPTada_Window::Do_SwapMode_Fullscreen_LastWindowed()
+{
+	if (windowState == OPTadaE_WindowState_ForClassWindow::NONE || lastWindowedMode == OPTadaE_WindowState_ForClassWindow::NONE) {
+		return false;
+	}
+
+	if (windowState == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen) { // is fullscreen - change to windowed
+		if (!Change_DisplayOfWindow(lastWindowedMode, workplaceSize)) {
+			MessageBox(NULL, L"Swich mode to window error", L"ERROR optada_window", NULL);
+			return true;
+		};
+
+		return true;
+	}
+	else { // is windowed - change to fullscreen
+		if (!Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, workplaceSize)) {
+			MessageBox(NULL, L"Swich mode to fullscreen error", L"ERROR optada_window", NULL);
+			return true;
+		};
+
+		return true;
+	}
+
+	return false;
+}
+
+bool OPTada_Window::Do_LooseFocusInFullscreenMode()
 {
 	if (windowState != OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen) {
-		return;
+		return false;
 	}
 
-	if (haveFocus_) { // got focus
+	// set monitor - windowed
+	ChangeDisplaySettings(NULL, 0);
 
-		DEVMODE devMode = { 0 };
+	ShowWindow(main_window_handle, SW_SHOWMINNOACTIVE); // you can use SW_MINIMIZE
 
-		// OPTadaS_Window_Size monitorSize;
-		// Get_MonitorSize(monitorSize);
-		devMode.dmSize = sizeof(DEVMODE);
-		devMode.dmPelsWidth  = workplaceSize.width;  // set max size of workplace // monitorSize.width;  - you can chage it on set max size of monitor
-		devMode.dmPelsHeight = workplaceSize.height; // set max size of workplace // monitorSize.height; - you can chage it on set max size of monitor
-		devMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+	return true;
+}
 
-		// set monitor - fullScreen mode
-		ChangeDisplaySettings(&devMode/*0*/, CDS_FULLSCREEN);
-
-		SetWindowPlacement(main_window_handle, &windowPlacement_FullScreen);
+bool OPTada_Window::Do_AltTabLooseFocusInFullscreenMode()
+{
+	if (windowState != OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen) {
+		return false;
 	}
-	else { // loose focus
 
-		// set monitor - windowed
-		ChangeDisplaySettings(NULL, 0);
+	// set monitor - windowed
+	ChangeDisplaySettings(NULL, 0);
 
-		ShowWindow(main_window_handle, SW_SHOWMINNOACTIVE); // SW_MINIMIZE
+	ShowWindow(main_window_handle, SW_SHOWMINNOACTIVE);
+
+	return true;
+}
+
+bool OPTada_Window::Do_RestoreFocusInFullscreenMode()
+{
+	if (windowState != OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen) {
+		return false;
 	}
+
+	DEVMODE devMode = { 0 };
+
+	// OPTadaS_Window_Size monitorSize;
+	// Get_MonitorSize(monitorSize);
+	devMode.dmSize = sizeof(DEVMODE);
+	devMode.dmPelsWidth = workplaceSize.width;  // set max size of workplace // monitorSize.width;  - you can chage it on set max size of monitor
+	devMode.dmPelsHeight = workplaceSize.height; // set max size of workplace // monitorSize.height; - you can chage it on set max size of monitor
+	devMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+
+	// set monitor - fullScreen mode
+	ChangeDisplaySettings(&devMode/*0*/, CDS_FULLSCREEN);
+
+	SetWindowPlacement(main_window_handle, &windowPlacement_FullScreen);
+
+	return true;
 }
 
 

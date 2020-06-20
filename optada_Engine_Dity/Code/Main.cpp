@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "OPTada_Instance.h"
+
 #include "OPTada_Window.h"
 
 
@@ -16,92 +18,126 @@ static LRESULT CALLBACK WindowProc(
 	WPARAM wparam,
 	LPARAM lparam)
 {
-	PAINTSTRUCT	ps;  // using in WM_PAINT
-	HDC			hdc; // getting device context
+PAINTSTRUCT	ps;  // using in WM_PAINT
+HDC			hdc; // getting device context
+KBDLLHOOKSTRUCT* hookstruct = (KBDLLHOOKSTRUCT*)(lparam);
 
-	// get massage
-	switch (msg)
+// get massage
+switch (msg)
+{
+
+case WM_KEYDOWN: {
+	switch (wparam)
 	{
 
-	case WM_KEYDOWN: {
-		switch (wparam)
-		{
+	case 0x46: { // pressed 'F' button
 
-		case 0x46: { // pressed 'F' button
+		//global_Window.Do_SwapMode_Fullscreen_LastWindowed();
 
-			OPTadaE_WindowState_ForClassWindow windowProc_WindowState;
-			OPTadaS_Window_Size WindowProc_workPlaceSize;
+		/*static int cocos = 1;
 
-			global_Window.Get_WindowState(windowProc_WindowState);
-			global_Window.Get_WorkplaceSize(WindowProc_workPlaceSize);
+		OPTadaS_Window_Size newWindowSize;
 
-			if (windowProc_WindowState == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen) {
+		if (cocos == 1) {
 
-				if (!global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, WindowProc_workPlaceSize)) {
-					MessageBox(NULL, L"Swich mode to window error", L"wind", NULL);
-				};
-			}
-			else {
-
-				if (!global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, WindowProc_workPlaceSize)) {
-					MessageBox(NULL, L"Swich mode to fullscreen error", L"wind", NULL);
-				};
-			}
-
-		} break;
-
-		default: break;
-
-		}
-	} break;
-
-	case WM_ACTIVATE: {
-
-		OPTadaE_WindowState_ForClassWindow windowState;
-		global_Window.Get_WindowState(windowState);
-
-		// if fullscreen and focus occurs
-		if (windowState == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen
-			&& IsIconic(hwnd) && WA_ACTIVE == LOWORD(wparam)) {
-
-			global_Window.Do_FocusInFullScreenMode(true);
-		}
-		else {
-			// if fullscreen and loss of focus occurs
-			if (windowState == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen
-				&& WA_INACTIVE == LOWORD(wparam)) {
-
-				global_Window.Do_FocusInFullScreenMode(false);
-			}
+			newWindowSize.width = 1280;
+			newWindowSize.height = 720;
+			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
+				MessageBox(NULL, L"main hange error", L"wind", NULL);
+			};
 		}
 
+		if (cocos == 2) {
+			newWindowSize.width = 800;
+			newWindowSize.height = 600;
+			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
+				MessageBox(NULL, L"main hange error", L"wind", NULL);
+			};
+		}
+
+		if (cocos == 3) {
+			OPTada_Instance::global_Window.Get_WorkplaceSize(newWindowSize);
+
+			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, newWindowSize)) {
+				MessageBox(NULL, L"main hange error", L"wind", NULL);
+			};
+		}
+
+		if (cocos == 4) {
+			newWindowSize.width = 1280;
+			newWindowSize.height = 720;
+			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, newWindowSize)) {
+				MessageBox(NULL, L"main hange error", L"wind", NULL);
+			};
+		}
+
+		if (cocos == 5) {
+			OPTada_Instance::global_Window.Get_WorkplaceSize(newWindowSize);
+
+			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
+				MessageBox(NULL, L"main hange error", L"wind", NULL);
+			};
+		}
+
+		if (cocos == 6) {
+			newWindowSize.width = 800;
+			newWindowSize.height = 600;
+
+			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
+				MessageBox(NULL, L"main hange error", L"wind", NULL);
+			};
+		}
+
+		cocos++;*/
+
 	} break;
 
-	case WM_CREATE: {
-		// all necessary initialization when creating a window occurs here
-		return(0);
-	} break;
+	default: break;
 
-	case WM_PAINT: {
-		// start drawing
-		hdc = BeginPaint(hwnd, &ps);
-		// end of drawing
-		EndPaint(hwnd, &ps);
-		return(0);
-	} break;
+	}
+} break;
 
-	case WM_DESTROY: {
-		// delete window	
-		PostQuitMessage(0);
-		return(0);
-	} break;
+case WM_ACTIVATE: {
 
-	default:break;
+	// if fullscreen and focus occurs
+	if (IsIconic(hwnd) && WA_ACTIVE == LOWORD(wparam)) {
 
-	} // end switch
+		OPTada_Instance::Do_Reaction_TakeFocus();
+	}
+	else {
+		// if fullscreen and loss of focus occurs
+		if (WA_INACTIVE == LOWORD(wparam)) {
+			OPTada_Instance::Do_Reaction_LooseFocus();
+		}
+	}
 
-	// window completionand windows control return
-	return (DefWindowProc(hwnd, msg, wparam, lparam));
+} break;
+
+case WM_CREATE: {
+	// all necessary initialization when creating a window occurs here
+	return(0);
+} break;
+
+case WM_PAINT: {
+	// start drawing
+	hdc = BeginPaint(hwnd, &ps);
+	// end of drawing
+	EndPaint(hwnd, &ps);
+	return(0);
+} break;
+
+case WM_DESTROY: {
+	// delete window	
+	PostQuitMessage(0);
+	return(0);
+} break;
+
+default:break;
+
+} // end switch
+
+// window completionand windows control return
+return (DefWindowProc(hwnd, msg, wparam, lparam));
 };
 
 
@@ -129,46 +165,24 @@ LRESULT CALLBACK KeyboardProcLowLevel(int nCode, WPARAM wParam, LPARAM lParam)
 
 			case VK_TAB: { // ALT+TAB
 
-				OPTadaE_WindowState_ForClassWindow windowState;
-				global_Window.Get_WindowState(windowState);
+				OPTada_Instance::Do_Reaction_AltTab();
 
-				// if fullscreen and focus occurs
-				if (windowState == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen) {
+			} break;
 
-					global_Window.Do_FocusInFullScreenMode(false);
-				}
+			case VK_RETURN: { // ALT+ENTER 
 
-
-				//if (!Screen_Windowed)
-				//{
-				//	// when full-screen mode and alt + tab activation, the window is minimized, when activated, it returns
-				//	if (/*!IsIconic(main_window_handle) */true) // modify alt + tab (modify launch + tab)
-				//	{
-				//		Main_Window.setMonitorWindowed();
-				//		ShowWindow(main_window_handle, SW_SHOWMINNOACTIVE);
-				//		//ShowWindow(main_window_handle, SW_SHOWMINNOACTIVE); // SW_SHOWMINNOACTIVE   SW_MINIMIZE  SW_HIDE
-				//	}
-				//}
-
-			}
-					   break;
-			case VK_RETURN: { // ALT+ENTER
-
-
+				OPTada_Instance::Do_Reaction_AltEnter();
 				return 1;
-			}
-						  break;
-			case VK_ESCAPE: break; // ALT+ESC			
-			case VK_DELETE: break; // ALT+DEL				
+			} break;
+
+			case VK_ESCAPE: break; // ALT+ESC	
+
+			case VK_DELETE: break; // ALT+DEL	
+
 			};
 
 		}
 		break;
-
-		//case WM_KEYUP:
-		//	break;
-		//case WM_SYSKEYUP:
-		//	break;
 
 	}
 
@@ -183,32 +197,11 @@ bool HookKeyboardProc(HINSTANCE hinst)
 		NULL);					// DWORD dwThreadId
 
 	if (!ExistingKeyboardProc) {
-		//  Failed
+		MessageBox(NULL, L"Hook failed", L"WinMain, HookKeyboardProc()", NULL);
 		return false;
 	}
 	else {
 		//Succeeded.
-		return true;
-	}
-}
-int UnHookKeyboardProc()
-{
-	if (ExistingKeyboardProc) {
-		BOOL retcode = UnhookWindowsHookEx((HHOOK)KeyboardProcLowLevel);
-
-		if (retcode) {
-			// Successfully Un Hooked keyboard routine.
-		}
-		else {
-			// Error Keyboard Not successfully Un hooked!
-			// UnhookWindowsHookEx() returned failure!
-		}
-
-		return retcode;
-	}
-	else {
-		// Error Keyboard Not successfully hooked!
-		// Could not unhook procedure!
 		return true;
 	}
 }
@@ -228,40 +221,39 @@ int WINAPI WinMain(
 	)
 {	
 
-	// create a standard window
-	if (!global_Window.InitAndCreateStandartWindow(hinstance, WindowProc)) { 
-		return (global_Window.main_window_msg.wParam); // if the window did not create, close
+	// hook low-level keyboard command(s) for process
+	if (!HookKeyboardProc(hinstance)) {
+		return (global_Window.main_window_msg.wParam); // hook failed - close
 	}
 
-	OPTadaS_Window_Size newWindowSize;
-	newWindowSize.width = 1280;
-	newWindowSize.height = 720;
-	if (!global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
-		MessageBox(NULL, L"main hange error", L"wind", NULL);
-	};
+	// init project
+	if (OPTada_Instance::Global_InitProject(hinstance, WindowProc)) {
 
+		float lastTime = (float)timeGetTime();
 
-	float lastTime = (float)timeGetTime();
-
-	// entering the program cycle
-	while (true)
-	{
-		if (PeekMessage(&global_Window.main_window_msg, NULL, 0, 0, PM_REMOVE)) {
-			if (global_Window.main_window_msg.message == WM_QUIT) { // check for exit command	
-				break;
+		// entering the program cycle
+		while (true)
+		{
+			if (PeekMessage(&global_Window.main_window_msg, NULL, 0, 0, PM_REMOVE)) {
+				if (global_Window.main_window_msg.message == WM_QUIT) { // check for exit command	
+					break;
+				}
+				TranslateMessage(&global_Window.main_window_msg); // This function translates virtual-key format messages into character messages.			
+				DispatchMessage(&global_Window.main_window_msg); // check, send WindowProc () commands to process window commands
 			}
-			TranslateMessage(&global_Window.main_window_msg); // This function translates virtual-key format messages into character messages.			
-			DispatchMessage(&global_Window.main_window_msg); // check, send WindowProc () commands to process window commands
-		} 
-		else {
-			float currTime = (float)timeGetTime();
-			float timeDelta = (currTime - lastTime) * 0.001f;
+			else {
+				float currTime = (float)timeGetTime();
+				float timeDelta = (currTime - lastTime) * 0.001f;
 
-			// Tick(timeDelta); 
+				OPTada_Instance::Tick(timeDelta);
 
-			lastTime = currTime;
+				lastTime = currTime;
+			}
 		}
+
 	}
+
+	OPTada_Instance::Global_ShutdownProject();
 
 	// Return window close command to window event handler
 	return(global_Window.main_window_msg.wParam);

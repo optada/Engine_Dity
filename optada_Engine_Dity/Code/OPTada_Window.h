@@ -31,6 +31,8 @@ private:
 
 	OPTadaE_WindowState_ForClassWindow windowState = OPTadaE_WindowState_ForClassWindow::NONE; // Current state of window 
 
+	OPTadaE_WindowState_ForClassWindow lastWindowedMode = OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed; // last windowed mode
+
 	WINDOWPLACEMENT windowPlacement_FullScreen = { 0 }; // information about the position of the window in full screen mode
 	WINDOWPLACEMENT windowPlacement_Windowed   = { 0 }; // information about the position of the window in window mode
 
@@ -53,11 +55,13 @@ public:
 	// method initializes the class and creates a standard window
 	// [in] HINSTANCE hinstance_  // hinstance_ of process
 	// [in] WNDPROC& windowProc_ // event structure
-	bool InitAndCreateStandartWindow(HINSTANCE hinstance_, WNDPROC& windowProc_);
+	// return = true - done | false - error
+	bool InitAndCreateStandartWindow(HINSTANCE hinstance_, WNDPROC windowProc_);
 
 	// method changes window display settings and window size
 	// [in] OPTadaE_WindowState_ForClassWindow new_WindowState_ // set new window state --> if NONE - not changing | other - new state
 	// [in] OPTadaS_Window_Size& new_WorkplaceSize_             // set new workPlace size (you can use OPTada_Window->Get_WorkplaceSize() for not changing)
+	// return = true - done | false - error
 	bool Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow new_WindowState_, OPTadaS_Window_Size& new_WorkplaceSize_);
 
 
@@ -81,11 +85,23 @@ public:
 	// get handle of main window
 	// return = main_window_handle
 	HWND Get_MainWindowHandle();
-	
 
-	// USE THIS if you loose focus, when your window mode is fullscreen mode
-	// [in] bool haveFocus_ // true - if you take focus again | false - if you loose focus
-	void Do_FocusInFullScreenMode(bool haveFocus_);
+
+	// Use this when you need change (last type) window mode to fullscreen and back
+	// return = true - done | false - error
+	bool Do_SwapMode_Fullscreen_LastWindowed();
+
+	// Use this when your window mode is full screen. And you loose focus
+	// return = true - done | false - not fullscreen mode
+	bool Do_LooseFocusInFullscreenMode();
+
+	// Use this when your window mode is full screen. And you loose focus by ALT+TAB
+	// return = true - done | false - not fullscreen mode
+	bool Do_AltTabLooseFocusInFullscreenMode();
+
+	// Use this when your window mode is full screen. And you take focus back
+	// return = true - done | false - not fullscreen mode
+	bool Do_RestoreFocusInFullscreenMode();
 };
 
 

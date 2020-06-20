@@ -8,8 +8,6 @@
 
 #include "OPTada_Instance.h"
 
-#include "OPTada_Window.h"
-
 
 // process messages of the main window
 static LRESULT CALLBACK WindowProc(
@@ -226,8 +224,12 @@ int WINAPI WinMain(
 		return (global_Window.main_window_msg.wParam); // hook failed - close
 	}
 
-	// init project
-	if (OPTada_Instance::Global_InitProject(hinstance, WindowProc)) {
+	// init project and setup progect
+	if (
+		OPTada_Instance::Global_InitProject(hinstance, WindowProc) &&
+		OPTada_Instance::Global_SetupProject()
+		) 
+	{ // initialization and setup OK
 
 		float lastTime = (float)timeGetTime();
 
@@ -251,8 +253,9 @@ int WINAPI WinMain(
 			}
 		}
 
-	}
+	} // end game cicle, or init error
 
+	// free all modules and memory
 	OPTada_Instance::Global_ShutdownProject();
 
 	// Return window close command to window event handler

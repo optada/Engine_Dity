@@ -146,12 +146,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\Main.cpp" />
-    <ClCompile Include="Code\OPTada_Window.cpp" />
+    <ClCompile Include="Code\Render\OPTada_Render.cpp" />
+    <ClCompile Include="Code\Window\OPTada_Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\OPTada_Instance.h" />
-    <ClInclude Include="Code\OPTada_Window.h" />
-    <ClInclude Include="Code\OPTada_Window_Settings.h" />
+    <ClInclude Include="Code\Render\OPTada_Render.h" />
+    <ClInclude Include="Code\Window\OPTada_Window.h" />
+    <ClInclude Include="Code\Window\OPTada_Window_Settings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

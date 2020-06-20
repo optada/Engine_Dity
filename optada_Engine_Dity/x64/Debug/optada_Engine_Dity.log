@@ -1,4 +1,7 @@
 ﻿  Main.cpp
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(226,40): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(256,38): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(224,40): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(259,38): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
+  OPTada_Window.cpp
+  Generating Code...
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Window\OPTada_Window.cpp(208): warning C4715: 'OPTada_Window::Change_DisplayOfWindow': not all control paths return a value
   optada_Engine_Dity.vcxproj -> D:\GIT\Engine_Dity\optada_Engine_Dity\x64\Debug\optada_Engine_Dity.exe

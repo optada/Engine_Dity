@@ -4,24 +4,34 @@
     <Filter Include="Code">
       <UniqueIdentifier>{581cbf09-a67e-4217-9543-49430390d3cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Window">
+      <UniqueIdentifier>{ad961b5a-d435-4340-bc03-0ceadf87dc9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Render">
+      <UniqueIdentifier>{63a4716a-2733-43df-9578-d949b90b3b8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Main.cpp">
       <Filter>Code</Filter>
     </ClCompile>
-    <ClCompile Include="Code\OPTada_Window.cpp">
-      <Filter>Code</Filter>
+    <ClCompile Include="Code\Window\OPTada_Window.cpp">
+      <Filter>Code\Window</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Render\OPTada_Render.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\OPTada_Window.h">
-      <Filter>Code</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\OPTada_Window_Settings.h">
-      <Filter>Code</Filter>
-    </ClInclude>
     <ClInclude Include="Code\OPTada_Instance.h">
       <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\OPTada_Render.h">
+      <Filter>Code\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Window\OPTada_Window.h">
+      <Filter>Code\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Window\OPTada_Window_Settings.h">
+      <Filter>Code\Window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

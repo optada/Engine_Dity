@@ -14,7 +14,7 @@ class OPTada_Instance
 public:
 
 	// Do all initialization here (init all global modules)
-	// [in] HINSTANCE hinstance_  // hinstance_ of process
+	// [in] HINSTANCE hinstance_ // hinstance_ of process
 	// [in] WNDPROC& windowProc_ // event structure
 	// return = true - done | false - error
 	static bool Global_InitProject(HINSTANCE hinstance_, WNDPROC windowProc_) {
@@ -22,6 +22,17 @@ public:
 		// create a standard window
 		if (!global_Window.InitAndCreateStandartWindow(hinstance_, windowProc_)) {
 			MessageBox(NULL, L"main hange error", L"wind", NULL);
+			return false;
+		}
+
+		// chage window size and mode (define)
+		OPTadaS_Window_Size newWindowSize;
+
+		// create 
+		HWND hwnd = global_Window.Get_MainWindowHandle(); // get handle
+		global_Window.Get_WorkplaceSize(newWindowSize); // get workspace size
+		if (!global_Render.Initialization(hwnd, 1, newWindowSize.width, newWindowSize.height, true, true)) {
+			MessageBox(NULL, L"Can't init render", L"Instance", NULL);
 			return false;
 		}
 
@@ -33,7 +44,7 @@ public:
 	// return = true - done | false - error
 	static bool Global_SetupProject() {
 
-		// chage window size and mode
+		// chage window size and mode (define)
 		OPTadaS_Window_Size newWindowSize;
 		newWindowSize.width = 1280;
 		newWindowSize.height = 720;
@@ -42,6 +53,7 @@ public:
 			return false;
 		}
 
+
 		return true;
 	}
 
@@ -49,7 +61,7 @@ public:
 	static void Global_ShutdownProject() {
 		
 		// close DirectX
-		global_render.ShuttingDown();
+		global_Render.ShuttingDown();
 
 	}
 
@@ -59,6 +71,17 @@ public:
 
 	// Global tick
 	static int Tick(float deltaTime_) {
+
+		DrawScene(deltaTime_);
+
+		return 0;
+	}
+
+	// All draw logic here
+	static int DrawScene(float deltaTime_) {
+
+		return global_Render.testedDraw();
+
 		return 0;
 	}
 

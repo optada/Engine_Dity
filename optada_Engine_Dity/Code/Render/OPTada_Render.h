@@ -74,6 +74,20 @@ public:
 	//bool Setup_NewSettingsFor();
 
 
+
+	bool testedDraw() {
+
+		//Clear our backbuffer to the updated color
+		D3DXCOLOR bgColor(1.0f, 0.5f, 0.5f, 1.0f);
+
+		g_DeviceContext_d3d11->ClearRenderTargetView(g_RenderTargetView_d3d, bgColor);
+
+		//Present the backbuffer to the screen
+		g_SwapChain->Present(0, 0);
+
+		return true;
+	}
+
 };
 
 
@@ -81,4 +95,4 @@ public:
 
 
 // Created class OPTada_Render for render
-extern OPTada_Render global_render;
+extern OPTada_Render global_Render;

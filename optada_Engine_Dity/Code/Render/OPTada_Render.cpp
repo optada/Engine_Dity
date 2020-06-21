@@ -118,4 +118,4 @@ void OPTada_Render::ShuttingDown()
 // --------------------------------------------------------------------------------------------
 
 
-OPTada_Render global_render;
+OPTada_Render global_Render;

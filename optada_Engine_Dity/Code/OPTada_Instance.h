@@ -37,7 +37,7 @@ public:
 		OPTadaS_Window_Size newWindowSize;
 		newWindowSize.width = 1280;
 		newWindowSize.height = 720;
-		if (Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
+		if (!Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
 			MessageBox(NULL, L"Can't change window size or state", L"Instance", NULL);
 			return false;
 		}
@@ -47,6 +47,9 @@ public:
 
 	// shutdown project project (free all global modules)
 	static void Global_ShutdownProject() {
+		
+		// close DirectX
+		global_render.ShuttingDown();
 
 	}
 

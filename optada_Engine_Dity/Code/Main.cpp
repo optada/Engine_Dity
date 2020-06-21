@@ -32,61 +32,60 @@ case WM_KEYDOWN: {
 
 		//global_Window.Do_SwapMode_Fullscreen_LastWindowed();
 
-		/*static int cocos = 1;
+		static int cocos = 1;
 
 		OPTadaS_Window_Size newWindowSize;
 
 		if (cocos == 1) {
-
-			newWindowSize.width = 1280;
+			newWindowSize.width = 1200;
 			newWindowSize.height = 720;
-			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
-				MessageBox(NULL, L"main hange error", L"wind", NULL);
-			};
+			if (!OPTada_Instance::Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
+				MessageBox(NULL, L"cocos 1", L"cocos test", NULL);
+				return false;
+			}
 		}
 
 		if (cocos == 2) {
 			newWindowSize.width = 800;
 			newWindowSize.height = 600;
-			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
-				MessageBox(NULL, L"main hange error", L"wind", NULL);
-			};
+			if (!OPTada_Instance::Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
+				MessageBox(NULL, L"cocos 2", L"cocos test", NULL);
+				return false;
+			}
 		}
 
 		if (cocos == 3) {
-			OPTada_Instance::global_Window.Get_WorkplaceSize(newWindowSize);
-
-			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, newWindowSize)) {
-				MessageBox(NULL, L"main hange error", L"wind", NULL);
-			};
+			newWindowSize.width = 1280;
+			newWindowSize.height = 720;
+			if (!OPTada_Instance::Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
+				MessageBox(NULL, L"cocos 3", L"cocos test", NULL);
+				return false;
+			}
 		}
 
 		if (cocos == 4) {
-			newWindowSize.width = 1280;
-			newWindowSize.height = 720;
-			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, newWindowSize)) {
-				MessageBox(NULL, L"main hange error", L"wind", NULL);
-			};
+			newWindowSize.width = 800;
+			newWindowSize.height = 600;
+			if (!OPTada_Instance::Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
+				MessageBox(NULL, L"cocos 4", L"cocos test", NULL);
+				return false;
+			}
 		}
 
 		if (cocos == 5) {
-			OPTada_Instance::global_Window.Get_WorkplaceSize(newWindowSize);
-
-			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
-				MessageBox(NULL, L"main hange error", L"wind", NULL);
-			};
+			newWindowSize.width = 800;
+			newWindowSize.height = 600;
+			if (!OPTada_Instance::Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
+				MessageBox(NULL, L"cocos 5", L"cocos test", NULL);
+				return false;
+			}
 		}
 
 		if (cocos == 6) {
-			newWindowSize.width = 800;
-			newWindowSize.height = 600;
 
-			if (!OPTada_Instance::global_Window.Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
-				MessageBox(NULL, L"main hange error", L"wind", NULL);
-			};
 		}
 
-		cocos++;*/
+		cocos++;
 
 	} break;
 

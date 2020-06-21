@@ -72,7 +72,7 @@ public:
 
 	// get current window state
 	// [out] OPTadaE_WindowState_ForClassWindow& windowState_
-	inline void Get_WindowState(OPTadaE_WindowState_ForClassWindow& windowState_);
+	void Get_WindowState(OPTadaE_WindowState_ForClassWindow& windowState_);
 
 	// get current window size
 	// [out] OPTadaS_Window_Size& windowSize_

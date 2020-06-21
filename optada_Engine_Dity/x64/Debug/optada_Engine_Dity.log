@@ -120,6 +120,5 @@ C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathvector.i
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathmisc.inl(518,43): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathmisc.inl(519,40): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathmisc.inl(519,51): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Render\OPTada_Render.cpp(176,18): warning C4305: 'return': truncation from 'int' to 'bool'
-  LINK : D:\GIT\Engine_Dity\optada_Engine_Dity\x64\Debug\optada_Engine_Dity.exe not found or not built by the last incremental link; performing full link
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Render\OPTada_Render.cpp(12,13): warning C4101: 'hr': unreferenced local variable
   optada_Engine_Dity.vcxproj -> D:\GIT\Engine_Dity\optada_Engine_Dity\x64\Debug\optada_Engine_Dity.exe

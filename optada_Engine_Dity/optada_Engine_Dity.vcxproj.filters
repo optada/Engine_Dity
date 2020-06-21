@@ -18,7 +18,9 @@
     <ClCompile Include="Code\Window\OPTada_Window.cpp">
       <Filter>Code\Window</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Render\OPTada_Render.cpp" />
+    <ClCompile Include="Code\Render\OPTada_Render.cpp">
+      <Filter>Code\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\OPTada_Instance.h">
@@ -32,6 +34,9 @@
     </ClInclude>
     <ClInclude Include="Code\Window\OPTada_Window_Settings.h">
       <Filter>Code\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\OPTada_Render_Settings.h">
+      <Filter>Code\Render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

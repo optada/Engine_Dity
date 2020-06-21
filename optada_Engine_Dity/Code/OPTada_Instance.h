@@ -28,10 +28,10 @@ public:
 		// chage window size and mode (define)
 		OPTadaS_Window_Size newWindowSize;
 
-		// create 
+		// create and init render class
 		HWND hwnd = global_Window.Get_MainWindowHandle(); // get handle
 		global_Window.Get_WorkplaceSize(newWindowSize); // get workspace size
-		if (!global_Render.Initialization(hwnd, 1, newWindowSize.width, newWindowSize.height, true, true)) {
+		if (!global_Render.Initialization(hwnd, OPTADA_CLASSRENDER_DEFAULT_COUNT_OF_BACKBUFFERS, newWindowSize.width, newWindowSize.height, OPTADA_CLASSRENDER_DEFAULT_VSINC, true)) {
 			MessageBox(NULL, L"Can't init render", L"Instance", NULL);
 			return false;
 		}
@@ -46,9 +46,9 @@ public:
 
 		// chage window size and mode (define)
 		OPTadaS_Window_Size newWindowSize;
-		newWindowSize.width = 1280;
+		newWindowSize.width = 1200;
 		newWindowSize.height = 720;
-		if (!Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize)) {
+		if (!Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
 			MessageBox(NULL, L"Can't change window size or state", L"Instance", NULL);
 			return false;
 		}
@@ -90,11 +90,23 @@ public:
 
 
 	// call this when you need to change window size and state
-	static bool Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow newWindowState_, OPTadaS_Window_Size& newWindowSize_) {
+	// [in] OPTadaE_WindowState_ForClassWindow newWindowState_ // new window state
+	// [in] OPTadaS_Window_Size& newWindowSize_                // new window size
+	// [in] bool vSinc_                                        // true - enable vSinc | false - disable vSinc
+	// [in] int countOfBackBuffers_                            // count of back buffers (1 - double bufferization) (2 - tripple bufferization)
+	// [in] D3D11_FILL_MODE fillMode_                          // D3D11_FILL_SOLID - draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
+	// return = true - done | false - error
+	static bool Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow newWindowState_, OPTadaS_Window_Size& newWindowSize_, bool vSinc_, int countOfBackBuffers_, D3D11_FILL_MODE fillMode_) {
 
 		if (!global_Window.Change_DisplayOfWindow(newWindowState_, newWindowSize_)) {
 			return false;
 		};
+
+		global_Render.Setup_FullScreenMode(newWindowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
+
+		if (!global_Render.Setup_NewSettingsForRender(newWindowSize_.width, newWindowSize_.height, vSinc_, countOfBackBuffers_, fillMode_)) {
+			return false;
+		}
 
 		return true;
 	}
@@ -102,23 +114,32 @@ public:
 
 	// call this when you window is loosing focus
 	static void Do_Reaction_LooseFocus() {
+		global_Render.Setup_FullScreenMode(false);
 		global_Window.Do_LooseFocusInFullscreenMode();
 	}
 
 	// call this when your window is taking focus
 	static void Do_Reaction_TakeFocus() {
 		global_Window.Do_RestoreFocusInFullscreenMode();
+		OPTadaE_WindowState_ForClassWindow newWindowState_;
+		global_Window.Get_WindowState(newWindowState_);
+		global_Render.Setup_FullScreenMode(newWindowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
 	}
 
 
 	// call this for (ALT+TAB) reaction (hide window in fullscreen)
 	static void Do_Reaction_AltTab() {
+		global_Render.Setup_FullScreenMode(false);
 		global_Window.Do_AltTabLooseFocusInFullscreenMode();
 	}
 
 	// call this for (ALT+ENTER) reaction (Swap window mode fullscreen|Windowed)
 	static void Do_Reaction_AltEnter() {
 		global_Window.Do_SwapMode_Fullscreen_LastWindowed();
+
+		OPTadaE_WindowState_ForClassWindow newWindowState_;
+		global_Window.Get_WindowState(newWindowState_);
+		global_Render.Setup_FullScreenMode(newWindowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
 	}
 
 };

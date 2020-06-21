@@ -3,6 +3,9 @@
 
 #pragma once
 
+#include "OPTada_Render_Settings.h"
+
+
 // DirectX includes
 #include <dxgi.h> 
 #include <d3dcommon.h> 
@@ -67,18 +70,36 @@ public:
 	// return = true - done | false - error
 	bool Initialization(HWND hwnd_, int countOfBackBuffers_, int workspaceWidth_, int workspaceHeight_, bool vSinc_, bool isWindowedMode_);
 
+	// and create support render resourses (depth buffer, viewPort, rasterither....)
+	// [in] int workspaceWidth_       // workspace Width
+	// [in] int workspaceHeight_      // workspace Height
+	// [in] D3D11_FILL_MODE fillMode_ // D3D11_FILL_SOLID - draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
+	// return = true - done | false - error
+	bool SecondStepInitialization(int workspaceWidth_, int workspaceHeight_, D3D11_FILL_MODE fillMode_);
+
 	// Use this for free all resourses
 	void ShuttingDown();
 
+
+
+	// setup new settings for render
+	// [in] int workspaceWidth_       // workspace Width
+	// [in] int workspaceHeight_      // workspace Height
+	// [in] bool vSinc_               // true - enable | false - disable
+	// [in] int countOfBackBuffers_   // count of back buffers (1 - double bufferization) (2 - tripple bufferization)
+	// [in] D3D11_FILL_MODE fillMode_ // D3D11_FILL_SOLID - draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
+	// return = true - done | false - error
+	bool Setup_NewSettingsForRender(int workspaceWidth_, int workspaceHeight_, bool vSinc_, int countOfBackBuffers_, D3D11_FILL_MODE fillMode_);
+
+	// setup fullscreen or windowed mode for render
+	void Setup_FullScreenMode(bool isFullScreen_);
+
+
 	// 
-	//bool Setup_NewSettingsFor();
-
-
-
 	bool testedDraw() {
 
 		//Clear our backbuffer to the updated color
-		D3DXCOLOR bgColor(1.0f, 0.5f, 0.5f, 1.0f);
+		D3DXCOLOR bgColor(1.0f, 1.0f, 0.0f, 1.0f);
 
 		g_DeviceContext_d3d11->ClearRenderTargetView(g_RenderTargetView_d3d, bgColor);
 

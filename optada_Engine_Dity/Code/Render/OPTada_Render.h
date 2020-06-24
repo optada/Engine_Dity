@@ -45,7 +45,7 @@ inline void SafeRelease(T& ptr)
 // Renger
 class OPTada_Render
 {
-private:
+public:
 
 	ID3D11Device*           g_Device_d3d11        = nullptr; // device
 	ID3D11DeviceContext*    g_DeviceContext_d3d11 = nullptr; // device context
@@ -118,8 +118,14 @@ public:
 	ShaderClass* LoadShaderFromFile(const std::wstring& fileName_, const std::string& entryPoint_, const std::string& profile_);
 
 
+	// Clear the color and depth buffers.
+	void PrepareBuffersForNewFrame(const FLOAT clearColor[4], FLOAT clearDepth, UINT8 clearStencil);
 
-	// 
+	// Present frame
+	void PresentFrame(bool vSync);
+
+
+	/*
 	bool testedDraw() {
 
 		//Clear our backbuffer to the updated color
@@ -132,6 +138,7 @@ public:
 
 		return true;
 	}
+	*/
 
 };
 

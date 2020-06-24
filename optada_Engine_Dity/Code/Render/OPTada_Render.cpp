@@ -268,6 +268,23 @@ void OPTada_Render::Setup_FullScreenMode(bool isFullScreen_)
 }
 
 
+void OPTada_Render::PrepareBuffersForNewFrame(const FLOAT clearColor[4], FLOAT clearDepth, UINT8 clearStencil)
+{
+    g_DeviceContext_d3d11->ClearRenderTargetView(g_RenderTargetView_d3d, clearColor);
+    g_DeviceContext_d3d11->ClearDepthStencilView(g_DepthStencilView_d3d, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, clearDepth, clearStencil);
+}
+
+void OPTada_Render::PresentFrame(bool vSync)
+{
+    if (vSync) {
+        g_SwapChain->Present(1, 0);
+    }
+    else {
+        g_SwapChain->Present(0, 0);
+    }
+}
+
+
 template<>
 std::string OPTada_Render::GetLatestShaderProfile<ID3D11VertexShader>()
 {
@@ -421,6 +438,7 @@ ShaderClass* OPTada_Render::LoadShaderFromFile(const std::wstring& fileName_, co
 
     return pShader;
 }
+
 
 // --------------------------------------------------------------------------------------------
 

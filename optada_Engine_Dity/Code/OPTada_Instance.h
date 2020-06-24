@@ -6,6 +6,11 @@
 #include "Window\OPTada_Window.h" 
 #include "Render\OPTada_Render.h"
 
+#include "Game_Level.h"
+
+
+GameLevel lvl;
+
 
 // use this instance for controll all project logic
 // create and destroy all global modules here
@@ -54,12 +59,17 @@ public:
 		}
 
 
+		lvl.Init();
+
+
 		return true;
 	}
 
 	// shutdown project project (free all global modules)
 	static void Global_ShutdownProject() {
 		
+		lvl.Free();
+
 		// close DirectX
 		global_Render.ShuttingDown();
 
@@ -72,7 +82,13 @@ public:
 	// Global tick
 	static int Tick(float deltaTime_) {
 
+		global_Render.PrepareBuffersForNewFrame(DirectX::Colors::CornflowerBlue, 1.0f, 0);
+
+		lvl.Tick(deltaTime_);
+
 		DrawScene(deltaTime_);
+
+		global_Render.PresentFrame(false);
 
 		return 0;
 	}
@@ -80,9 +96,28 @@ public:
 	// All draw logic here
 	static int DrawScene(float deltaTime_) {
 
-		return global_Render.testedDraw();
+		const UINT vertexStride = sizeof(VertexPosColor);
+		const UINT offset = 0;
 
-		return 0;
+		global_Render.g_DeviceContext_d3d11->IASetVertexBuffers(0, 1, &g_d3dVertexBuffer, &vertexStride, &offset);
+		global_Render.g_DeviceContext_d3d11->IASetInputLayout(g_d3dInputLayout);
+		global_Render.g_DeviceContext_d3d11->IASetIndexBuffer(g_d3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+		global_Render.g_DeviceContext_d3d11->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		global_Render.g_DeviceContext_d3d11->VSSetShader(g_d3dVertexShader, nullptr, 0);
+		global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
+
+		global_Render.g_DeviceContext_d3d11->RSSetState(global_Render.g_RasterizerState_d3d);
+		global_Render.g_DeviceContext_d3d11->RSSetViewports(1, &global_Render.g_Viewport);
+
+		global_Render.g_DeviceContext_d3d11->PSSetShader(g_d3dPixelShader, nullptr, 0);
+
+		global_Render.g_DeviceContext_d3d11->OMSetRenderTargets(1, &global_Render.g_RenderTargetView_d3d, global_Render.g_DepthStencilView_d3d);
+		global_Render.g_DeviceContext_d3d11->OMSetDepthStencilState(global_Render.g_DepthStencilState_d3d, 1);
+
+		global_Render.g_DeviceContext_d3d11->DrawIndexed(_countof(g_Indicies), 0, 0);
+
+		return 1;
 	}
 
 

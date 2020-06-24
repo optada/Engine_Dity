@@ -41,6 +41,9 @@
     <ClInclude Include="Code\Render\OPTada_Render_Settings.h">
       <Filter>Code\Render</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Game_Level.h">
+      <Filter>Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\VertexShader.hlsl">

@@ -5,6 +5,7 @@
 
 #include "OPTada_Render_Settings.h"
 
+#include <string>
 
 // DirectX includes
 #include <dxgi.h> 
@@ -13,6 +14,7 @@
 #include <d3dx11.h>
 #include <d3d11.h>
 #include <d3dx10.h>
+#include <d3d10.h>
 
 #include <dinput.h>
 
@@ -75,7 +77,7 @@ public:
 	// [in] int workspaceHeight_      // workspace Height
 	// [in] D3D11_FILL_MODE fillMode_ // D3D11_FILL_SOLID - draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
 	// return = true - done | false - error
-	bool SecondStepInitialization(int workspaceWidth_, int workspaceHeight_, D3D11_FILL_MODE fillMode_);
+	bool InitializeSecondaryResources(int workspaceWidth_, int workspaceHeight_, D3D11_FILL_MODE fillMode_);
 
 	// Use this for free all resourses
 	void ShuttingDown();
@@ -93,6 +95,28 @@ public:
 
 	// setup fullscreen or windowed mode for render
 	void Setup_FullScreenMode(bool isFullScreen_);
+
+
+	// Get the latest profile for the specified shader type.
+	// return = string - with lastest profile name for Pixel|Vertex shader
+	template< class ShaderClass >
+	std::string GetLatestShaderProfile();
+
+	// Create Vertex|Pixel shader from a binary object and the class linkage
+	// [in] ID3DBlob* pShaderBlob_             // a binary object
+	// [in] ID3D11ClassLinkage* pClassLinkage_ // a class linkage
+	// return = ShaderClass - if done | nullptr - if failed
+	template< class ShaderClass >
+	ShaderClass* CreateShader(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_);
+
+	// create shader from file 
+	// [in] const std::wstring& fileName_  // filename
+	// [in] const std::string& entryPoint_ // enteryPoint
+	// [in] const std::string& profile_    // shader profile
+	// return = link on shader - done | false - error
+	template< class ShaderClass >
+	ShaderClass* LoadShaderFromFile(const std::wstring& fileName_, const std::string& entryPoint_, const std::string& profile_);
+
 
 
 	// 

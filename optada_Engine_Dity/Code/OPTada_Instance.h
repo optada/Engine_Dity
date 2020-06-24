@@ -25,7 +25,7 @@ public:
 			return false;
 		}
 
-		// chage window size and mode (define)
+		// change window size and mode (define)
 		OPTadaS_Window_Size newWindowSize;
 
 		// create and init render class

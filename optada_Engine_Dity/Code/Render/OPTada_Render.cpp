@@ -81,7 +81,7 @@ bool OPTada_Render::Initialization(HWND hwnd_, int countOfBackBuffers_, int work
         return false;
     }
 
-    if (!SecondStepInitialization(workspaceWidth_, workspaceHeight_, D3D11_FILL_SOLID)) {
+    if (!InitializeSecondaryResources(workspaceWidth_, workspaceHeight_, D3D11_FILL_SOLID)) {
         return false;
     }
 
@@ -90,7 +90,7 @@ bool OPTada_Render::Initialization(HWND hwnd_, int countOfBackBuffers_, int work
     return true;
 }
 
-bool OPTada_Render::SecondStepInitialization(int workspaceWidth_, int workspaceHeight_, D3D11_FILL_MODE fillMode_)
+bool OPTada_Render::InitializeSecondaryResources(int workspaceWidth_, int workspaceHeight_, D3D11_FILL_MODE fillMode_)
 {
     //Create our BackBuffer
     ID3D11Texture2D* backBuffer;
@@ -255,7 +255,7 @@ bool OPTada_Render::Setup_NewSettingsForRender(int workspaceWidth_, int workspac
     g_SwapChain->ResizeBuffers(countOfBackBuffers_, workspaceWidth_, workspaceHeight_, DXGI_FORMAT_UNKNOWN, 0);
 
     // create all support resouses again
-    if (!SecondStepInitialization(workspaceWidth_, workspaceHeight_, fillMode_)) {
+    if (!InitializeSecondaryResources(workspaceWidth_, workspaceHeight_, fillMode_)) {
         return false;
     }
 
@@ -267,6 +267,160 @@ void OPTada_Render::Setup_FullScreenMode(bool isFullScreen_)
     g_SwapChain->SetFullscreenState(isFullScreen_, NULL);
 }
 
+
+template<>
+std::string OPTada_Render::GetLatestShaderProfile<ID3D11VertexShader>()
+{
+    assert(g_Device_d3d11);
+
+    // Query the current feature level:
+    D3D_FEATURE_LEVEL featureLevel = g_Device_d3d11->GetFeatureLevel();
+
+    switch (featureLevel)
+    {
+    //case D3D_FEATURE_LEVEL_11_1:
+    case D3D_FEATURE_LEVEL_11_0:
+    {
+        return "vs_5_0";
+    }
+    break;
+    case D3D_FEATURE_LEVEL_10_1:
+    {
+        return "vs_4_1";
+    }
+    break;
+    case D3D_FEATURE_LEVEL_10_0:
+    {
+        return "vs_4_0";
+    }
+    break;
+    case D3D_FEATURE_LEVEL_9_3:
+    {
+        return "vs_4_0_level_9_3";
+    }
+    break;
+    case D3D_FEATURE_LEVEL_9_2:
+    case D3D_FEATURE_LEVEL_9_1:
+    {
+        return "vs_4_0_level_9_1";
+    }
+    break;
+    } // switch( featureLevel )
+
+    return "";
+}
+
+template<>
+std::string OPTada_Render::GetLatestShaderProfile<ID3D11PixelShader>()
+{
+    assert(g_Device_d3d11);
+
+    // Query the current feature level:
+    D3D_FEATURE_LEVEL featureLevel = g_Device_d3d11->GetFeatureLevel();
+    switch (featureLevel)
+    {
+    //case D3D_FEATURE_LEVEL_11_1:
+    case D3D_FEATURE_LEVEL_11_0:
+    {
+        return "ps_5_0";
+    }
+    break;
+    case D3D_FEATURE_LEVEL_10_1:
+    {
+        return "ps_4_1";
+    }
+    break;
+    case D3D_FEATURE_LEVEL_10_0:
+    {
+        return "ps_4_0";
+    }
+    break;
+    case D3D_FEATURE_LEVEL_9_3:
+    {
+        return "ps_4_0_level_9_3";
+    }
+    break;
+    case D3D_FEATURE_LEVEL_9_2:
+    case D3D_FEATURE_LEVEL_9_1:
+    {
+        return "ps_4_0_level_9_1";
+    }
+    break;
+    }
+    return "";
+}
+
+template<>
+ID3D11VertexShader* OPTada_Render::CreateShader<ID3D11VertexShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
+{
+    assert(g_Device_d3d11);
+    assert(pShaderBlob_);
+
+    ID3D11VertexShader* pVertexShader = nullptr;
+    g_Device_d3d11->CreateVertexShader(pShaderBlob_->GetBufferPointer(), pShaderBlob_->GetBufferSize(), pClassLinkage_, &pVertexShader);
+
+    return pVertexShader;
+}
+
+template<>
+ID3D11PixelShader* OPTada_Render::CreateShader<ID3D11PixelShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
+{
+    assert(g_Device_d3d11);
+    assert(pShaderBlob_);
+
+    ID3D11PixelShader* pPixelShader = nullptr;
+    g_Device_d3d11->CreatePixelShader(pShaderBlob_->GetBufferPointer(), pShaderBlob_->GetBufferSize(), pClassLinkage_, &pPixelShader);
+
+    return pPixelShader;
+}
+
+template< class ShaderClass >
+ShaderClass* OPTada_Render::LoadShaderFromFile(const std::wstring& fileName_, const std::string& entryPoint_, const std::string& profile_)
+{
+    ID3DBlob*    pShaderBlob = nullptr;
+    ID3DBlob*    pErrorBlob  = nullptr;
+    ShaderClass* pShader     = nullptr;
+
+    std::string profile = profile_;
+    if (profile == "latest") {
+        profile = GetLatestShaderProfile<ShaderClass>();
+    }
+    UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if _DEBUG
+    flags |= D3DCOMPILE_DEBUG;
+#endif
+
+    HRESULT hr = D3DCompileFromFile( 
+        fileName_.c_str(),                 // filename
+        nullptr,
+        D3D_COMPILE_STANDARD_FILE_INCLUDE, // param for shader compiler (use shader #include)
+        entryPoint_.c_str(),               // entryPoint of shader
+        profile.c_str(),                   // shader model
+        flags, 
+        0, 
+        &pShaderBlob,                      // done code
+        &pErrorBlob);
+
+    // check for error
+    if (FAILED(hr)) {
+        if (pErrorBlob) {
+            std::string errorMessage = (char*)pErrorBlob->GetBufferPointer();
+            OutputDebugStringA(errorMessage.c_str());
+
+            SafeRelease(pShaderBlob);
+            SafeRelease(pErrorBlob);
+        }
+
+        return false;
+    }
+
+    pShader = CreateShader<ShaderClass>(pShaderBlob, nullptr);
+
+    SafeRelease(pShaderBlob);
+    SafeRelease(pErrorBlob);
+
+    return pShader;
+}
 
 // --------------------------------------------------------------------------------------------
 

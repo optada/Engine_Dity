@@ -10,6 +10,9 @@
     <Filter Include="Code\Render">
       <UniqueIdentifier>{63a4716a-2733-43df-9578-d949b90b3b8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{83c70ca7-4092-4497-9a57-de062d8016ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Main.cpp">
@@ -38,5 +41,13 @@
     <ClInclude Include="Code\Render\OPTada_Render_Settings.h">
       <Filter>Code\Render</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\VertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\PixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

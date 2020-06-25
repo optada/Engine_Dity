@@ -102,20 +102,21 @@ public:
 	template< class ShaderClass >
 	std::string GetLatestShaderProfile();
 
+
 	// Create Vertex|Pixel shader from a binary object and the class linkage
 	// [in] ID3DBlob* pShaderBlob_             // a binary object
 	// [in] ID3D11ClassLinkage* pClassLinkage_ // a class linkage
 	// return = ShaderClass - if done | nullptr - if failed
 	template< class ShaderClass >
-	ShaderClass* CreateShader(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_);
+	ShaderClass* CreateShaderFrom_BinaryObject(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_);
 
 	// create shader from file 
 	// [in] const std::wstring& fileName_  // filename
-	// [in] const std::string& entryPoint_ // enteryPoint
+	// [in] const std::string& entryPoint_ // enteryPoint (function)
 	// [in] const std::string& profile_    // shader profile
 	// return = link on shader - done | false - error
 	template< class ShaderClass >
-	ShaderClass* LoadShaderFromFile(const std::wstring& fileName_, const std::string& entryPoint_, const std::string& profile_);
+	ShaderClass* LoadAndCompileShaderFrom_File(const std::wstring& fileName_, const std::string& entryPoint_, const std::string& profile_);
 
 
 	// Clear the color and depth buffers.

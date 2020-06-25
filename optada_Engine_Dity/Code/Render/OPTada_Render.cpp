@@ -368,7 +368,7 @@ std::string OPTada_Render::GetLatestShaderProfile<ID3D11PixelShader>()
 }
 
 template<>
-ID3D11VertexShader* OPTada_Render::CreateShader<ID3D11VertexShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
+ID3D11VertexShader* OPTada_Render::CreateShaderFrom_BinaryObject<ID3D11VertexShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
 {
     assert(g_Device_d3d11);
     assert(pShaderBlob_);
@@ -380,7 +380,7 @@ ID3D11VertexShader* OPTada_Render::CreateShader<ID3D11VertexShader>(ID3DBlob* pS
 }
 
 template<>
-ID3D11PixelShader* OPTada_Render::CreateShader<ID3D11PixelShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
+ID3D11PixelShader* OPTada_Render::CreateShaderFrom_BinaryObject<ID3D11PixelShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
 {
     assert(g_Device_d3d11);
     assert(pShaderBlob_);
@@ -392,7 +392,7 @@ ID3D11PixelShader* OPTada_Render::CreateShader<ID3D11PixelShader>(ID3DBlob* pSha
 }
 
 template< class ShaderClass >
-ShaderClass* OPTada_Render::LoadShaderFromFile(const std::wstring& fileName_, const std::string& entryPoint_, const std::string& profile_)
+ShaderClass* OPTada_Render::LoadAndCompileShaderFrom_File(const std::wstring& fileName_, const std::string& entryPoint_, const std::string& profile_)
 {
     ID3DBlob*    pShaderBlob = nullptr;
     ID3DBlob*    pErrorBlob  = nullptr;
@@ -431,7 +431,7 @@ ShaderClass* OPTada_Render::LoadShaderFromFile(const std::wstring& fileName_, co
         return false;
     }
 
-    pShader = CreateShader<ShaderClass>(pShaderBlob, nullptr);
+    pShader = CreateShaderFrom_BinaryObject<ShaderClass>(pShaderBlob, nullptr);
 
     SafeRelease(pShaderBlob);
     SafeRelease(pErrorBlob);

@@ -13,6 +13,12 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{83c70ca7-4092-4497-9a57-de062d8016ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Render\ResourceManager">
+      <UniqueIdentifier>{e91b306c-5cd0-4a4c-8bf2-7d8d2a3aa08e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Render\ResourceManager\Shader configuration">
+      <UniqueIdentifier>{ded6924e-496c-477c-af13-f137b8722eb2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Main.cpp">
@@ -23,6 +29,9 @@
     </ClCompile>
     <ClCompile Include="Code\Render\OPTada_Render.cpp">
       <Filter>Code\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp">
+      <Filter>Code\Render\ResourceManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="Code\Game_Level.h">
       <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\OPTadaC_ResourceManager.h">
+      <Filter>Code\Render\ResourceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

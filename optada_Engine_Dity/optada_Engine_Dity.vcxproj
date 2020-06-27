@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="Code\Main.cpp" />
     <ClCompile Include="Code\Render\OPTada_Render.cpp" />
+    <ClCompile Include="Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp" />
     <ClCompile Include="Code\Window\OPTada_Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +155,7 @@
     <ClInclude Include="Code\OPTada_Instance.h" />
     <ClInclude Include="Code\Render\OPTada_Render.h" />
     <ClInclude Include="Code\Render\OPTada_Render_Settings.h" />
+    <ClInclude Include="Code\Render\ResourceManager\OPTadaC_ResourceManager.h" />
     <ClInclude Include="Code\Window\OPTada_Window.h" />
     <ClInclude Include="Code\Window\OPTada_Window_Settings.h" />
   </ItemGroup>

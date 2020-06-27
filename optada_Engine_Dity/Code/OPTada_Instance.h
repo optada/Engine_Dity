@@ -51,7 +51,7 @@ public:
 
 		// chage window size and mode (define)
 		OPTadaS_Window_Size newWindowSize;
-		newWindowSize.width = 1200;
+		newWindowSize.width = 1280;
 		newWindowSize.height = 720;
 		if (!Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
 			MessageBox(NULL, L"Can't change window size or state", L"Instance", NULL);
@@ -88,7 +88,7 @@ public:
 
 		DrawScene(deltaTime_);
 
-		global_Render.PresentFrame(false);
+		global_Render.PresentFrame();
 
 		return 0;
 	}
@@ -103,7 +103,7 @@ public:
 		global_Render.g_DeviceContext_d3d11->IASetInputLayout(g_d3dInputLayout);
 		global_Render.g_DeviceContext_d3d11->IASetIndexBuffer(g_d3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 		global_Render.g_DeviceContext_d3d11->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+		
 		global_Render.g_DeviceContext_d3d11->VSSetShader(g_d3dVertexShader, nullptr, 0);
 		global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
 

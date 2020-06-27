@@ -6,6 +6,7 @@
 
 bool OPTada_Render::Initialization(HWND hwnd_, int countOfBackBuffers_, int workspaceWidth_, int workspaceHeight_, bool vSinc_, bool isWindowedMode_)
 {
+    vSinc = vSinc_;
 
     // ---- Create DirectX 11 basic ----
 
@@ -84,6 +85,21 @@ bool OPTada_Render::Initialization(HWND hwnd_, int countOfBackBuffers_, int work
     if (!InitializeSecondaryResources(workspaceWidth_, workspaceHeight_, D3D11_FILL_SOLID)) {
         return false;
     }
+
+    // off ALT+ENTER reaction for DXGI
+    IDXGIDevice* pDXGIDevice;
+    IDXGIAdapter* pDXGIAdapter;
+    IDXGIFactory* pIDXGIFactory;
+    g_Device_d3d11->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice);
+    pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&pDXGIAdapter);
+    pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&pIDXGIFactory);
+    pIDXGIFactory->MakeWindowAssociation(hwnd_, DXGI_MWA_NO_ALT_ENTER);  
+    pIDXGIFactory->Release(); // free DXGI factory.
+    pIDXGIFactory = 0;   
+    pDXGIAdapter->Release(); // free DXGI adapter.
+    pDXGIAdapter = 0;  
+    pDXGIDevice->Release(); // free DXGI device.
+    pDXGIDevice = 0;
 
     // ---- ALL initialization done ----
     
@@ -223,6 +239,8 @@ void OPTada_Render::ShuttingDown()
 
 bool OPTada_Render::Setup_NewSettingsForRender(int workspaceWidth_, int workspaceHeight_, bool vSinc_, int countOfBackBuffers_, D3D11_FILL_MODE fillMode_)
 {
+    vSinc = vSinc_;
+
     // free all resourses
     g_DeviceContext_d3d11->OMSetRenderTargets(0, 0, 0);
     SafeRelease(g_RasterizerState_d3d);    // Define the functionality of the rasterizer stage.
@@ -274,9 +292,9 @@ void OPTada_Render::PrepareBuffersForNewFrame(const FLOAT clearColor[4], FLOAT c
     g_DeviceContext_d3d11->ClearDepthStencilView(g_DepthStencilView_d3d, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, clearDepth, clearStencil);
 }
 
-void OPTada_Render::PresentFrame(bool vSync)
+void OPTada_Render::PresentFrame()
 {
-    if (vSync) {
+    if (vSinc) {
         g_SwapChain->Present(1, 0);
     }
     else {

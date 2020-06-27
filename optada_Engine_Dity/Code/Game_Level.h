@@ -73,6 +73,10 @@ public:
         assert(global_Render.g_Device_d3d11);
 
         // Create an initialize the vertex buffer.
+
+        D3D11_SUBRESOURCE_DATA resourceData;
+        ZeroMemory(&resourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+
         D3D11_BUFFER_DESC vertexBufferDesc;
         ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
 
@@ -80,10 +84,6 @@ public:
         vertexBufferDesc.ByteWidth = sizeof(VertexPosColor) * _countof(g_Vertices);
         vertexBufferDesc.CPUAccessFlags = 0;
         vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-
-        D3D11_SUBRESOURCE_DATA resourceData;
-        ZeroMemory(&resourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-
         resourceData.pSysMem = g_Vertices;
 
         HRESULT hr = global_Render.g_Device_d3d11->CreateBuffer(&vertexBufferDesc, &resourceData, &g_d3dVertexBuffer);
@@ -107,6 +107,14 @@ public:
         {
             return false;
         }
+
+
+
+
+
+
+
+
 
         // Create the constant buffers for the variables defined in the vertex shader.
         D3D11_BUFFER_DESC constantBufferDesc;

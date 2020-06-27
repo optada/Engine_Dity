@@ -27,7 +27,8 @@
 
 // macros for building 32 - bit color A.8.8.8 format(8 - bit alpha mode)
 #define _RGB32BIT(a,r,g,b) ((b) + ((g) << 8) + ((r) << 16) + ((a) << 24))
-//#define _RGB24BIT(a,r,g,b) ((b) + ((g) << 8) + ((r) << 16))
+// macros for building 24 - bit color 8.8.8 
+#define _RGB24BIT(r,g,b)   ((b) + ((g) << 8) + ((r) << 16))
 
 
 // Safely release a COM object.
@@ -46,6 +47,8 @@ inline void SafeRelease(T& ptr)
 class OPTada_Render
 {
 public:
+
+	bool vSinc = false; // vertycal sincronithzation
 
 	ID3D11Device*           g_Device_d3d11        = nullptr; // device
 	ID3D11DeviceContext*    g_DeviceContext_d3d11 = nullptr; // device context
@@ -123,7 +126,7 @@ public:
 	void PrepareBuffersForNewFrame(const FLOAT clearColor[4], FLOAT clearDepth, UINT8 clearStencil);
 
 	// Present frame
-	void PresentFrame(bool vSync);
+	void PresentFrame();
 
 
 	/*

@@ -16,8 +16,8 @@
     <Filter Include="Code\Render\ResourceManager">
       <UniqueIdentifier>{e91b306c-5cd0-4a4c-8bf2-7d8d2a3aa08e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Render\ResourceManager\Shader configuration">
-      <UniqueIdentifier>{ded6924e-496c-477c-af13-f137b8722eb2}</UniqueIdentifier>
+    <Filter Include="Code\Render\ResourceManager\Support">
+      <UniqueIdentifier>{ce0270e8-b11d-42c7-9772-95cf2808f215}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +55,15 @@
     </ClInclude>
     <ClInclude Include="Code\Render\ResourceManager\OPTadaC_ResourceManager.h">
       <Filter>Code\Render\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\ShaderList.h">
+      <Filter>Code\Render\ResourceManager\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\OPTadaC_ResourceManager_Settings.h">
+      <Filter>Code\Render\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\MeshList.h">
+      <Filter>Code\Render\ResourceManager\Support</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

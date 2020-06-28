@@ -3,41 +3,10 @@
 
 #pragma once
 
-#include <d3dx11.h> // for shader class
+#include "OPTadaC_ResourceManager_Settings.h"
 
-
-// Safely release a COM object.
-template<typename T>
-inline void SafeRelease(T& ptr)
-{
-	if (ptr != nullptr)
-	{
-		ptr->Release();
-		ptr = nullptr;
-	}
-}
-
-
-// enum - contains type of shaderes for shader list
-enum OPTadaE_ShaderList_ForResoursManager
-{
-	NONE = 0,
-
-	ENUM_ShaderList_PS_SimpleMaterial_01 = 1, // pixel shader SimpleMaterial_01
-	ENUM_ShaderList_VS_SimpleMaterial_01 = 2, // vertex shader SimpleMaterial_01
-
-	ENUM_ShaderList_ForResoursManager_MaxCount,
-};
-
-
-// structure - cell of shader
-struct OPTadaS_ShaderStructure
-{
-	OPTadaE_ShaderList_ForResoursManager shaderEnum = NONE; // shader type (Enum)
-
-	ID3D11VertexShader* linkOn_VertexShader = nullptr; // VS
-	ID3D11PixelShader*  linkOn_PixelShader  = nullptr; // PS
-};
+#include "ShaderList.h"
+#include "MeshList.h"
 
 
 // class for managering all resources (like a textures, models, shaders)
@@ -47,7 +16,7 @@ private:
 
 	OPTadaS_ShaderStructure shaderMass[ENUM_ShaderList_ForResoursManager_MaxCount]; // shader collection
 
-	// Mash
+	OPTadaS_MeshStructure meshMass[OPTadaE_MeshName_ForResoursManager::ENUM_MeshName_ForResoursManager_MaxCount]; // Mesh collection
 
 	// Texture
 
@@ -71,5 +40,20 @@ public:
 	template< class ShaderClass >
 	ShaderClass* Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_);
 
+
+	// return = shader link - done | NULL - error
+	bool Add_Mesh(OPTadaE_MeshName_ForResoursManager mashName_, ID3D11Buffer* vertexBuffer_, ID3D11Buffer* indexBuffer_, UINT vertexCellLength_, UINT vertexOffset_, );
+
+	// return = shader link - done | NULL - error
+	bool Delete_Mesh(OPTadaE_MeshName_ForResoursManager meshName_);
+
+	// return = shader link - done | NULL - error
+	bool Load_ToGPU_Mesh(OPTadaE_MeshName_ForResoursManager meshName_);
+
+	// return = shader link - done | NULL - error
+	bool Unload_FromGPU_Mesh(OPTadaE_MeshName_ForResoursManager meshName_);
+
+	// return = OPTadaS_MeshStructure* - done | NULL - error or mash is not created
+	OPTadaS_MeshStructure* Get_MeshCell(OPTadaE_MeshName_ForResoursManager meshName_);
 };
 

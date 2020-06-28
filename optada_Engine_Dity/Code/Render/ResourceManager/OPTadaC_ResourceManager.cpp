@@ -4,12 +4,11 @@
 #include "OPTadaC_ResourceManager.h"
 
 
-
 template<>
 bool OPTadaC_ResourceManager::Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11VertexShader* newShader_)
 {
     OPTadaS_ShaderStructure& cell = shaderMass[shaderEnum_];
-    if (cell.shaderEnum == OPTadaE_ShaderList_ForResoursManager::NONE && newShader_) {
+    if (cell.shaderEnum == OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_NONE && newShader_) {
         cell.shaderEnum = shaderEnum_;
         cell.linkOn_VertexShader = newShader_;
         
@@ -23,7 +22,7 @@ template<>
 bool OPTadaC_ResourceManager::Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11PixelShader* newShader_)
 {
     OPTadaS_ShaderStructure& cell = shaderMass[shaderEnum_];
-    if (cell.shaderEnum == OPTadaE_ShaderList_ForResoursManager::NONE && newShader_) {
+    if (cell.shaderEnum == OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_NONE && newShader_) {
         cell.shaderEnum = shaderEnum_;
         cell.linkOn_PixelShader = newShader_;
         
@@ -36,10 +35,10 @@ bool OPTadaC_ResourceManager::Add_Shader(OPTadaE_ShaderList_ForResoursManager sh
 bool OPTadaC_ResourceManager::Delete_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_)
 {
     OPTadaS_ShaderStructure& cell = shaderMass[shaderEnum_];
-    if (cell.shaderEnum != OPTadaE_ShaderList_ForResoursManager::NONE) {
+    if (cell.shaderEnum != OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_NONE) {
         SafeRelease(cell.linkOn_PixelShader);
         SafeRelease(cell.linkOn_VertexShader);
-        cell.shaderEnum = NONE;
+        cell.shaderEnum = ENUM_ShaderList_NONE;
 
         return true;
     }

@@ -141,10 +141,6 @@ public:
             return false;
         }
 
-        // Load the shaders
-        //g_d3dVertexShader = LoadShader<ID3D11VertexShader>( L"../data/shaders/SimpleVertexShader.hlsl", "SimpleVertexShader", "latest" );
-        //g_d3dPixelShader = LoadShader<ID3D11PixelShader>( L"../data/shaders/SimplePixelShader.hlsl", "SimplePixelShader", "latest" );
-
         // Load the compiled vertex shader.
         ID3DBlob* vertexShaderBlob;
 #if _DEBUG

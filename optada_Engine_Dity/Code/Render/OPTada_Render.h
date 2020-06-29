@@ -35,8 +35,7 @@
 template<typename T>
 inline void SafeRelease(T& ptr) 
 {
-	if (ptr != nullptr)
-	{
+	if (ptr != nullptr) {
 		ptr->Release();
 		ptr = nullptr;
 	}

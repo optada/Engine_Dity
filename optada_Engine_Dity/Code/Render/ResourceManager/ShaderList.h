@@ -6,18 +6,6 @@
 #include <d3dx11.h> // for shader class
 
 
-// structure - cell of shader
-struct OPTadaS_ShaderStructure
-{
-	OPTadaE_ShaderList_ForResoursManager shaderEnum = ENUM_ShaderList_NONE; // shader type (Enum)
-
-	ID3D11InputLayout* inputLayout_VertexBuffer = nullptr; // for VS
-
-	ID3D11VertexShader* linkOn_VertexShader = nullptr; // VS
-	ID3D11PixelShader*  linkOn_PixelShader  = nullptr; // PS
-};
-
-
 // enum - contains type of shaderes for shader list
 enum OPTadaE_ShaderList_ForResoursManager
 {
@@ -27,6 +15,18 @@ enum OPTadaE_ShaderList_ForResoursManager
 	ENUM_ShaderList_VS_SimpleMaterial_01 = 2, // vertex shader SimpleMaterial_01
 
 	ENUM_ShaderList_ForResoursManager_MaxCount,
+};
+
+
+// structure - cell of shader
+struct OPTadaS_ShaderStructure
+{
+	OPTadaE_ShaderList_ForResoursManager shaderEnum = ENUM_ShaderList_NONE; // shader type (Enum)
+
+	ID3D11InputLayout* inputLayout_VertexBuffer = nullptr; // input vertex structure for VS
+
+	ID3D11VertexShader* linkOn_VertexShader = nullptr; // VS
+	ID3D11PixelShader*  linkOn_PixelShader  = nullptr; // PS
 };
 
 

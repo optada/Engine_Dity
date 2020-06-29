@@ -47,14 +47,125 @@ bool OPTadaC_ResourceManager::Delete_Shader(OPTadaE_ShaderList_ForResoursManager
 }
 
 template<>
-ID3D11VertexShader* OPTadaC_ResourceManager::Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_)
+inline ID3D11VertexShader* OPTadaC_ResourceManager::Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_)
 {
     return shaderMass[shaderEnum_].linkOn_VertexShader;
 }
 
 template<>
-ID3D11PixelShader* OPTadaC_ResourceManager::Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_)
+inline ID3D11PixelShader* OPTadaC_ResourceManager::Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_)
 {
     return shaderMass[shaderEnum_].linkOn_PixelShader;
 }
 
+
+bool OPTadaC_ResourceManager::Add_Mesh(OPTadaE_MeshName_ForResoursManager meshName_, ID3D11Buffer* vertexBuffer_, ID3D11Buffer* indexBuffer_, UINT vertexStride_, UINT vertexOffset_, DXGI_FORMAT indexBufferFormat_)
+{
+    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
+
+    if (vertexBuffer_ == nullptr || vertexStride_ == 0 || (indexBuffer_ != nullptr && indexBufferFormat_ == DXGI_FORMAT::DXGI_FORMAT_UNKNOWN)) {
+        return false;
+    }
+
+    meshCell->vertexBuffer_InMEM = vertexBuffer_;
+    meshCell->indexBuffer_InMEM  = vertexBuffer_;   
+    meshCell->vertexStride       = vertexStride_;
+    meshCell->vectorOffset       = vertexOffset_;
+    meshCell->indexBufferFormat  = indexBufferFormat_;
+    meshCell->isInGPUMemory      = false;
+
+    return true;
+}
+
+void OPTadaC_ResourceManager::SetToDefault_MeshCell(OPTadaE_MeshName_ForResoursManager meshName_)
+{
+    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
+
+    if (meshCell->isInGPUMemory == true) {
+        Unload_FromGPU_Mesh(meshName_);
+    }
+
+    meshCell->indexBuffer_GPU    = nullptr;
+    meshCell->indexBuffer_InMEM  = nullptr;
+    meshCell->vertexBuffer_GPU   = nullptr;
+    meshCell->vertexBuffer_InMEM = nullptr;
+
+    meshCell->ByteWidth_VertexBuffer_InMEM = 0;
+    meshCell->ByteWidth_IndexBuffer_InMEM = 0;
+
+    meshCell->vertexStride      = 0;
+    meshCell->vectorOffset      = 0;
+    meshCell->isInGPUMemory     = false;
+    meshCell->indexBufferFormat = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
+
+    meshCell->meshName          = ENUM_MeshName_NONE;
+}
+
+bool OPTadaC_ResourceManager::Load_ToGPU_Mesh(OPTadaE_MeshName_ForResoursManager meshName_, ID3D11Device* device_d3d11_)
+{
+    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
+
+    if (!device_d3d11_ || meshCell->meshName == ENUM_MeshName_NONE || meshCell->isInGPUMemory) {
+        return false;
+    }
+
+    D3D11_SUBRESOURCE_DATA resourceData;
+    ZeroMemory(&resourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+    D3D11_BUFFER_DESC vertexBufferDesc;
+    ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
+    HRESULT hr;
+
+    // Create an initialize the vertex buffer.
+    vertexBufferDesc.BindFlags      = D3D11_BIND_VERTEX_BUFFER;
+    vertexBufferDesc.ByteWidth      = meshCell->ByteWidth_VertexBuffer_InMEM;
+    vertexBufferDesc.CPUAccessFlags = 0;
+    vertexBufferDesc.Usage          = D3D11_USAGE_DEFAULT;
+    resourceData.pSysMem = meshCell->vertexBuffer_InMEM;
+
+    hr = device_d3d11_->CreateBuffer(&vertexBufferDesc, &resourceData, &meshCell->vertexBuffer_GPU);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    if (meshCell->vertexBuffer_InMEM) { // if we have memory link on index buffer
+
+        // Create and initialize the index buffer.
+        D3D11_BUFFER_DESC indexBufferDesc;
+        ZeroMemory(&indexBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
+        indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        indexBufferDesc.ByteWidth = meshCell->ByteWidth_IndexBuffer_InMEM;
+        indexBufferDesc.CPUAccessFlags = 0;
+        indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        resourceData.pSysMem = meshCell->indexBuffer_InMEM;
+
+        hr = device_d3d11_->CreateBuffer(&indexBufferDesc, &resourceData, &meshCell->indexBuffer_GPU);
+        if (FAILED(hr)) {
+            return false;
+        }
+    }
+
+    meshCell->isInGPUMemory = true; // we are in game now!
+
+    return true;
+}
+
+void OPTadaC_ResourceManager::Unload_FromGPU_Mesh(OPTadaE_MeshName_ForResoursManager meshName_)
+{
+    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
+    SafeRelease(meshCell->vertexBuffer_GPU);
+    SafeRelease(meshCell->indexBuffer_GPU);
+    meshCell->isInGPUMemory = false;
+}
+
+inline OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell(OPTadaE_MeshName_ForResoursManager meshName_)
+{
+    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
+    return (meshCell->meshName != ENUM_MeshName_NONE) ? (meshCell) : (nullptr);
+}
+
+inline OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_MeshName_ForResoursManager meshName_)
+{
+    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
+    return (meshCell->isInGPUMemory && meshCell->meshName != ENUM_MeshName_NONE) ? (meshCell) : (nullptr);
+}

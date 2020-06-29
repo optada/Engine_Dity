@@ -385,6 +385,65 @@ std::string OPTada_Render::GetLatestShaderProfile<ID3D11PixelShader>()
     return "";
 }
 
+
+ID3D11PixelShader* OPTada_Render::CreatePixelShaderFrom_BinaryFile(const std::wstring& fileName_)
+{
+    assert(g_Device_d3d11);
+
+    ID3D11PixelShader* newPixelShader = nullptr;
+    ID3DBlob* pixelShaderBlob;
+    HRESULT hr;
+
+    hr = D3DReadFileToBlob(fileName_.c_str(), &pixelShaderBlob);
+    if (FAILED(hr)) {
+        return nullptr; // can't read binary file
+    }
+
+    hr = global_Render.g_Device_d3d11->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &newPixelShader);
+    if (FAILED(hr)) {
+        SafeRelease(pixelShaderBlob);
+        return nullptr; // compile failed
+    }
+
+    SafeRelease(pixelShaderBlob);
+
+    return newPixelShader;
+}
+
+ID3D11VertexShader* OPTada_Render::CreateVertexShaderFrom_BinaryFile(const std::wstring& fileName_, D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_, UINT countOfvertexLayoutDesc_,ID3D11InputLayout** inputLayout_)
+{
+    assert(g_Device_d3d11);
+
+    if (inputLayout_) {
+        return nullptr;
+    }
+
+    ID3D11VertexShader* newVertexShader = nullptr;
+    ID3DBlob* vertexShaderBlob;
+    HRESULT hr;
+
+    hr = D3DReadFileToBlob(fileName_.c_str(), &vertexShaderBlob);
+    if (FAILED(hr)) {
+        return nullptr; // can't read binary file
+    }
+
+    hr = global_Render.g_Device_d3d11->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &newVertexShader);
+    if (FAILED(hr)) {
+        SafeRelease(vertexShaderBlob);
+        return nullptr; // compile failed
+    }
+
+    hr = global_Render.g_Device_d3d11->CreateInputLayout(vertexLayoutDesc_, countOfvertexLayoutDesc_, vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), inputLayout_);
+    if (FAILED(hr)) {
+        SafeRelease(vertexShaderBlob);
+        return false; // can't create input layout for vertex buffer
+    }
+
+    SafeRelease(vertexShaderBlob);
+
+    return newVertexShader;
+}
+
 template<>
 ID3D11VertexShader* OPTada_Render::CreateShaderFrom_BinaryObject<ID3D11VertexShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
 {

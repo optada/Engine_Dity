@@ -31,3 +31,11 @@ struct OPTadaS_ShaderStructure
 
 
 // - - - - - - - - Set other shader structures or shader settings here - - - - - - - - -
+
+
+// Create the input layout for the vertex shader.
+D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
+{
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Position), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Color),    D3D11_INPUT_PER_VERTEX_DATA, 0 }
+};

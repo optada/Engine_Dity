@@ -105,6 +105,19 @@ public:
 	std::string GetLatestShaderProfile();
 
 
+	// Create Pixel shader from a binary file
+	// [in] const std::wstring& fileName_  // filename
+	// return = ID3D11PixelShader* - if done | nullptr - if failed
+	ID3D11PixelShader* CreatePixelShaderFrom_BinaryFile(const std::wstring& fileName_);
+
+	// Create Vertex shader from a binary file
+	// [in] const std::wstring& fileName_               // filename
+	// [in] D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_ // link on Directx structure
+	// [in] UINT countOfvertexLayoutDesc_,              // count of vertexLayoutDesc use _countof(vertexLayoutDesc_)
+	// [out] ID3D11InputLayout** inputLayout_ // item on item for saving input layout of vertex shader
+	// return = ID3D11VertexShader* - if done | nullptr - if failed
+	ID3D11VertexShader* CreateVertexShaderFrom_BinaryFile(const std::wstring& fileName_, D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_, UINT countOfvertexLayoutDesc_, ID3D11InputLayout** inputLayout_);
+
 	// Create Vertex|Pixel shader from a binary object and the class linkage
 	// [in] ID3DBlob* pShaderBlob_             // a binary object
 	// [in] ID3D11ClassLinkage* pClassLinkage_ // a class linkage
@@ -112,7 +125,7 @@ public:
 	template< class ShaderClass >
 	ShaderClass* CreateShaderFrom_BinaryObject(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_);
 
-	// create shader from file 
+	// create and compile shader from file 
 	// [in] const std::wstring& fileName_  // filename
 	// [in] const std::string& entryPoint_ // enteryPoint (function)
 	// [in] const std::string& profile_    // shader profile

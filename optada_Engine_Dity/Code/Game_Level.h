@@ -141,6 +141,9 @@ public:
             return false;
         }
 
+
+
+
         // Load the compiled vertex shader.
         ID3DBlob* vertexShaderBlob;
 #if _DEBUG
@@ -197,6 +200,10 @@ public:
         }
 
         SafeRelease(pixelShaderBlob);
+
+
+
+
 
         // Setup the projection matrix.
         RECT clientRect;

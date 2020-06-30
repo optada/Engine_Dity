@@ -104,13 +104,13 @@ public:
 		global_Render.g_DeviceContext_d3d11->IASetIndexBuffer(g_d3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 		global_Render.g_DeviceContext_d3d11->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		
-		global_Render.g_DeviceContext_d3d11->VSSetShader(g_d3dVertexShader, nullptr, 0);
+		//global_Render.g_DeviceContext_d3d11->VSSetShader(g_d3dVertexShader, nullptr, 0);
 		global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
 
 		global_Render.g_DeviceContext_d3d11->RSSetState(global_Render.g_RasterizerState_d3d);
 		global_Render.g_DeviceContext_d3d11->RSSetViewports(1, &global_Render.g_Viewport);
 
-		global_Render.g_DeviceContext_d3d11->PSSetShader(g_d3dPixelShader, nullptr, 0);
+		//global_Render.g_DeviceContext_d3d11->PSSetShader(g_d3dPixelShader, nullptr, 0);
 
 		global_Render.g_DeviceContext_d3d11->OMSetRenderTargets(1, &global_Render.g_RenderTargetView_d3d, global_Render.g_DepthStencilView_d3d);
 		global_Render.g_DeviceContext_d3d11->OMSetDepthStencilState(global_Render.g_DepthStencilState_d3d, 1);

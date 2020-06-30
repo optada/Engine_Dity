@@ -30,12 +30,19 @@ struct OPTadaS_ShaderStructure
 };
 
 
-// - - - - - - - - Set other shader structures or shader settings here - - - - - - - - -
+// - - - - - - - - Set other mash and shader structures or shader settings here - - - - - - - - -
 
+
+// Vertex data for a colored cube.
+//struct VertexPosColor_SimpleShader
+//{
+//	XMFLOAT3 Position;
+//	XMFLOAT3 Color;
+//};
 
 // Create the input layout for the vertex shader.
-D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
-{
-	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Position), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Color),    D3D11_INPUT_PER_VERTEX_DATA, 0 }
-};
+//D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc_VertexPosColor[] =
+//{
+//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor_SimpleShader,Position), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+//	{ "COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor_SimpleShader,Color),    D3D11_INPUT_PER_VERTEX_DATA, 0 }
+//};

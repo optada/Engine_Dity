@@ -4,11 +4,41 @@
 #include "OPTadaC_ResourceManager.h"
 
 
+void OPTadaC_ResourceManager::FreeAll()
+{
+    // free all shaders
+    OPTadaS_ShaderStructure* shaderCell = nullptr;
+    for (int i = 1; i < OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_ForResoursManager_MaxCount; i++) {
+        shaderCell = &shaderMass[i];
+        SafeRelease(shaderCell->inputLayout_VertexBuffer);
+        SafeRelease(shaderCell->linkOn_PixelShader);
+        SafeRelease(shaderCell->linkOn_VertexShader);
+    }
+
+    // free all meshes from GPU memory
+    OPTadaS_MeshStructure* meshCell = nullptr;
+    for (int i = 1; i < OPTadaE_MeshName_ForResoursManager::ENUM_MeshName_ForResoursManager_MaxCount; i++) {
+        SafeRelease(meshCell->vertexBuffer_GPU);
+        SafeRelease(meshCell->indexBuffer_GPU);
+        meshCell->isInGPUMemory = false;
+    }
+
+    // free all constant buffers
+    ID3D11Buffer* constantBuffer = nullptr;
+    for (int i = 1; i < OPTadaE_ConstantBuffersList_ForResoursManager::OPTadaE_ConstantBuffersList_ForResoursManager_MaxCount; i++) {
+        SafeRelease(constantBuffer);
+    }
+
+    // free ...
+}
+
+
 template<>
-bool OPTadaC_ResourceManager::Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11VertexShader* newShader_)
+bool OPTadaC_ResourceManager::Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11VertexShader* newShader_, ID3D11InputLayout* inputLayout_)
 {
     OPTadaS_ShaderStructure& cell = shaderMass[shaderEnum_];
     if (cell.shaderEnum == OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_NONE && newShader_) {
+        cell.inputLayout_VertexBuffer = inputLayout_;
         cell.shaderEnum = shaderEnum_;
         cell.linkOn_VertexShader = newShader_;
         
@@ -19,10 +49,11 @@ bool OPTadaC_ResourceManager::Add_Shader(OPTadaE_ShaderList_ForResoursManager sh
 }
 
 template<>
-bool OPTadaC_ResourceManager::Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11PixelShader* newShader_)
+bool OPTadaC_ResourceManager::Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11PixelShader* newShader_, ID3D11InputLayout* inputLayout_)
 {
     OPTadaS_ShaderStructure& cell = shaderMass[shaderEnum_];
     if (cell.shaderEnum == OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_NONE && newShader_) {
+        cell.inputLayout_VertexBuffer = inputLayout_;
         cell.shaderEnum = shaderEnum_;
         cell.linkOn_PixelShader = newShader_;
         
@@ -36,6 +67,7 @@ bool OPTadaC_ResourceManager::Delete_Shader(OPTadaE_ShaderList_ForResoursManager
 {
     OPTadaS_ShaderStructure& cell = shaderMass[shaderEnum_];
     if (cell.shaderEnum != OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_NONE) {
+        SafeRelease(cell.inputLayout_VertexBuffer);
         SafeRelease(cell.linkOn_PixelShader);
         SafeRelease(cell.linkOn_VertexShader);
         cell.shaderEnum = ENUM_ShaderList_NONE;
@@ -47,13 +79,14 @@ bool OPTadaC_ResourceManager::Delete_Shader(OPTadaE_ShaderList_ForResoursManager
 }
 
 template<>
-inline ID3D11VertexShader* OPTadaC_ResourceManager::Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_)
+inline ID3D11VertexShader* OPTadaC_ResourceManager::Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11InputLayout** inputLayout_)
 {
+    *inputLayout_ = shaderMass[shaderEnum_].inputLayout_VertexBuffer;
     return shaderMass[shaderEnum_].linkOn_VertexShader;
 }
 
 template<>
-inline ID3D11PixelShader* OPTadaC_ResourceManager::Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_)
+inline ID3D11PixelShader* OPTadaC_ResourceManager::Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11InputLayout** inputLayout_)
 {
     return shaderMass[shaderEnum_].linkOn_PixelShader;
 }
@@ -168,4 +201,15 @@ inline OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTa
 {
     OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
     return (meshCell->isInGPUMemory && meshCell->meshName != ENUM_MeshName_NONE) ? (meshCell) : (nullptr);
+}
+
+
+inline void OPTadaC_ResourceManager::Set_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_, ID3D11Buffer* constantBuffer_)
+{
+    constantBuffersMass[constantBufferID_] = constantBuffer_;
+}
+
+inline ID3D11Buffer* OPTadaC_ResourceManager::Get_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_)
+{
+    return constantBuffersMass[constantBufferID_];
 }

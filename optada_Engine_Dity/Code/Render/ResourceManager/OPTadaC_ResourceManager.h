@@ -7,6 +7,7 @@
 
 #include "ShaderList.h"
 #include "MeshList.h"
+#include "ConstantBufferList.h"
 
 
 // class for managering all resources (like a textures, models, shaders)
@@ -18,18 +19,25 @@ private:
 
 	OPTadaS_MeshStructure meshMass[OPTadaE_MeshName_ForResoursManager::ENUM_MeshName_ForResoursManager_MaxCount]; // Mesh collection
 
+	ID3D11Buffer* constantBuffersMass[OPTadaE_ConstantBuffersList_ForResoursManager::OPTadaE_ConstantBuffersList_ForResoursManager_MaxCount]; // buffer of constant for VS
 	// Texture
 
 public:
 
+	// Free all COM objects (use it for safety shutdowning)
+	void FreeAll();
+
+
 	// ------------------------ Shader ----------------------------
+
 
 	// add shader to shader list
 	// [in] OPTadaE_ShaderList_ForResoursManager shaderEnum_ // shader enum
 	// [in] ShaderClass* newShader_                          // link on shader  
+	// [in] ID3D11InputLayout* inputLayout_                  // item on item for saving input layout of vertex shader
 	// return = true - done | false - error
 	template< class ShaderClass >
-	bool Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ShaderClass* newShader_);
+	bool Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ShaderClass* newShader_, ID3D11InputLayout* inputLayout_);
 
 	// free shader from GPU memory
 	// [in] OPTadaE_ShaderList_ForResoursManager shaderEnum_ // shader enum
@@ -38,11 +46,14 @@ public:
 
 	// return shader link (ID3D11VertexShader | ID3D11PixelShader)
 	// [in] OPTadaE_ShaderList_ForResoursManager shaderEnum_ // shader enum
+	// [out] ID3D11InputLayout** inputLayout_                // item on item for saving input layout of vertex shader
 	// return = shader link - done | NULL - error
 	template< class ShaderClass >
-	inline ShaderClass* Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_);
+	inline ShaderClass* Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11InputLayout** inputLayout_);
+
 
 	// ------------------------- Mesh -----------------------------
+
 
 	// Add links on vertex and index  buffers, create mesh cell, add other parameters
 	// [in] OPTadaE_MeshName_ForResoursManager meshName_ // mesh enum
@@ -81,8 +92,23 @@ public:
 	// return = OPTadaS_MeshStructure* - done | NULL - error or mash is not created
 	inline OPTadaS_MeshStructure* Get_MeshCell_IfInGPU(OPTadaE_MeshName_ForResoursManager meshName_);
 
+
+	// ------------------------ Constant buffer ----------------------------
+
+
+	// save link on constant buffer for save free
+	// [in] OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_ // constant buffer enum
+	// [in] ID3D11Buffer* constantBuffer_                                   // link on constant buffer
+	inline void Set_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_, ID3D11Buffer* constantBuffer_);
+
+	// will return link on constant buffer
+	// [in] OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_ // constant buffer enum
+	// return = ID3D11Buffer* - done | nullptr - error
+	inline ID3D11Buffer* Get_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_);
+
+
 	// ------------------------ Texture ----------------------------
 
-
+	
 };
 

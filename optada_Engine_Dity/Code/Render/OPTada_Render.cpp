@@ -220,6 +220,7 @@ bool OPTada_Render::InitializeSecondaryResources(int workspaceWidth_, int worksp
 
 void OPTada_Render::ShuttingDown()
 {
+    resourceManager.FreeAll();
 
     g_SwapChain->SetFullscreenState(FALSE, NULL);    // switch to windowed mode
 
@@ -436,7 +437,7 @@ ID3D11VertexShader* OPTada_Render::CreateVertexShaderFrom_BinaryFile(const std::
     hr = global_Render.g_Device_d3d11->CreateInputLayout(vertexLayoutDesc_, countOfvertexLayoutDesc_, vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), inputLayout_);
     if (FAILED(hr)) {
         SafeRelease(vertexShaderBlob);
-        return false; // can't create input layout for vertex buffer
+        return nullptr; // can't create input layout for vertex buffer
     }
 
     SafeRelease(vertexShaderBlob);

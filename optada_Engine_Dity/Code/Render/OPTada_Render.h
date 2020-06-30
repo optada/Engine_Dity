@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "OPTada_Render_Settings.h"
-
 #include <string>
 
 // DirectX includes
@@ -24,6 +22,9 @@
 
 #include <d3dcompiler.h>
 
+#include "OPTada_Render_Settings.h"
+#include "ResourceManager\OPTadaC_ResourceManager.h"
+
 
 // macros for building 32 - bit color A.8.8.8 format(8 - bit alpha mode)
 #define _RGB32BIT(a,r,g,b) ((b) + ((g) << 8) + ((r) << 16) + ((a) << 24))
@@ -31,21 +32,13 @@
 #define _RGB24BIT(r,g,b)   ((b) + ((g) << 8) + ((r) << 16))
 
 
-// Safely release a COM object.
-template<typename T>
-inline void SafeRelease(T& ptr) 
-{
-	if (ptr != nullptr) {
-		ptr->Release();
-		ptr = nullptr;
-	}
-}
-
-
 // Renger
 class OPTada_Render
 {
 public:
+
+	OPTadaC_ResourceManager resourceManager; // GPU resource manager
+
 
 	bool vSinc = false; // vertycal sincronithzation
 
@@ -114,7 +107,7 @@ public:
 	// [in] const std::wstring& fileName_               // filename
 	// [in] D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_ // link on Directx structure
 	// [in] UINT countOfvertexLayoutDesc_,              // count of vertexLayoutDesc use _countof(vertexLayoutDesc_)
-	// [out] ID3D11InputLayout** inputLayout_ // item on item for saving input layout of vertex shader
+	// [out] ID3D11InputLayout** inputLayout_           // item on item for saving input layout of vertex shader
 	// return = ID3D11VertexShader* - if done | nullptr - if failed
 	ID3D11VertexShader* CreateVertexShaderFrom_BinaryFile(const std::wstring& fileName_, D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_, UINT countOfvertexLayoutDesc_, ID3D11InputLayout** inputLayout_);
 

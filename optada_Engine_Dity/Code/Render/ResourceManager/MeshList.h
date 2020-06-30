@@ -12,9 +12,6 @@ enum OPTadaE_MeshName_ForResoursManager
 {
 	ENUM_MeshName_NONE = 0,
 
-	// ENUM_MeshName_Simple_V_VertexPosColor_I_DXGI_FORMAT_R16_UINT
-	// ----_--------_MeshNameHere_V_NameOfVertexStructureHere_I_TypeOfIndexedStructureHere
-
 	ENUM_MeshName_DefaultColoredBox_V_VertexPosColor_I_DXGI_FORMAT_R16_UINT = 1, // vertex structure VertexPosColor, index structure (WORD)
 	//ENUM_MeshName_ColoredBox_V_VertexPosColor_I_DXGI_FORMAT_R16_UINT = 2, // vertex structure VertexPosColor, index structure (WORD)
 
@@ -44,13 +41,3 @@ struct OPTadaS_MeshStructure
 	UINT ByteWidth_IndexBuffer_InMEM  = 0;       // byte with inCPU memory
 };
 
-
-// - - - - - - - - Set other mash structures or shader settings here - - - - - - - - -
-
-
-// Vertex data for a colored cube.
-struct VertexPosColor
-{
-	XMFLOAT3 Position;
-	XMFLOAT3 Color;
-};

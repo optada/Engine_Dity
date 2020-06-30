@@ -65,6 +65,9 @@
     <ClInclude Include="Code\Render\ResourceManager\MeshList.h">
       <Filter>Code\Render\ResourceManager\Support</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\ConstantBufferList.h">
+      <Filter>Code\Render\ResourceManager\Support</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\VertexShader.hlsl">

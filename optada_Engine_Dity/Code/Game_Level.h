@@ -214,9 +214,15 @@ public:
         float clientWidth = static_cast<float>(clientRect.right - clientRect.left);
         float clientHeight = static_cast<float>(clientRect.bottom - clientRect.top);
 
-        g_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f), clientWidth / clientHeight, 0.1f, 100.0f);
+        g_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), clientWidth / clientHeight, 0.1f, 100.0f);
 
         global_Render.g_DeviceContext_d3d11->UpdateSubresource(g_d3dConstantBuffers[CB_Appliation], 0, nullptr, &g_ProjectionMatrix, 0, 0);
+
+
+        // tested
+        global_Render.g_DeviceContext_d3d11->VSSetShader(g_d3dVertexShader, nullptr, 0);
+        global_Render.g_DeviceContext_d3d11->PSSetShader(g_d3dPixelShader, nullptr, 0);
+
 
         return true;
 

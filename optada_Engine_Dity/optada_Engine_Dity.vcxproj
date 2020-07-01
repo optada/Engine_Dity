@@ -160,6 +160,7 @@
     <ClInclude Include="Code\Render\ResourceManager\OPTadaC_ResourceManager.h" />
     <ClInclude Include="Code\Render\ResourceManager\OPTadaC_ResourceManager_Settings.h" />
     <ClInclude Include="Code\Render\ResourceManager\PixelShaderList.h" />
+    <ClInclude Include="Code\Render\ResourceManager\TextureList.h" />
     <ClInclude Include="Code\Render\ResourceManager\VertexShaderList.h" />
     <ClInclude Include="Code\Window\OPTada_Window.h" />
     <ClInclude Include="Code\Window\OPTada_Window_Settings.h" />

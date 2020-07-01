@@ -12,6 +12,7 @@
 #include "VertexShaderList.h"
 #include "MeshList.h"
 #include "ConstantBufferList.h"
+#include "TextureList.h"
 
 
 // class for managering all resources (like a textures, models, shaders)
@@ -22,11 +23,11 @@ private:
 	OPTadaS_PixelShaderStructure  PS_Mass[OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_ForResoursManager_MaxCount];   // PS collection
 	OPTadaS_VertexShaderStructure VS_Mass[OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_ForResoursManager_MaxCount]; // VS collection
 
-	OPTadaS_MeshStructure meshMass[OPTadaE_MeshName_ForResoursManager::ENUM_MeshName_ForResoursManager_MaxCount]; // Mesh collection
+	OPTadaS_MeshStructure mesh_Mass[OPTadaE_MeshList_ForResoursManager::ENUM_MeshList_ForResoursManager_MaxCount]; // Mesh collection
 
-	ID3D11Buffer* constantBuffersMass[OPTadaE_ConstantBuffersList_ForResoursManager::OPTadaE_ConstantBuffersList_ForResoursManager_MaxCount]; // buffer of constant for VS
+	ID3D11Buffer* constantBuffers_Mass[OPTadaE_ConstantBuffersList_ForResoursManager::OPTadaE_ConstantBuffersList_ForResoursManager_MaxCount]; // buffer of constant for VS
 	
-    // Texture
+	OPTadaS_TextureStructure texture_Mass[OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_ForResoursManager_MaxCount]; // Texture collection
 
 public:
 
@@ -45,7 +46,7 @@ public:
 
 	// will return pixel shader cell
 	// [in] OPTadaE_PixelShaderList_ForResoursManager shaderEnum_ // shader enum
-	// return = OPTadaS_PixelShaderStructure* - done | NULL - error pixel shader is not created
+	// return = PS_Mass[item]
 	inline OPTadaS_PixelShaderStructure* Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_);
 
 	// setup pixel shader for render pipeline
@@ -72,7 +73,7 @@ public:
 
 	// will return Vertex shader cell
 	// [in] OPTadaE_VertexShaderList_ForResoursManager shaderEnum_ // shader enum
-	// return = OPTadaS_VertexShaderStructure* - done | NULL - error vertex shader is not created
+	// return = VS_Mass[item]
 	inline OPTadaS_VertexShaderStructure* Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_);
 
 	// setup Vertex shader for render pipeline
@@ -96,52 +97,77 @@ public:
 	// [in] UINT vertexOffset_                           //
 	// [in] DXGI_FORMAT indexBufferFormat_               // DXGI_FORMAT::DXGI_FORMAT_UNKNOWN --> if indexBuffer == NULL
 	// return = true - done | false - error
-	bool Add_Mesh(OPTadaE_MeshName_ForResoursManager meshName_, ID3D11Buffer* vertexBuffer_, ID3D11Buffer* indexBuffer_, UINT vertexStride_, UINT vertexOffset_, DXGI_FORMAT indexBufferFormat_);
+	bool Add_Mesh(OPTadaE_MeshList_ForResoursManager meshName_, ID3D11Buffer* vertexBuffer_, ID3D11Buffer* indexBuffer_, UINT vertexStride_, UINT vertexOffset_, DXGI_FORMAT indexBufferFormat_);
 
 	// !- this method will update the cell to completely rewrite it again.METHOD DOES NOT REMOVE MEMORY      -!
 	// !- To clear memory correctly, call the Unload_FromGPU_Mesh method,                                    -!
 	// !- then request a cell using the Get_MeshCell method, and manually free the buffer_Mem memory buffers -!
 	// use this for update cell to default parameters
 	// [in] OPTadaE_MeshName_ForResoursManager meshName_ // mesh enum
-	void SetToDefault_MeshCell(OPTadaE_MeshName_ForResoursManager meshName_);
+	void SetToDefault_MeshCell(OPTadaE_MeshList_ForResoursManager meshName_);
 
 	// load resourses to GPU memory (vertex buffer, and index buffer if not NULL)
 	// [in] OPTadaE_MeshName_ForResoursManager meshName_ // mesh enum
 	// [in] ID3D11Device* device_d3d11_                  // link on DirectX Device
 	// return = true - done | false - error
-	bool Load_ToGPU_Mesh(OPTadaE_MeshName_ForResoursManager meshName_, ID3D11Device* device_d3d11_);
+	bool Load_ToGPU_Mesh(OPTadaE_MeshList_ForResoursManager meshName_, ID3D11Device* device_d3d11_);
 
 	// free resources from GPU memory
 	// [in] OPTadaE_MeshName_ForResoursManager meshName_ // mesh enum
-	void Unload_FromGPU_Mesh(OPTadaE_MeshName_ForResoursManager meshName_);
+	void Unload_FromGPU_Mesh(OPTadaE_MeshList_ForResoursManager meshName_);
 
 	// will return mesh cell, if cell has been created
 	// [in] OPTadaE_MeshName_ForResoursManager meshName_ // mesh enum
 	// return = OPTadaS_MeshStructure* - done | NULL - error or mash is not created
-	inline OPTadaS_MeshStructure* Get_MeshCell(OPTadaE_MeshName_ForResoursManager meshName_);
+	inline OPTadaS_MeshStructure* Get_MeshCell(OPTadaE_MeshList_ForResoursManager meshName_);
 
 	// will return mesh cell, if mesh has been loaded to GPU memory
 	// [in] OPTadaE_MeshName_ForResoursManager meshName_ // mesh enum
 	// return = OPTadaS_MeshStructure* - done | NULL - error or mash is not created
-	inline OPTadaS_MeshStructure* Get_MeshCell_IfInGPU(OPTadaE_MeshName_ForResoursManager meshName_);
+	inline OPTadaS_MeshStructure* Get_MeshCell_IfInGPU(OPTadaE_MeshList_ForResoursManager meshName_);
 
 
 	// ------------------------ Constant buffer ----------------------------
 
 
+	// создать (передать размер и номера €чейки)
+	// осовободить (передать номера €чейки)
+	// запросить €чейку
+	// установить
+
+
+	//ID3D11Buffer* Get_ConstantBuffer_Cell();
+
 	// save link on constant buffer for save free
 	// [in] OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_ // constant buffer enum
 	// [in] ID3D11Buffer* constantBuffer_                                   // link on constant buffer
-	inline void Set_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_, ID3D11Buffer* constantBuffer_);
+	//inline void Set_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_, ID3D11Buffer* constantBuffer_);
 
 	// will return link on constant buffer
 	// [in] OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_ // constant buffer enum
 	// return = ID3D11Buffer* - done | nullptr - error
-	inline ID3D11Buffer* Get_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_);
+	//inline ID3D11Buffer* Get_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_);
 
 
 	// ------------------------ Texture ----------------------------
 
-	
+	// loading texture from file to GPU
+	// [in] OPTadaE_TextureList_ForResoursManager constantBufferID_ // texture enum
+	//
+	//
+	// return = true - done | false - error
+	bool Create_Texture_LoadFromFile(OPTadaE_TextureList_ForResoursManager textureEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_);
+
+	// get texture cell
+	// [in] OPTadaE_TextureList_ForResoursManager constantBufferID_ // texture enum
+	// return = texture_Mass[item]
+	OPTadaS_TextureStructure* Get_Texture_Cell(OPTadaE_TextureList_ForResoursManager textureEnum_);
+
+	// use texture for directX
+	bool Use_Texture();
+
+	// delete texture from GPU memory and other Texture's interfaces
+	bool Delete_Texture_FromGPU();
+
 };
 

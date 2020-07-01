@@ -23,7 +23,7 @@ void OPTadaC_ResourceManager::FreeAll()
 
     // free all meshes from GPU memory
     OPTadaS_MeshStructure* meshCell = nullptr;
-    for (int i = 1; i < OPTadaE_MeshName_ForResoursManager::ENUM_MeshName_ForResoursManager_MaxCount; i++) {
+    for (int i = 1; i < OPTadaE_MeshList_ForResoursManager::ENUM_MeshList_ForResoursManager_MaxCount; i++) {
         SafeRelease(meshCell->vertexBuffer_GPU);
         SafeRelease(meshCell->indexBuffer_GPU);
         meshCell->isInGPUMemory = false;
@@ -35,7 +35,13 @@ void OPTadaC_ResourceManager::FreeAll()
         SafeRelease(constantBuffer);
     }
 
-    // free ...
+    // free all textures
+    OPTadaS_TextureStructure* textureCell = nullptr;
+    for (int i = 1; i < OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_ForResoursManager_MaxCount; i++) {
+        SafeRelease(textureCell->textureSamplerState);
+        SafeRelease(textureCell->texture);
+        textureCell->isInGPUMemory = false;
+    }
 }
 
 
@@ -166,9 +172,9 @@ bool OPTadaC_ResourceManager::Delete_VertexShader(OPTadaE_VertexShaderList_ForRe
 }
 
 
-bool OPTadaC_ResourceManager::Add_Mesh(OPTadaE_MeshName_ForResoursManager meshName_, ID3D11Buffer* vertexBuffer_, ID3D11Buffer* indexBuffer_, UINT vertexStride_, UINT vertexOffset_, DXGI_FORMAT indexBufferFormat_)
+bool OPTadaC_ResourceManager::Add_Mesh(OPTadaE_MeshList_ForResoursManager meshName_, ID3D11Buffer* vertexBuffer_, ID3D11Buffer* indexBuffer_, UINT vertexStride_, UINT vertexOffset_, DXGI_FORMAT indexBufferFormat_)
 {
-    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
+    OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
 
     if (vertexBuffer_ == nullptr || vertexStride_ == 0 || (indexBuffer_ != nullptr && indexBufferFormat_ == DXGI_FORMAT::DXGI_FORMAT_UNKNOWN)) {
         return false;
@@ -184,9 +190,9 @@ bool OPTadaC_ResourceManager::Add_Mesh(OPTadaE_MeshName_ForResoursManager meshNa
     return true;
 }
 
-void OPTadaC_ResourceManager::SetToDefault_MeshCell(OPTadaE_MeshName_ForResoursManager meshName_)
+void OPTadaC_ResourceManager::SetToDefault_MeshCell(OPTadaE_MeshList_ForResoursManager meshName_)
 {
-    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
+    OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
 
     if (meshCell->isInGPUMemory == true) {
         Unload_FromGPU_Mesh(meshName_);
@@ -205,14 +211,14 @@ void OPTadaC_ResourceManager::SetToDefault_MeshCell(OPTadaE_MeshName_ForResoursM
     meshCell->isInGPUMemory     = false;
     meshCell->indexBufferFormat = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
 
-    meshCell->meshName          = ENUM_MeshName_NONE;
+    meshCell->meshName          = ENUM_MeshList_NONE;
 }
 
-bool OPTadaC_ResourceManager::Load_ToGPU_Mesh(OPTadaE_MeshName_ForResoursManager meshName_, ID3D11Device* device_d3d11_)
+bool OPTadaC_ResourceManager::Load_ToGPU_Mesh(OPTadaE_MeshList_ForResoursManager meshName_, ID3D11Device* device_d3d11_)
 {
-    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
+    OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
 
-    if (!device_d3d11_ || meshCell->meshName == ENUM_MeshName_NONE || meshCell->isInGPUMemory) {
+    if (!device_d3d11_ || meshCell->meshName == ENUM_MeshList_NONE || meshCell->isInGPUMemory) {
         return false;
     }
 
@@ -257,33 +263,86 @@ bool OPTadaC_ResourceManager::Load_ToGPU_Mesh(OPTadaE_MeshName_ForResoursManager
     return true;
 }
 
-void OPTadaC_ResourceManager::Unload_FromGPU_Mesh(OPTadaE_MeshName_ForResoursManager meshName_)
+void OPTadaC_ResourceManager::Unload_FromGPU_Mesh(OPTadaE_MeshList_ForResoursManager meshName_)
 {
-    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
+    OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
     SafeRelease(meshCell->vertexBuffer_GPU);
     SafeRelease(meshCell->indexBuffer_GPU);
     meshCell->isInGPUMemory = false;
 }
 
-inline OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell(OPTadaE_MeshName_ForResoursManager meshName_)
+inline OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell(OPTadaE_MeshList_ForResoursManager meshName_)
 {
-    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
-    return (meshCell->meshName != ENUM_MeshName_NONE) ? (meshCell) : (nullptr);
+    OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
+    return (meshCell->meshName != ENUM_MeshList_NONE) ? (meshCell) : (nullptr);
 }
 
-inline OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_MeshName_ForResoursManager meshName_)
+inline OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_MeshList_ForResoursManager meshName_)
 {
-    OPTadaS_MeshStructure* meshCell = &meshMass[meshName_];
-    return (meshCell->isInGPUMemory && meshCell->meshName != ENUM_MeshName_NONE) ? (meshCell) : (nullptr);
+    OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
+    return (meshCell->isInGPUMemory && meshCell->meshName != ENUM_MeshList_NONE) ? (meshCell) : (nullptr);
 }
 
 
-inline void OPTadaC_ResourceManager::Set_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_, ID3D11Buffer* constantBuffer_)
+//inline void OPTadaC_ResourceManager::Set_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_, ID3D11Buffer* constantBuffer_)
+//{
+//    constantBuffersMass[constantBufferID_] = constantBuffer_;
+//}
+
+//inline ID3D11Buffer* OPTadaC_ResourceManager::Get_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_)
+//{
+//    return constantBuffersMass[constantBufferID_];
+//}
+
+
+bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_ForResoursManager textureEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_)
 {
-    constantBuffersMass[constantBufferID_] = constantBuffer_;
+    OPTadaS_TextureStructure& cell = texture_Mass[textureEnum_];
+    HRESULT                   hr;
+
+    if (cell.textureEnum != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_NONE 
+        || textureEnum_ == OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_NONE
+        || cell.texture != nullptr
+        || cell.textureSamplerState != nullptr
+        || gDevice_ == nullptr)
+    {
+        return false;
+    }
+
+    hr = D3DX11CreateShaderResourceViewFromFile(gDevice_, fileName_.c_str(), NULL, NULL, &cell.texture, NULL);
+    if (FAILED(hr)) {
+        return false; // can't load texture from file
+    }
+
+    // create texture sampler state
+    D3D11_SAMPLER_DESC sampDesc;
+    ZeroMemory(&sampDesc, sizeof(sampDesc));
+    sampDesc.Filter         = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU       = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV       = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW       = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD         = 0;
+    sampDesc.MaxLOD         = D3D11_FLOAT32_MAX;
+
+    hr = gDevice_->CreateSamplerState(&sampDesc, &cell.textureSamplerState);
+    if (FAILED(hr)) {
+        SafeRelease(cell.texture); // free texture
+        return false; // can't create sample state
+    }
+
+    cell.textureEnum = textureEnum_;
+    cell.isInGPUMemory = true;
+
+    return true;
 }
 
-inline ID3D11Buffer* OPTadaC_ResourceManager::Get_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_)
+OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell(OPTadaE_TextureList_ForResoursManager textureEnum_)
 {
-    return constantBuffersMass[constantBufferID_];
+    return (textureEnum_ != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_ForResoursManager_MaxCount) ? (&texture_Mass[textureEnum_]) : (nullptr);;
+}
+
+bool OPTadaC_ResourceManager::Delete_Texture_FromGPU()
+{
+    return false;
 }

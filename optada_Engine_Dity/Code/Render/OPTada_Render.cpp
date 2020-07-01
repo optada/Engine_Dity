@@ -131,16 +131,16 @@ bool OPTada_Render::InitializeSecondaryResources(int workspaceWidth_, int worksp
     // Create the depth buffer for use with the depth/stencil view.
     D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
     ZeroMemory(&depthStencilBufferDesc, sizeof(D3D11_TEXTURE2D_DESC));
-    depthStencilBufferDesc.ArraySize = 1;                             // count of textures
-    depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;      // use like a Depth buffer
-    depthStencilBufferDesc.CPUAccessFlags = 0;                             // No CPU access required.
-    depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depthStencilBufferDesc.Width = workspaceWidth_;
-    depthStencilBufferDesc.Height = workspaceHeight_;
-    depthStencilBufferDesc.MipLevels = 1;                             // Use 1 for a multisampled texture; or 0 to generate a full set of subtextures.
-    depthStencilBufferDesc.SampleDesc.Count = 1;
+    depthStencilBufferDesc.ArraySize          = 1;                             // count of textures
+    depthStencilBufferDesc.BindFlags          = D3D11_BIND_DEPTH_STENCIL;      // use like a Depth buffer
+    depthStencilBufferDesc.CPUAccessFlags     = 0;                             // No CPU access required.
+    depthStencilBufferDesc.Format             = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilBufferDesc.Width              = workspaceWidth_;
+    depthStencilBufferDesc.Height             = workspaceHeight_;
+    depthStencilBufferDesc.MipLevels          = 1;                             // Use 1 for a multisampled texture; or 0 to generate a full set of subtextures.
+    depthStencilBufferDesc.SampleDesc.Count   = 1;
     depthStencilBufferDesc.SampleDesc.Quality = 0;
-    depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthStencilBufferDesc.Usage              = D3D11_USAGE_DEFAULT;
 
     // create texture for depth buffer
     if (S_OK != g_Device_d3d11->CreateTexture2D(&depthStencilBufferDesc, nullptr, &g_DepthStencilBuffer_d3d)) {
@@ -156,25 +156,25 @@ bool OPTada_Render::InitializeSecondaryResources(int workspaceWidth_, int worksp
     D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
     ZeroMemory(&depthStencilStateDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 
-    depthStencilStateDesc.DepthEnable = TRUE; // depth enable
+    depthStencilStateDesc.DepthEnable    = TRUE; // depth enable
     depthStencilStateDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-    depthStencilStateDesc.DepthFunc = D3D11_COMPARISON_LESS;
+    depthStencilStateDesc.DepthFunc      = D3D11_COMPARISON_LESS;
 
-    depthStencilStateDesc.StencilEnable = TRUE; // stencil enable
-    depthStencilStateDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+    depthStencilStateDesc.StencilEnable    = TRUE; // stencil enable
+    depthStencilStateDesc.StencilReadMask  = D3D11_DEFAULT_STENCIL_READ_MASK;
     depthStencilStateDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
 
     // Stencil operations if pixel is front-facing
-    depthStencilStateDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilStateDesc.FrontFace.StencilFailOp      = D3D11_STENCIL_OP_KEEP;
     depthStencilStateDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-    depthStencilStateDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-    depthStencilStateDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+    depthStencilStateDesc.FrontFace.StencilPassOp      = D3D11_STENCIL_OP_KEEP;
+    depthStencilStateDesc.FrontFace.StencilFunc        = D3D11_COMPARISON_ALWAYS;
 
     // Stencil operations if pixel is back-facing
-    depthStencilStateDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    depthStencilStateDesc.BackFace.StencilFailOp      = D3D11_STENCIL_OP_KEEP;
     depthStencilStateDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-    depthStencilStateDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-    depthStencilStateDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+    depthStencilStateDesc.BackFace.StencilPassOp      = D3D11_STENCIL_OP_KEEP;
+    depthStencilStateDesc.BackFace.StencilFunc        = D3D11_COMPARISON_ALWAYS;
 
     // create depth stencil state
     if (S_OK != g_Device_d3d11->CreateDepthStencilState(&depthStencilStateDesc, &g_DepthStencilState_d3d)) {
@@ -188,15 +188,15 @@ bool OPTada_Render::InitializeSecondaryResources(int workspaceWidth_, int worksp
     ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 
     rasterizerDesc.AntialiasedLineEnable = FALSE;
-    rasterizerDesc.CullMode = D3D11_CULL_BACK;  // do not draw backfront triangles
-    rasterizerDesc.DepthBias = 0;
-    rasterizerDesc.DepthBiasClamp = 0.0f;
-    rasterizerDesc.DepthClipEnable = TRUE;             // clip z coord
-    rasterizerDesc.FillMode = fillMode_; // D3D11_FILL_SOLID - draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
+    rasterizerDesc.CullMode              = D3D11_CULL_BACK;  // do not draw backfront triangles
+    rasterizerDesc.DepthBias             = 0;
+    rasterizerDesc.DepthBiasClamp        = 0.0f;
+    rasterizerDesc.DepthClipEnable       = TRUE;             // clip z coord
+    rasterizerDesc.FillMode              = fillMode_;        // D3D11_FILL_SOLID - draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
     rasterizerDesc.FrontCounterClockwise = FALSE;            // a triangle will be considered front-facing if its vertices are counter-clockwise on the render target
-    rasterizerDesc.MultisampleEnable = FALSE;
-    rasterizerDesc.ScissorEnable = FALSE;            // is scissor-rectangle culling. TRUE - enable
-    rasterizerDesc.SlopeScaledDepthBias = 0.0f;
+    rasterizerDesc.MultisampleEnable     = FALSE;
+    rasterizerDesc.ScissorEnable         = FALSE;            // is scissor-rectangle culling. TRUE - enable
+    rasterizerDesc.SlopeScaledDepthBias  = 0.0f;
 
     // Create the rasterizer state object.
     if (S_OK != g_Device_d3d11->CreateRasterizerState(&rasterizerDesc, &g_RasterizerState_d3d)) {
@@ -206,8 +206,8 @@ bool OPTada_Render::InitializeSecondaryResources(int workspaceWidth_, int worksp
     // ---- Setup viewport ----
 
     // Initialize the viewport to occupy the entire client area.
-    g_Viewport.Width = static_cast<float>(workspaceWidth_);
-    g_Viewport.Height = static_cast<float>(workspaceHeight_);
+    g_Viewport.Width    = static_cast<float>(workspaceWidth_);
+    g_Viewport.Height   = static_cast<float>(workspaceHeight_);
     g_Viewport.TopLeftX = 0.0f;
     g_Viewport.TopLeftY = 0.0f;
     g_Viewport.MinDepth = 0.0f;

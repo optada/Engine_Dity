@@ -8,14 +8,14 @@
 
 
 // enum - contains Mesh names
-enum OPTadaE_MeshName_ForResoursManager
+enum OPTadaE_MeshList_ForResoursManager
 {
-	ENUM_MeshName_NONE = 0,
+	ENUM_MeshList_NONE = 0,
 
-	ENUM_MeshName_DefaultColoredBox_V_VertexPosColor_I_DXGI_FORMAT_R16_UINT = 1, // vertex structure VertexPosColor, index structure (WORD)
-	//ENUM_MeshName_ColoredBox_V_VertexPosColor_I_DXGI_FORMAT_R16_UINT = 2, // vertex structure VertexPosColor, index structure (WORD)
+	ENUM_MeshList_DefaultColoredBox_V_VertexPosColor_I_DXGI_FORMAT_R16_UINT = 1, // vertex structure VertexPosColor, index structure (WORD)
+	//ENUM_MeshList_ColoredBox_V_VertexPosColor_I_DXGI_FORMAT_R16_UINT = 2, // vertex structure VertexPosColor, index structure (WORD)
 
-	ENUM_MeshName_ForResoursManager_MaxCount,
+	ENUM_MeshList_ForResoursManager_MaxCount,
 };
 
 
@@ -23,7 +23,7 @@ enum OPTadaE_MeshName_ForResoursManager
 // if we have no IndexBuffer - we will draw no indexed
 struct OPTadaS_MeshStructure
 {
-	OPTadaE_MeshName_ForResoursManager meshName = ENUM_MeshName_NONE; // mesh type (Enum)
+	OPTadaE_MeshList_ForResoursManager meshName = ENUM_MeshList_NONE; // mesh name (Enum)
 	
 	bool isInGPUMemory = false; // true - we have this in GPU memory, and can draw | false - only CPU memory 
 	

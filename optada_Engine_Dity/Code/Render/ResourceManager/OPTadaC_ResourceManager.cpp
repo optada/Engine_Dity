@@ -6,13 +6,19 @@
 
 void OPTadaC_ResourceManager::FreeAll()
 {
-    // free all shaders
-    OPTadaS_ShaderStructure* shaderCell = nullptr;
-    for (int i = 1; i < OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_ForResoursManager_MaxCount; i++) {
-        shaderCell = &shaderMass[i];
-        SafeRelease(shaderCell->inputLayout_VertexBuffer);
-        SafeRelease(shaderCell->linkOn_PixelShader);
-        SafeRelease(shaderCell->linkOn_VertexShader);
+    // free all pixel shaders
+    OPTadaS_PixelShaderStructure* shaderCell_PS = nullptr;
+    for (int i = 1; i < OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_ForResoursManager_MaxCount; i++) {
+        shaderCell_PS = &PS_Mass[i];
+        SafeRelease(shaderCell_PS->pixelShader);
+    }
+
+    // free all vertex shaders
+    OPTadaS_VertexShaderStructure* shaderCell_VS = nullptr;
+    for (int i = 1; i < OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_ForResoursManager_MaxCount; i++) {
+        shaderCell_VS = &VS_Mass[i];
+        SafeRelease(shaderCell_VS->inputLayout);
+        SafeRelease(shaderCell_VS->vertexShader);
     }
 
     // free all meshes from GPU memory
@@ -33,62 +39,130 @@ void OPTadaC_ResourceManager::FreeAll()
 }
 
 
-template<>
-bool OPTadaC_ResourceManager::Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11VertexShader* newShader_, ID3D11InputLayout* inputLayout_)
+bool OPTadaC_ResourceManager::Create_PixelShader_FromBinaryFile(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_)
 {
-    OPTadaS_ShaderStructure& cell = shaderMass[shaderEnum_];
-    if (cell.shaderEnum == OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_NONE && newShader_) {
-        cell.inputLayout_VertexBuffer = inputLayout_;
-        cell.shaderEnum = shaderEnum_;
-        cell.linkOn_VertexShader = newShader_;
-        
-        return true; 
+    ID3D11PixelShader* newPixelShader = nullptr;
+    ID3DBlob*          pixelShaderBlob;
+    HRESULT            hr;
+
+    OPTadaS_PixelShaderStructure& cell = PS_Mass[shaderEnum_];
+
+    if (cell.shaderEnum != OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_NONE 
+        || shaderEnum_ == OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_NONE 
+        || cell.pixelShader != nullptr
+        || gDevice_ == nullptr) 
+    {
+        return false;
     }
 
+
+    hr = D3DReadFileToBlob(fileName_.c_str(), &pixelShaderBlob);
+    if (FAILED(hr)) {
+        return false; // can't read binary file
+    }
+
+    hr = gDevice_->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &newPixelShader);
+    if (FAILED(hr)) {
+        SafeRelease(pixelShaderBlob);
+        return false; // compile failed
+    }
+
+    SafeRelease(pixelShaderBlob);
+
+    cell.shaderEnum = shaderEnum_;
+    cell.pixelShader = newPixelShader;
+
+    return true;
+}
+
+inline OPTadaS_PixelShaderStructure* OPTadaC_ResourceManager::Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_)
+{
+    return (shaderEnum_ != OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_ForResoursManager_MaxCount)?(&PS_Mass[shaderEnum_]):(nullptr);
+}
+
+inline bool OPTadaC_ResourceManager::Use_PixelShader(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_)
+{
     return false;
 }
 
-template<>
-bool OPTadaC_ResourceManager::Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11PixelShader* newShader_, ID3D11InputLayout* inputLayout_)
+bool OPTadaC_ResourceManager::Delete_PixelShader(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_)
 {
-    OPTadaS_ShaderStructure& cell = shaderMass[shaderEnum_];
-    if (cell.shaderEnum == OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_NONE && newShader_) {
-        cell.inputLayout_VertexBuffer = inputLayout_;
-        cell.shaderEnum = shaderEnum_;
-        cell.linkOn_PixelShader = newShader_;
-        
-        return true; 
-    }
-
-    return false;
-}
-
-bool OPTadaC_ResourceManager::Delete_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_)
-{
-    OPTadaS_ShaderStructure& cell = shaderMass[shaderEnum_];
-    if (cell.shaderEnum != OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_NONE) {
-        SafeRelease(cell.inputLayout_VertexBuffer);
-        SafeRelease(cell.linkOn_PixelShader);
-        SafeRelease(cell.linkOn_VertexShader);
-        cell.shaderEnum = ENUM_ShaderList_NONE;
-
+    OPTadaS_PixelShaderStructure& cell = PS_Mass[shaderEnum_];
+    if (cell.shaderEnum != OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_NONE) {
+        SafeRelease(cell.pixelShader);
+        cell.shaderEnum = ENUM_PixelShaderList_NONE;
         return true;
     }
 
     return false;
 }
 
-template<>
-inline ID3D11VertexShader* OPTadaC_ResourceManager::Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11InputLayout** inputLayout_)
+
+bool OPTadaC_ResourceManager::Create_VertexShader_FromBinaryFile(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_, D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_, UINT countOfvertexLayoutDesc_)
 {
-    *inputLayout_ = shaderMass[shaderEnum_].inputLayout_VertexBuffer;
-    return shaderMass[shaderEnum_].linkOn_VertexShader;
+    ID3D11VertexShader* newVertexShader = nullptr;
+    ID3DBlob*           vertexShaderBlob;
+    HRESULT             hr;
+
+    OPTadaS_VertexShaderStructure& cell = VS_Mass[shaderEnum_];
+
+    if (cell.shaderEnum != OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_NONE
+        || shaderEnum_ == OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_NONE
+        || cell.vertexShader != nullptr
+        || cell.inputLayout != nullptr
+        || gDevice_ == nullptr)
+    {
+        return false;
+    }
+
+
+    hr = D3DReadFileToBlob(fileName_.c_str(), &vertexShaderBlob);
+    if (FAILED(hr)) {
+        return false; // can't read binary file
+    }
+
+    hr = gDevice_->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &newVertexShader);
+    if (FAILED(hr)) {
+        SafeRelease(vertexShaderBlob);
+        return false; // compile failed
+    }
+
+    hr = gDevice_->CreateInputLayout(vertexLayoutDesc_, countOfvertexLayoutDesc_, vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &cell.inputLayout);
+    if (FAILED(hr)) {
+        SafeRelease(vertexShaderBlob);
+        return false; // can't create input layout for vertex buffer
+    }
+
+    SafeRelease(vertexShaderBlob);
+
+    cell.shaderEnum = shaderEnum_;
+    cell.vertexShader = newVertexShader;
+
+    return true;
+
 }
 
-template<>
-inline ID3D11PixelShader* OPTadaC_ResourceManager::Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11InputLayout** inputLayout_)
+inline OPTadaS_VertexShaderStructure* OPTadaC_ResourceManager::Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_)
 {
-    return shaderMass[shaderEnum_].linkOn_PixelShader;
+    return (shaderEnum_ != OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_ForResoursManager_MaxCount) ? (&VS_Mass[shaderEnum_]) : (nullptr);
+}
+
+inline bool OPTadaC_ResourceManager::Use_VertexShader(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_)
+{
+    return false;
+}
+
+bool OPTadaC_ResourceManager::Delete_VertexShader(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_)
+{
+    OPTadaS_VertexShaderStructure& cell = VS_Mass[shaderEnum_];
+    if (cell.shaderEnum != OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_NONE) {
+        SafeRelease(cell.inputLayout);
+        SafeRelease(cell.vertexShader);
+        cell.shaderEnum = ENUM_VertexShaderList_NONE;
+        return true;
+    }
+
+    return false;
 }
 
 

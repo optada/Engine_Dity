@@ -305,6 +305,31 @@ void OPTada_Render::PresentFrame()
 
 
 template<>
+ID3D11VertexShader* OPTada_Render::CreateShaderFrom_BinaryObject<ID3D11VertexShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
+{
+    assert(g_Device_d3d11);
+    assert(pShaderBlob_);
+
+    ID3D11VertexShader* pVertexShader = nullptr;
+    g_Device_d3d11->CreateVertexShader(pShaderBlob_->GetBufferPointer(), pShaderBlob_->GetBufferSize(), pClassLinkage_, &pVertexShader);
+
+    return pVertexShader;
+}
+
+template<>
+ID3D11PixelShader* OPTada_Render::CreateShaderFrom_BinaryObject<ID3D11PixelShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
+{
+    assert(g_Device_d3d11);
+    assert(pShaderBlob_);
+
+    ID3D11PixelShader* pPixelShader = nullptr;
+    g_Device_d3d11->CreatePixelShader(pShaderBlob_->GetBufferPointer(), pShaderBlob_->GetBufferSize(), pClassLinkage_, &pPixelShader);
+
+    return pPixelShader;
+}
+
+
+template<>
 std::string OPTada_Render::GetLatestShaderProfile<ID3D11VertexShader>()
 {
     assert(g_Device_d3d11);
@@ -314,7 +339,7 @@ std::string OPTada_Render::GetLatestShaderProfile<ID3D11VertexShader>()
 
     switch (featureLevel)
     {
-    //case D3D_FEATURE_LEVEL_11_1:
+        //case D3D_FEATURE_LEVEL_11_1:
     case D3D_FEATURE_LEVEL_11_0:
     {
         return "vs_5_0";
@@ -355,7 +380,7 @@ std::string OPTada_Render::GetLatestShaderProfile<ID3D11PixelShader>()
     D3D_FEATURE_LEVEL featureLevel = g_Device_d3d11->GetFeatureLevel();
     switch (featureLevel)
     {
-    //case D3D_FEATURE_LEVEL_11_1:
+        //case D3D_FEATURE_LEVEL_11_1:
     case D3D_FEATURE_LEVEL_11_0:
     {
         return "ps_5_0";
@@ -385,138 +410,6 @@ std::string OPTada_Render::GetLatestShaderProfile<ID3D11PixelShader>()
     }
     return "";
 }
-
-
-ID3D11PixelShader* OPTada_Render::CreatePixelShaderFrom_BinaryFile(const std::wstring& fileName_)
-{
-    assert(g_Device_d3d11);
-
-    ID3D11PixelShader* newPixelShader = nullptr;
-    ID3DBlob* pixelShaderBlob;
-    HRESULT hr;
-
-    hr = D3DReadFileToBlob(fileName_.c_str(), &pixelShaderBlob);
-    if (FAILED(hr)) {
-        return nullptr; // can't read binary file
-    }
-
-    hr = global_Render.g_Device_d3d11->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &newPixelShader);
-    if (FAILED(hr)) {
-        SafeRelease(pixelShaderBlob);
-        return nullptr; // compile failed
-    }
-
-    SafeRelease(pixelShaderBlob);
-
-    return newPixelShader;
-}
-
-ID3D11VertexShader* OPTada_Render::CreateVertexShaderFrom_BinaryFile(const std::wstring& fileName_, D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_, UINT countOfvertexLayoutDesc_,ID3D11InputLayout** inputLayout_)
-{
-    assert(g_Device_d3d11);
-
-    if (inputLayout_) {
-        return nullptr;
-    }
-
-    ID3D11VertexShader* newVertexShader = nullptr;
-    ID3DBlob* vertexShaderBlob;
-    HRESULT hr;
-
-    hr = D3DReadFileToBlob(fileName_.c_str(), &vertexShaderBlob);
-    if (FAILED(hr)) {
-        return nullptr; // can't read binary file
-    }
-
-    hr = global_Render.g_Device_d3d11->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &newVertexShader);
-    if (FAILED(hr)) {
-        SafeRelease(vertexShaderBlob);
-        return nullptr; // compile failed
-    }
-
-    hr = global_Render.g_Device_d3d11->CreateInputLayout(vertexLayoutDesc_, countOfvertexLayoutDesc_, vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), inputLayout_);
-    if (FAILED(hr)) {
-        SafeRelease(vertexShaderBlob);
-        return nullptr; // can't create input layout for vertex buffer
-    }
-
-    SafeRelease(vertexShaderBlob);
-
-    return newVertexShader;
-}
-
-template<>
-ID3D11VertexShader* OPTada_Render::CreateShaderFrom_BinaryObject<ID3D11VertexShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
-{
-    assert(g_Device_d3d11);
-    assert(pShaderBlob_);
-
-    ID3D11VertexShader* pVertexShader = nullptr;
-    g_Device_d3d11->CreateVertexShader(pShaderBlob_->GetBufferPointer(), pShaderBlob_->GetBufferSize(), pClassLinkage_, &pVertexShader);
-
-    return pVertexShader;
-}
-
-template<>
-ID3D11PixelShader* OPTada_Render::CreateShaderFrom_BinaryObject<ID3D11PixelShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
-{
-    assert(g_Device_d3d11);
-    assert(pShaderBlob_);
-
-    ID3D11PixelShader* pPixelShader = nullptr;
-    g_Device_d3d11->CreatePixelShader(pShaderBlob_->GetBufferPointer(), pShaderBlob_->GetBufferSize(), pClassLinkage_, &pPixelShader);
-
-    return pPixelShader;
-}
-
-template< class ShaderClass >
-ShaderClass* OPTada_Render::LoadAndCompileShaderFrom_File(const std::wstring& fileName_, const std::string& entryPoint_, const std::string& profile_)
-{
-    ID3DBlob*    pShaderBlob = nullptr;
-    ID3DBlob*    pErrorBlob  = nullptr;
-    ShaderClass* pShader     = nullptr;
-
-    std::string profile = profile_;
-    if (profile == "latest") {
-        profile = GetLatestShaderProfile<ShaderClass>();
-    }
-    UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
-#if _DEBUG
-    flags |= D3DCOMPILE_DEBUG;
-#endif
-
-    HRESULT hr = D3DCompileFromFile( 
-        fileName_.c_str(),                 // filename
-        nullptr,
-        D3D_COMPILE_STANDARD_FILE_INCLUDE, // param for shader compiler (use shader #include)
-        entryPoint_.c_str(),               // entryPoint of shader
-        profile.c_str(),                   // shader model
-        flags, 
-        0, 
-        &pShaderBlob,                      // done code
-        &pErrorBlob);
-
-    // check for error
-    if (FAILED(hr)) {
-        if (pErrorBlob) {
-            std::string errorMessage = (char*)pErrorBlob->GetBufferPointer();
-            OutputDebugStringA(errorMessage.c_str());
-
-            SafeRelease(pShaderBlob);
-            SafeRelease(pErrorBlob);
-        }
-
-        return false;
-    }
-
-    pShader = CreateShaderFrom_BinaryObject<ShaderClass>(pShaderBlob, nullptr);
-
-    SafeRelease(pShaderBlob);
-    SafeRelease(pErrorBlob);
-
-    return pShader;
-}
-
 
 // --------------------------------------------------------------------------------------------
 

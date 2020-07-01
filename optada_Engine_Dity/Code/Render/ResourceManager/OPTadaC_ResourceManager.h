@@ -3,9 +3,13 @@
 
 #pragma once
 
-#include "OPTadaC_ResourceManager_Settings.h"
+#include <string>
 
-#include "ShaderList.h"
+#include <d3dcompiler.h>
+
+#include "OPTadaC_ResourceManager_Settings.h"
+#include "PixelShaderList.h"
+#include "VertexShaderList.h"
 #include "MeshList.h"
 #include "ConstantBufferList.h"
 
@@ -15,12 +19,14 @@ class OPTadaC_ResourceManager
 {
 private:
 
-	OPTadaS_ShaderStructure shaderMass[OPTadaE_ShaderList_ForResoursManager::ENUM_ShaderList_ForResoursManager_MaxCount]; // shader collection
+	OPTadaS_PixelShaderStructure  PS_Mass[OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_ForResoursManager_MaxCount];   // PS collection
+	OPTadaS_VertexShaderStructure VS_Mass[OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_ForResoursManager_MaxCount]; // VS collection
 
 	OPTadaS_MeshStructure meshMass[OPTadaE_MeshName_ForResoursManager::ENUM_MeshName_ForResoursManager_MaxCount]; // Mesh collection
 
 	ID3D11Buffer* constantBuffersMass[OPTadaE_ConstantBuffersList_ForResoursManager::OPTadaE_ConstantBuffersList_ForResoursManager_MaxCount]; // buffer of constant for VS
-	// Texture
+	
+    // Texture
 
 public:
 
@@ -28,29 +34,56 @@ public:
 	void FreeAll();
 
 
-	// ------------------------ Shader ----------------------------
+	// ------------------------ Pixel Shader ----------------------------
 
-
-	// add shader to shader list
-	// [in] OPTadaE_ShaderList_ForResoursManager shaderEnum_ // shader enum
-	// [in] ShaderClass* newShader_                          // link on shader  
-	// [in] ID3D11InputLayout* inputLayout_                  // item on item for saving input layout of vertex shader
+	// Create Pixel shader from a binary file
+	// [in] OPTadaE_PixelShaderList_ForResoursManager shaderEnum_ // shader enum
+	// [in] const std::wstring& fileName_                         // filename
+	// [in] ID3D11Device* gDevice_                                // graphic device
 	// return = true - done | false - error
-	template< class ShaderClass >
-	bool Add_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ShaderClass* newShader_, ID3D11InputLayout* inputLayout_);
+	bool Create_PixelShader_FromBinaryFile(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_);
 
-	// free shader from GPU memory
-	// [in] OPTadaE_ShaderList_ForResoursManager shaderEnum_ // shader enum
+	// will return pixel shader cell
+	// [in] OPTadaE_PixelShaderList_ForResoursManager shaderEnum_ // shader enum
+	// return = OPTadaS_PixelShaderStructure* - done | NULL - error pixel shader is not created
+	inline OPTadaS_PixelShaderStructure* Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_);
+
+	// setup pixel shader for render pipeline
+	// [in] OPTadaE_PixelShaderList_ForResoursManager shaderEnum_ // shader enum
 	// return = true - done | false - error
-	bool Delete_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_);
+	inline bool Use_PixelShader(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_);
 
-	// return shader link (ID3D11VertexShader | ID3D11PixelShader)
-	// [in] OPTadaE_ShaderList_ForResoursManager shaderEnum_ // shader enum
-	// [out] ID3D11InputLayout** inputLayout_                // item on item for saving input layout of vertex shader
-	// return = shader link - done | NULL - error
-	template< class ShaderClass >
-	inline ShaderClass* Get_Shader(OPTadaE_ShaderList_ForResoursManager shaderEnum_, ID3D11InputLayout** inputLayout_);
+	// free pixel shader from GPU memory
+	// [in] OPTadaE_PixelShaderList_ForResoursManager shaderEnum_ // shader enum
+	// return = true - done | false - error
+	bool Delete_PixelShader(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_);
 
+	// ------------------------ Vertex Shader ----------------------------
+
+	// Create Vertex shader from a binary file
+	// [in] OPTadaE_VertexShaderList_ForResoursManager shaderEnum_ // shader enum
+	// [in] const std::wstring& fileName_                          // filename
+	// [in] ID3D11Device* gDevice_                                 // graphic device
+	// [in] D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_            // link on DirectX structure
+	// [in] UINT countOfvertexLayoutDesc_,                         // count of vertexLayoutDesc use _countof(vertexLayoutDesc_)
+	// return = true - done | false - error
+	bool Create_VertexShader_FromBinaryFile(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_, 
+		D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_, UINT countOfvertexLayoutDesc_);
+
+	// will return Vertex shader cell
+	// [in] OPTadaE_VertexShaderList_ForResoursManager shaderEnum_ // shader enum
+	// return = OPTadaS_VertexShaderStructure* - done | NULL - error vertex shader is not created
+	inline OPTadaS_VertexShaderStructure* Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_);
+
+	// setup Vertex shader for render pipeline
+	// [in] OPTadaE_VertexShaderList_ForResoursManager shaderEnum_ // shader enum
+	// return = true - done | false - error
+	inline bool Use_VertexShader(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_);
+
+	// free Vertex shader from GPU memory
+	// [in] OPTadaE_VertexShaderList_ForResoursManager shaderEnum_ // shader enum
+	// return = true - done | false - error
+	bool Delete_VertexShader(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_);
 
 	// ------------------------- Mesh -----------------------------
 

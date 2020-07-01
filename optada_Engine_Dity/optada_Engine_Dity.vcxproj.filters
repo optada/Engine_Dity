@@ -56,9 +56,6 @@
     <ClInclude Include="Code\Render\ResourceManager\OPTadaC_ResourceManager.h">
       <Filter>Code\Render\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Render\ResourceManager\ShaderList.h">
-      <Filter>Code\Render\ResourceManager\Support</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Render\ResourceManager\OPTadaC_ResourceManager_Settings.h">
       <Filter>Code\Render\ResourceManager</Filter>
     </ClInclude>
@@ -66,6 +63,12 @@
       <Filter>Code\Render\ResourceManager\Support</Filter>
     </ClInclude>
     <ClInclude Include="Code\Render\ResourceManager\ConstantBufferList.h">
+      <Filter>Code\Render\ResourceManager\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\VertexShaderList.h">
+      <Filter>Code\Render\ResourceManager\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\PixelShaderList.h">
       <Filter>Code\Render\ResourceManager\Support</Filter>
     </ClInclude>
   </ItemGroup>

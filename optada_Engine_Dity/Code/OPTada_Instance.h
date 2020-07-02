@@ -102,6 +102,7 @@ public:
 
 		OPTadaE_MeshList_ForResoursManager meshEnum = ENUM_MeshList_DefaultBox;
 		global_Render.resourceManager.Use_Mesh_WithIndexBuffer(meshEnum, global_Render.g_DeviceContext_d3d11);
+		OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(meshEnum);
 		//global_Render.g_DeviceContext_d3d11->IASetVertexBuffers(0, 1, &g_d3dVertexBuffer, &vertexStride, &offset);
 		//global_Render.g_DeviceContext_d3d11->IASetInputLayout(g_d3dInputLayout);
 		//global_Render.g_DeviceContext_d3d11->IASetIndexBuffer(g_d3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
@@ -119,7 +120,7 @@ public:
 		global_Render.g_DeviceContext_d3d11->OMSetDepthStencilState(global_Render.g_DepthStencilState_d3d, 1);
 
 		//global_Render.g_DeviceContext_d3d11->Draw(22, 0);
-		global_Render.g_DeviceContext_d3d11->DrawIndexed(/*_countof(g_Indicies)*/36, 0, 0);
+		global_Render.g_DeviceContext_d3d11->DrawIndexed(/*_countof(g_Indicies)*/mesh->indexBufferCount, 0, 0);
 
 		return 1;
 	}

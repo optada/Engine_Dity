@@ -167,7 +167,7 @@ public:
         global_Render.resourceManager.Create_PixelShader_FromBinaryFile(pixEnum, compiledPixelShaderObject, global_Render.g_Device_d3d11);
 
         OPTadaE_MeshList_ForResoursManager meshEnum = ENUM_MeshList_DefaultBox;
-        if (!global_Render.resourceManager.Create_Mesh_FromFileToMem(meshEnum, "mesh/box.obj", global_Render.g_Device_d3d11, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord), 0, DXGI_FORMAT_R16_UINT)) {
+        if (!global_Render.resourceManager.Create_Mesh_FromFileToMem(meshEnum, "mesh/share.obj", global_Render.g_Device_d3d11, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord), 0, DXGI_FORMAT_R32_UINT)) {
             MessageBox(NULL, L"Create mesh failed", L"Game level", NULL);
         }
 
@@ -223,7 +223,7 @@ public:
 
 
         static float angle = 0.0f;
-        angle += 90.0f * deltaTime_;
+        angle += 30.0f * deltaTime_;
         XMVECTOR rotationAxis = XMVectorSet(0, 1, 1, 0);
 
         g_WorldMatrix = XMMatrixRotationAxis(rotationAxis, XMConvertToRadians(angle));

@@ -91,7 +91,7 @@ bool OPTadaC_ResourceManager::Create_PixelShader_FromBinaryFile(OPTadaE_PixelSha
     return true;
 }
 
-inline OPTadaS_PixelShaderStructure* OPTadaC_ResourceManager::Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResoursManager& shaderEnum_)
+OPTadaS_PixelShaderStructure* OPTadaC_ResourceManager::Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResoursManager& shaderEnum_)
 {
     return (shaderEnum_ != OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_ForResoursManager_MaxCount)?(&PS_Mass[shaderEnum_]):(nullptr);
 }
@@ -164,7 +164,7 @@ bool OPTadaC_ResourceManager::Create_VertexShader_FromBinaryFile(OPTadaE_VertexS
 
 }
 
-inline OPTadaS_VertexShaderStructure* OPTadaC_ResourceManager::Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResoursManager& shaderEnum_)
+OPTadaS_VertexShaderStructure* OPTadaC_ResourceManager::Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResoursManager& shaderEnum_)
 {
     return (shaderEnum_ != OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_ForResoursManager_MaxCount) ? (&VS_Mass[shaderEnum_]) : (nullptr);
 }
@@ -210,12 +210,12 @@ bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForReso
     }
     
     // load mesh to our memory buffer
-    int    i   = 0;
+    int i = 0;
     size_t maxVertex = vertexMass.size();
-    size_t maxIndex = vertexMass.size();
+    size_t maxIndex = indexMass.size();
 
     meshCell->vertexBuffer_InMEM = memManager.GetMemory(memKey1, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord) * maxVertex);
-    meshCell->indexBuffer_InMEM = memManager.GetMemory(memKey1, sizeof(WORD) * maxIndex);
+    meshCell->indexBuffer_InMEM = memManager.GetMemory(memKey1, sizeof(UINT) * maxIndex);
 
     if (!meshCell->vertexBuffer_InMEM || !meshCell->indexBuffer_InMEM) { // get memory error
         memManager.ReturnMemory(memKey1, meshCell->vertexBuffer_InMEM);
@@ -232,13 +232,13 @@ bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForReso
     }
 
     //copy index to mem
-    WORD* indexMassPointer = (WORD*)meshCell->indexBuffer_InMEM;
+    UINT* indexMassPointer = (UINT*)meshCell->indexBuffer_InMEM;
     for (i = 0; i < maxIndex; i++) {
         indexMassPointer[i] = indexMass[i];
     }
 
     meshCell->ByteWidth_VertexBuffer_InMEM = sizeof(Vertex_F3Coord_F3Normal_F2TextCoord) * maxVertex;
-    meshCell->ByteWidth_IndexBuffer_InMEM  = sizeof(WORD) * maxIndex;
+    meshCell->ByteWidth_IndexBuffer_InMEM  = sizeof(UINT) * maxIndex;
 
     meshCell->indexBufferCount   = maxIndex;
     meshCell->vertexStride       = vertexStride_;
@@ -341,13 +341,13 @@ bool OPTadaC_ResourceManager::Use_Mesh_WithIndexBuffer(OPTadaE_MeshList_ForResou
     return false;
 }
 
-inline OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell(OPTadaE_MeshList_ForResoursManager& meshName_)
+OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell(OPTadaE_MeshList_ForResoursManager& meshName_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
     return (meshCell->meshName != ENUM_MeshList_NONE) ? (meshCell) : (nullptr);
 }
 
-inline OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_MeshList_ForResoursManager& meshName_)
+OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_MeshList_ForResoursManager& meshName_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
     return (meshCell->isInGPUMemory && meshCell->meshName != ENUM_MeshList_NONE) ? (meshCell) : (nullptr);
@@ -407,18 +407,18 @@ bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_Fo
     return true;
 }
 
-inline OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell(OPTadaE_TextureList_ForResoursManager& textureEnum_)
+OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell(OPTadaE_TextureList_ForResoursManager& textureEnum_)
 {
     return (textureEnum_ != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_ForResoursManager_MaxCount) ? (&texture_Mass[textureEnum_]) : (nullptr);
 }
 
-inline OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell_IfInGPU(OPTadaE_TextureList_ForResoursManager& textureEnum_)
+OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell_IfInGPU(OPTadaE_TextureList_ForResoursManager& textureEnum_)
 {
     OPTadaS_TextureStructure* textureCell = &texture_Mass[textureEnum_];
     return (textureEnum_ != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_ForResoursManager_MaxCount && textureCell->isInGPUMemory) ? (textureCell) : (nullptr);;
 }
 
-inline bool OPTadaC_ResourceManager::Use_Texture(OPTadaE_TextureList_ForResoursManager& textureEnum_, ID3D11DeviceContext* gDeviceContext_, UINT resourceSlot_)
+bool OPTadaC_ResourceManager::Use_Texture(OPTadaE_TextureList_ForResoursManager& textureEnum_, ID3D11DeviceContext* gDeviceContext_, UINT resourceSlot_)
 {
     OPTadaS_TextureStructure* cell = &texture_Mass[textureEnum_];
     if (cell->isInGPUMemory) {
@@ -443,18 +443,26 @@ bool OPTadaC_ResourceManager::Delete_Texture(OPTadaE_TextureList_ForResoursManag
 
 
 
-bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const std::string fileName_, std::vector<Vertex_F3Coord_F3Normal_F2TextCoord>& outputVertexMass_, std::vector<UINT>& outputIndexMass_)
+bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const std::string fileName_, std::vector<Vertex_F3Coord_F3Normal_F2TextCoord>& outputVertexMass_, std::vector<UINT>& outputIndexMass_/*, bool reverseNormal_, bool reverseZ_*/)
 {
+ 
+    struct UINT3_For
+    {
+        UINT vertexIndices;
+        UINT uvIndices;
+        UINT normalIndices;
+    };
+
     UINT numberOfVertices = 0, numberOfNormals = 0, numberOfUVs = 0, numberOfFaces = 0;
     std::vector<Vertex_F3Coord_F3Normal_F2TextCoord> outputDaMettere;
-    std::vector< UINT> vertexIndices, uvIndices, normalIndices;
-    std::vector< XMFLOAT3 > temp_vertices;
-    std::vector< XMFLOAT2 > temp_uvs;
-    std::vector< XMFLOAT3 > temp_normals;
 
-    std::vector<XMFLOAT3> outVertices;
-    std::vector<XMFLOAT3> outNormals;
-    std::vector<XMFLOAT2> outUvs;
+    std::vector<XMFLOAT3> temp_vertices;
+    std::vector<XMFLOAT2> temp_uvs;
+    std::vector<XMFLOAT3> temp_normals;
+
+    std::vector<UINT3_For> dotIndices;
+    std::vector<UINT> indicesList;
+
 
     FILE* file = fopen(fileName_.c_str(), "r");
     if (file == NULL) {
@@ -482,6 +490,9 @@ bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const 
         else if (strcmp(lineHeader, "vn") == 0) {
             XMFLOAT3 normals;
             fscanf(file, "%f %f %f \n", &normals.x, &normals.y, &normals.z);
+            /*if (reverseNormal_) {
+                normals.z *= -1.0f;
+            }*/
             temp_normals.push_back(normals);
             numberOfNormals++;
         }
@@ -497,46 +508,61 @@ bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const 
                 MessageBox(0, L"File cant be read", 0, 0);
                 break;
             }
-            vertexIndices.push_back(vertexIndex[0]);
-            vertexIndices.push_back(vertexIndex[1]);
-            vertexIndices.push_back(vertexIndex[2]);
-            uvIndices.push_back(uvIndex[0]);
-            uvIndices.push_back(uvIndex[1]);
-            uvIndices.push_back(uvIndex[2]);
-            normalIndices.push_back(normalIndex[0]);
-            normalIndices.push_back(normalIndex[1]);
-            normalIndices.push_back(normalIndex[2]);
+
+            UINT3_For newIndex1, newIndex2, newIndex3;
+
+            newIndex1.normalIndices = normalIndex[0];
+            newIndex1.uvIndices     = uvIndex[0];
+            newIndex1.vertexIndices = vertexIndex[0];
+
+            newIndex2.normalIndices = normalIndex[1];
+            newIndex2.uvIndices     = uvIndex[1];
+            newIndex2.vertexIndices = vertexIndex[1];
+
+            newIndex3.normalIndices = normalIndex[2];
+            newIndex3.uvIndices     = uvIndex[2];
+            newIndex3.vertexIndices = vertexIndex[2];
+
+            dotIndices.push_back(newIndex1);
+            dotIndices.push_back(newIndex2);
+            dotIndices.push_back(newIndex3);
+
             numberOfFaces++;
         }
     }
 
     numberOfFaces *= 3;
-    int cont = 0;
-    for (int i = 0; i < numberOfFaces; i++) {
+    UINT sizeOfVertexBuffer = 0;
+    UINT3_For* checkDot = nullptr;
+    for (UINT i = 0; i < numberOfFaces; i++) {
 
-        UINT vertexIndex = vertexIndices[i];
-        UINT normalIndex = normalIndices[i];
-        UINT uvIndex     = uvIndices[i];
-        Vertex_F3Coord_F3Normal_F2TextCoord temp;
-        temp.position     = temp_vertices[vertexIndex - 1];
-        temp.normal       = temp_normals[normalIndex - 1];
-        temp.textureCoord = temp_uvs[uvIndex - 1];
+        UINT3_For& dot = dotIndices[i]; // get dot
+        
+        // try found dublicate
+        for (UINT i2 = 0;; i2++) {
 
-        outputVertexMass_.push_back(temp);
+            if (i2 >= sizeOfVertexBuffer) { // we have no dublicates and this is out of mass
+                Vertex_F3Coord_F3Normal_F2TextCoord temp;
+                temp.position     = temp_vertices[dot.vertexIndices - 1];
+                temp.normal       = temp_normals[dot.normalIndices - 1];
+                temp.textureCoord = temp_uvs[dot.uvIndices - 1];
+                outputVertexMass_.push_back(temp); // add new point (dot)
+                sizeOfVertexBuffer++;
+                outputIndexMass_.push_back(i2); // save index
+                break; // out for
+            }
 
-        cont++;
+            checkDot = &dotIndices[i2];
+            // check
+            if (dot.normalIndices == checkDot->normalIndices 
+                && dot.uvIndices == checkDot->uvIndices 
+                && dot.vertexIndices == checkDot->vertexIndices) 
+            { // if we have dublicate
+                outputIndexMass_.push_back(i2); // save index
+                break; // out for
+            }
+        }
     }
-    for (int i = 0; i < numberOfFaces; i++) {
-        vertexIndices[i]--;  //Starts from 1, i need it to start from 0
-    }
-    int toAdd = 0;
-    for (int i = 0; i < numberOfFaces; i += 3) { // Needed to get the indices working for my draw function
-        vertexIndices[i] += toAdd;
-        vertexIndices[i + 1] += toAdd;
-        vertexIndices[i + 2] += toAdd;
-        toAdd += 2;
-    }
-    outputIndexMass_ = vertexIndices;
 
     return true;
 }

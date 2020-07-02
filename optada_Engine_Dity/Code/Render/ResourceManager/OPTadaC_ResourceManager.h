@@ -61,7 +61,7 @@ public:
 	// will return pixel shader cell
 	// [in] OPTadaE_PixelShaderList_ForResoursManager& shaderEnum_ // shader enum
 	// return = PS_Mass[item]
-	inline OPTadaS_PixelShaderStructure* Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResoursManager& shaderEnum_);
+	OPTadaS_PixelShaderStructure* Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResoursManager& shaderEnum_);
 
 	// setup pixel shader for render pipeline
 	// [in] OPTadaE_PixelShaderList_ForResoursManager& shaderEnum_ // shader enum
@@ -89,7 +89,7 @@ public:
 	// will return Vertex shader cell
 	// [in] OPTadaE_VertexShaderList_ForResoursManager& shaderEnum_ // shader enum
 	// return = VS_Mass[item]
-	inline OPTadaS_VertexShaderStructure* Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResoursManager& shaderEnum_);
+	OPTadaS_VertexShaderStructure* Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResoursManager& shaderEnum_);
 
 	// setup Vertex shader for render pipeline
 	// [in] OPTadaE_VertexShaderList_ForResoursManager& shaderEnum_ // shader enum
@@ -140,12 +140,12 @@ public:
 	// will return mesh cell, if cell has been created
 	// [in] OPTadaE_MeshList_ForResoursManager& meshName_ // mesh enum
 	// return = OPTadaS_MeshStructure* - done | NULL - error or mash is not created
-	inline OPTadaS_MeshStructure* Get_MeshCell(OPTadaE_MeshList_ForResoursManager& meshName_);
+	OPTadaS_MeshStructure* Get_MeshCell(OPTadaE_MeshList_ForResoursManager& meshName_);
 
 	// will return mesh cell, if mesh has been loaded to GPU memory
 	// [in] OPTadaE_MeshList_ForResoursManager& meshName_ // mesh enum
 	// return = OPTadaS_MeshStructure* - done | NULL - error or mash is not created
-	inline OPTadaS_MeshStructure* Get_MeshCell_IfInGPU(OPTadaE_MeshList_ForResoursManager& meshName_);
+	OPTadaS_MeshStructure* Get_MeshCell_IfInGPU(OPTadaE_MeshList_ForResoursManager& meshName_);
 
 
 	// ------------------------ Constant buffer ----------------------------
@@ -182,19 +182,19 @@ public:
 	// get texture cell
 	// [in] OPTadaE_TextureList_ForResoursManager& constantBufferID_ // texture enum
 	// return = texture_Mass[item]
-	inline OPTadaS_TextureStructure* Get_Texture_Cell(OPTadaE_TextureList_ForResoursManager& textureEnum_);
+	OPTadaS_TextureStructure* Get_Texture_Cell(OPTadaE_TextureList_ForResoursManager& textureEnum_);
 
 	// get texture cell if it is in GPU memory
 	// [in] OPTadaE_TextureList_ForResoursManager& constantBufferID_ // texture enum
 	// return = texture_Mass[item]
-	inline OPTadaS_TextureStructure* Get_Texture_Cell_IfInGPU(OPTadaE_TextureList_ForResoursManager& textureEnum_);
+	OPTadaS_TextureStructure* Get_Texture_Cell_IfInGPU(OPTadaE_TextureList_ForResoursManager& textureEnum_);
 
 	// use texture for directX
 	// [in] OPTadaE_TextureList_ForResoursManager& constantBufferID_ // texture enum
 	// [in] ID3D11DeviceContext* gDeviceContext_                    // device context
 	// [in] UINT resourceSlot_                                      // resource slot for texture
 	// return = true - done | false - error
-	inline bool Use_Texture(OPTadaE_TextureList_ForResoursManager& textureEnum_, ID3D11DeviceContext* gDeviceContext_, UINT resourceSlot_);
+	bool Use_Texture(OPTadaE_TextureList_ForResoursManager& textureEnum_, ID3D11DeviceContext* gDeviceContext_, UINT resourceSlot_);
 
 	// delete texture and other Texture's interfaces
 	// [in] OPTadaE_TextureList_ForResoursManager& constantBufferID_ // texture enum

@@ -5,7 +5,7 @@
 // PS_IN
 struct PixelShaderInput
 {
-    float4 color : COLOR;
+    float4 color : NORMAL;
 };
 
 

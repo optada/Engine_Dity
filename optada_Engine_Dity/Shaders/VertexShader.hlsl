@@ -21,14 +21,15 @@ cbuffer PerObject : register(b2)
 // VS_IN
 struct AppData 
 {
-    float3 position : POSITION;
-    float3 color: COLOR;
+    float3 position :     POSITION;
+    float3 normal :       NORMAL;
+    float2 textureCoord : TEXCOORD;
 };
 
 // VS_OUT
 struct VertexShaderOutput 
 {
-    float4 color : COLOR;
+    float4 color : NORMAL;
     float4 position : SV_POSITION;
 };
 
@@ -40,7 +41,7 @@ VertexShaderOutput VS_Material_Default(AppData IN)
 
     matrix mvp = mul(projectionMatrix, mul(viewMatrix, worldMatrix));
     OUT.position = mul(mvp, float4(IN.position, 1.0f));
-    OUT.color = float4(IN.color, 1.0f);
+    OUT.color = float4(IN.normal, 1.0f);
 
     return OUT;
 }

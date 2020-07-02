@@ -103,6 +103,10 @@ bool OPTada_Render::Initialization(HWND hwnd_, int countOfBackBuffers_, int work
 
     // ---- ALL initialization done ----
     
+    if (!resourceManager.Init_ResourceManager()) {
+        return false;
+    }
+
     return true;
 }
 

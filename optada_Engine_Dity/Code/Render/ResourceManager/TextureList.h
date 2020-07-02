@@ -24,5 +24,13 @@ struct OPTadaS_TextureStructure
 
 	ID3D11ShaderResourceView* texture             = nullptr;
 	ID3D11SamplerState*       textureSamplerState = nullptr;
+
+	// function will free all GPU resources and set all other on default
+	void Free_GPU()
+	{
+		SafeRelease(texture);
+		SafeRelease(textureSamplerState);
+		isInGPUMemory = false;
+	}
 };
 

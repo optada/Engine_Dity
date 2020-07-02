@@ -19,6 +19,9 @@
     <Filter Include="Code\Render\ResourceManager\Support">
       <UniqueIdentifier>{ce0270e8-b11d-42c7-9772-95cf2808f215}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Render\ResourceManager\MemoryManager">
+      <UniqueIdentifier>{78a5d4e5-b594-4661-a479-8e2faf05ddeb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Main.cpp">
@@ -32,6 +35,18 @@
     </ClCompile>
     <ClCompile Include="Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp">
       <Filter>Code\Render\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Render\ResourceManager\MamoryManager_x64\OPTada_MemoryManager.cpp">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\OPTadaC_MultithreadedSimpleMemoryBuffer.cpp">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\OPTadaC_SimpleMemoryBuffer.cpp">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\CellBuffer\OPTadaC_MemoryCells_StaticCyclicBuffer.cpp">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +88,30 @@
     </ClInclude>
     <ClInclude Include="Code\Render\ResourceManager\TextureList.h">
       <Filter>Code\Render\ResourceManager\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\OPTada_MemoryManager.h">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\OPTada_MemoryManager_Settings.h">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\OPTadaC_MultithreadedSimpleMemoryBuffer.h">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\OPTadaC_SimpleMemoryBuffer.h">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\OPTadaC_TemplateOfMemoryBuffer.h">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\OPTadaS_TemplateMemoryBuffer_Element.h">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\CellBuffer\OPTadaC_MemoryCells_StaticCyclicBuffer.h">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\CellBuffer\OPTadaS_MemoryCell_Element.h">
+      <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

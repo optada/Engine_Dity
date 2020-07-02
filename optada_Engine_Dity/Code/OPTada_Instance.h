@@ -96,12 +96,15 @@ public:
 	// All draw logic here
 	static int DrawScene(float deltaTime_) {
 
-		const UINT vertexStride = sizeof(VertexPosColor);
+		const UINT vertexStride = sizeof(Vertex_F3Coord_F3Normal_F2TextCoord);
 		const UINT offset = 0;
 
-		global_Render.g_DeviceContext_d3d11->IASetVertexBuffers(0, 1, &g_d3dVertexBuffer, &vertexStride, &offset);
-		global_Render.g_DeviceContext_d3d11->IASetInputLayout(g_d3dInputLayout);
-		global_Render.g_DeviceContext_d3d11->IASetIndexBuffer(g_d3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+		OPTadaE_MeshList_ForResoursManager meshEnum = ENUM_MeshList_DefaultBox;
+		global_Render.resourceManager.Use_Mesh_WithIndexBuffer(meshEnum, global_Render.g_DeviceContext_d3d11);
+		//global_Render.g_DeviceContext_d3d11->IASetVertexBuffers(0, 1, &g_d3dVertexBuffer, &vertexStride, &offset);
+		//global_Render.g_DeviceContext_d3d11->IASetInputLayout(g_d3dInputLayout);
+		//global_Render.g_DeviceContext_d3d11->IASetIndexBuffer(g_d3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 		global_Render.g_DeviceContext_d3d11->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		
 		//global_Render.g_DeviceContext_d3d11->VSSetShader(g_d3dVertexShader, nullptr, 0);

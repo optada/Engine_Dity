@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Render\OPTada_Render.h"
+#include "Render\ResourceManager\OPTadaC_ResourceManager.h"
 
 
 // Vertex buffer data
@@ -38,16 +39,16 @@ struct VertexPosColor
     XMFLOAT3 Color;
 };
 
-VertexPosColor g_Vertices[8] =
+Vertex_F3Coord_F3Normal_F2TextCoord g_Vertices[8] =
 {
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) }, // 0
-    { XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) }, // 1
-    { XMFLOAT3(1.0f,  1.0f, -1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f) }, // 2
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) }, // 3
-    { XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) }, // 4
-    { XMFLOAT3(-1.0f,  1.0f,  1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f) }, // 5
-    { XMFLOAT3(1.0f,  1.0f,  1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f) }, // 6
-    { XMFLOAT3(1.0f, -1.0f,  1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f) }  // 7
+    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) }, // 0
+    { XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) }, // 1
+    { XMFLOAT3(1.0f,  1.0f, -1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) }, // 2
+    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) }, // 3
+    { XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) }, // 4
+    { XMFLOAT3(-1.0f,  1.0f,  1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) }, // 5
+    { XMFLOAT3(1.0f,  1.0f,  1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) }, // 6
+    { XMFLOAT3(1.0f, -1.0f,  1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) }  // 7
 };
 
 WORD g_Indicies[36] =
@@ -81,7 +82,7 @@ public:
         ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
 
         vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-        vertexBufferDesc.ByteWidth = sizeof(VertexPosColor) * _countof(g_Vertices);
+        vertexBufferDesc.ByteWidth = sizeof(Vertex_F3Coord_F3Normal_F2TextCoord) * _countof(g_Vertices);
         vertexBufferDesc.CPUAccessFlags = 0;
         vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
         resourceData.pSysMem = g_Vertices;
@@ -145,62 +146,32 @@ public:
 
 
         // Load the compiled vertex shader.
-        ID3DBlob* vertexShaderBlob;
-#if _DEBUG
         LPCWSTR compiledVertexShaderObject = L"VertexShader.cso";
-#else
-        LPCWSTR compiledVertexShaderObject = L"VertexShader.cso";
-#endif
-
-        hr = D3DReadFileToBlob(compiledVertexShaderObject, &vertexShaderBlob);
-        if (FAILED(hr))
-        {
-            return false;
-        }
-
-        hr = global_Render.g_Device_d3d11->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &g_d3dVertexShader);
-        if (FAILED(hr))
-        {
-            return false;
-        }
 
         // Create the input layout for the vertex shader.
         D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
         {
-            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Position), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(VertexPosColor,Color), D3D11_INPUT_PER_VERTEX_DATA, 0 }
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(Vertex_F3Coord_F3Normal_F2TextCoord, position),     D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(Vertex_F3Coord_F3Normal_F2TextCoord, normal),       D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, offsetof(Vertex_F3Coord_F3Normal_F2TextCoord, textureCoord), D3D11_INPUT_PER_VERTEX_DATA, 0 },
         };
 
-        hr = global_Render.g_Device_d3d11->CreateInputLayout(vertexLayoutDesc, _countof(vertexLayoutDesc), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &g_d3dInputLayout);
-        if (FAILED(hr))
-        {
-            return false;
-        }
+        OPTadaE_VertexShaderList_ForResoursManager verEnum = ENUM_VertexShaderList_SimpleMaterial_01;
+        global_Render.resourceManager.Create_VertexShader_FromBinaryFile(verEnum, compiledVertexShaderObject, global_Render.g_Device_d3d11, vertexLayoutDesc, _countof(vertexLayoutDesc));
 
-        SafeRelease(vertexShaderBlob);
 
         // Load the compiled pixel shader.
-        ID3DBlob* pixelShaderBlob;
-#if _DEBUG
         LPCWSTR compiledPixelShaderObject = L"PixelShader.cso";
-#else
-        LPCWSTR compiledPixelShaderObject = L"PixelShader.cso";
-#endif
 
-        hr = D3DReadFileToBlob(compiledPixelShaderObject, &pixelShaderBlob);
-        if (FAILED(hr))
-        {
-            return false;
+        OPTadaE_PixelShaderList_ForResoursManager pixEnum = ENUM_PixelShaderList_SimpleMaterial_01;
+        global_Render.resourceManager.Create_PixelShader_FromBinaryFile(pixEnum, compiledPixelShaderObject, global_Render.g_Device_d3d11);
+
+        OPTadaE_MeshList_ForResoursManager meshEnum = ENUM_MeshList_DefaultBox;
+        if (!global_Render.resourceManager.Create_Mesh_FromFileToMem(meshEnum, "share.obj", global_Render.g_Device_d3d11, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord), 0, DXGI_FORMAT_R16_UINT)) {
+            MessageBox(NULL, L"Create mesh failed", L"Game level", NULL);
         }
 
-        hr = global_Render.g_Device_d3d11->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &g_d3dPixelShader);
-        if (FAILED(hr))
-        {
-            return false;
-        }
-
-        SafeRelease(pixelShaderBlob);
-
+        global_Render.resourceManager.Load_ToGPU_Mesh(meshEnum, global_Render.g_Device_d3d11);
 
 
 
@@ -220,9 +191,8 @@ public:
 
 
         // tested
-        global_Render.g_DeviceContext_d3d11->VSSetShader(g_d3dVertexShader, nullptr, 0);
-        global_Render.g_DeviceContext_d3d11->PSSetShader(g_d3dPixelShader, nullptr, 0);
-
+        global_Render.resourceManager.Use_VertexShader(verEnum, global_Render.g_DeviceContext_d3d11);
+        global_Render.resourceManager.Use_PixelShader(pixEnum, global_Render.g_DeviceContext_d3d11);
 
         return true;
 

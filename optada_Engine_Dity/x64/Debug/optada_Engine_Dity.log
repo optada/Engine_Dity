@@ -1,4 +1,4 @@
-﻿  OPTadaC_ResourceManager.cpp
+﻿  Main.cpp
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\d3d11.h(917,1): warning C4005: 'D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS': macro redefinition
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\winerror.h(56303): message : see previous definition of 'D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS'
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\d3d11.h(918,1): warning C4005: 'D3D11_ERROR_FILE_NOT_FOUND': macro redefinition
@@ -11,6 +11,7 @@ C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\d3d10.h(608,1):
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\winerror.h(56279): message : see previous definition of 'D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS'
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\d3d10.h(609,1): warning C4005: 'D3D10_ERROR_FILE_NOT_FOUND': macro redefinition
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\winerror.h(56288): message : see previous definition of 'D3D10_ERROR_FILE_NOT_FOUND'
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2630,1): warning C4005: 'XMGLOBALCONST': macro redefinition
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(1883): message : see previous definition of 'XMGLOBALCONST'
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2662,52): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
@@ -75,8 +76,6 @@ C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathvector.i
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathmisc.inl(518,43): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathmisc.inl(519,40): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathmisc.inl(519,51): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp(240,44): warning C4267: '=': conversion from 'size_t' to 'UINT', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp(510,23): warning C4018: '<': signed/unsigned mismatch
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp(524,23): warning C4018: '<': signed/unsigned mismatch
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp(528,23): warning C4018: '<': signed/unsigned mismatch
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(223,40): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(261,38): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
   optada_Engine_Dity.vcxproj -> D:\GIT\Engine_Dity\optada_Engine_Dity\x64\Debug\optada_Engine_Dity.exe

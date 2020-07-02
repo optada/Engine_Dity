@@ -167,7 +167,7 @@ public:
         global_Render.resourceManager.Create_PixelShader_FromBinaryFile(pixEnum, compiledPixelShaderObject, global_Render.g_Device_d3d11);
 
         OPTadaE_MeshList_ForResoursManager meshEnum = ENUM_MeshList_DefaultBox;
-        if (!global_Render.resourceManager.Create_Mesh_FromFileToMem(meshEnum, "share.obj", global_Render.g_Device_d3d11, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord), 0, DXGI_FORMAT_R16_UINT)) {
+        if (!global_Render.resourceManager.Create_Mesh_FromFileToMem(meshEnum, "mesh/box.obj", global_Render.g_Device_d3d11, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord), 0, DXGI_FORMAT_R16_UINT)) {
             MessageBox(NULL, L"Create mesh failed", L"Game level", NULL);
         }
 

@@ -232,15 +232,19 @@ bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForReso
     }
 
     //copy index to mem
-    DWORD* indexMassPointer = (DWORD*)meshCell->indexBuffer_InMEM;
+    WORD* indexMassPointer = (WORD*)meshCell->indexBuffer_InMEM;
     for (i = 0; i < maxIndex; i++) {
         indexMassPointer[i] = indexMass[i];
     }
+
+    meshCell->ByteWidth_VertexBuffer_InMEM = sizeof(Vertex_F3Coord_F3Normal_F2TextCoord) * maxVertex;
+    meshCell->ByteWidth_IndexBuffer_InMEM  = sizeof(WORD) * maxIndex;
 
     meshCell->indexBufferCount   = maxIndex;
     meshCell->vertexStride       = vertexStride_;
     meshCell->vertexOffset       = vertexOffset_;
     meshCell->indexBufferFormat  = indexBufferFormat_;
+    meshCell->meshName           = meshName_;
     meshCell->isInGPUMemory      = false;
 
     return true;
@@ -482,13 +486,14 @@ bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const 
             numberOfNormals++;
         }
         else if (strcmp(lineHeader, "f") == 0) {
-            std::string vertex1, vertex2, vertex3;
+            char vertex1 = ' ', vertex2 = ' ', vertex3 = ' ';
             UINT vertexIndex[3], uvIndex[3], normalIndex[3];
-            int matches = fscanf(file, "%i %i %i %i %i %i %i %i %i \n", &vertexIndex[0], &uvIndex[0], &normalIndex[0],
-                &vertexIndex[1], &uvIndex[1], &normalIndex[1],
-                &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+            int matches = fscanf(file, "%i %c %i %c %i  %i %c %i %c %i  %i %c %i %c %i \n", 
+                &vertexIndex[0], &vertex1, &uvIndex[0], &vertex1, &normalIndex[0],
+                &vertexIndex[1], &vertex2, &uvIndex[1], &vertex2, &normalIndex[1],
+                &vertexIndex[2], &vertex3, &uvIndex[2], &vertex3, &normalIndex[2]);
 
-            if (matches != 9) {
+            if (matches != 15) {
                 MessageBox(0, L"File cant be read", 0, 0);
                 break;
             }
@@ -513,8 +518,8 @@ bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const 
         UINT normalIndex = normalIndices[i];
         UINT uvIndex     = uvIndices[i];
         Vertex_F3Coord_F3Normal_F2TextCoord temp;
-        temp.position      = temp_vertices[vertexIndex - 1];
-        temp.normal   = temp_normals[normalIndex - 1];
+        temp.position     = temp_vertices[vertexIndex - 1];
+        temp.normal       = temp_normals[normalIndex - 1];
         temp.textureCoord = temp_uvs[uvIndex - 1];
 
         outputVertexMass_.push_back(temp);
@@ -527,11 +532,9 @@ bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const 
     int toAdd = 0;
     for (int i = 0; i < numberOfFaces; i += 3) { // Needed to get the indices working for my draw function
         vertexIndices[i] += toAdd;
-        vertexIndices[++i] += toAdd;
-        vertexIndices[++i] += toAdd;
-        //vertexIndices[i + 1] += toAdd;
-        //vertexIndices[i + 2] += toAdd;
-        //toAdd += 2;
+        vertexIndices[i + 1] += toAdd;
+        vertexIndices[i + 2] += toAdd;
+        toAdd += 2;
     }
     outputIndexMass_ = vertexIndices;
 

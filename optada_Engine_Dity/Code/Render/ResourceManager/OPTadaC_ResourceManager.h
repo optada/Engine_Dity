@@ -206,4 +206,5 @@ public:
 };
 
 
-bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const std::string fileName_, std::vector<Vertex_F3Coord_F3Normal_F2TextCoord>& outputVertexMass_, std::vector<UINT>& outputIndexMass_);
+bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const std::string fileName_, std::vector<Vertex_F3Coord_F3Normal_F2TextCoord>& outputVertexMass_, 
+	std::vector<UINT>& outputIndexMass_, bool reverseNormal_, bool reverseVTexture_);

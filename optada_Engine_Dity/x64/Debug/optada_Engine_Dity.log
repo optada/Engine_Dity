@@ -1,5 +1,4 @@
-﻿  Main.cpp
-  C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+﻿  OPTadaC_ResourceManager.cpp
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2630,1): warning C4005: 'XMGLOBALCONST': macro redefinition
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(1883): message : see previous definition of 'XMGLOBALCONST'
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamath.h(2662,52): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
@@ -64,6 +63,7 @@ C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathvector.i
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathmisc.inl(518,43): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathmisc.inl(519,40): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathmisc.inl(519,51): warning C4838: conversion from 'unsigned int' to 'INT' requires a narrowing conversion
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(223,40): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(261,38): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp(240,101): warning C4267: '=': conversion from 'size_t' to 'UINT', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp(241,69): warning C4267: '=': conversion from 'size_t' to 'UINT', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp(243,44): warning C4267: '=': conversion from 'size_t' to 'UINT', possible loss of data
   optada_Engine_Dity.vcxproj -> D:\GIT\Engine_Dity\optada_Engine_Dity\x64\Debug\optada_Engine_Dity.exe

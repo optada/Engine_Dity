@@ -205,7 +205,7 @@ bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForReso
     std::vector<Vertex_F3Coord_F3Normal_F2TextCoord> vertexMass;
     std::vector<UINT> indexMass;
 
-    if (!load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(fileName_, vertexMass, indexMass)) {
+    if (!load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(fileName_, vertexMass, indexMass, false, true)) {
         return false;
     }
     
@@ -384,17 +384,10 @@ bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_Fo
 
     ID3D11Resource* texResource = nullptr;
     hr = DirectX::CreateWICTextureFromFile(gDevice_, fileName_.c_str(), &texResource, &cell.texture);
-    //hr = DirectX::CreateDDSTextureFromFile(gDevice_, fileName_.c_str(), &texResource, &cell.texture);
     if (FAILED(hr)) {
         return false; // can't load texture from file
     }
     SafeRelease(texResource);
-
-
-    //hr = D3DX11CreateShaderResourceViewFromFile(gDevice_, fileName_.c_str(), NULL, NULL, &cell.texture, NULL);
-    //if (FAILED(hr)) {
-    //    return false; // can't load texture from file
-    //}
 
     // create texture sampler state
     D3D11_SAMPLER_DESC sampDesc;
@@ -407,6 +400,7 @@ bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_Fo
     sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
     sampDesc.MinLOD         = 0;
     sampDesc.MaxLOD         = D3D11_FLOAT32_MAX;
+    sampDesc.MaxAnisotropy  = 16;
    
     //sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
     //sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -471,7 +465,8 @@ bool OPTadaC_ResourceManager::Delete_Texture(OPTadaE_TextureList_ForResoursManag
 
 
 
-bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const std::string fileName_, std::vector<Vertex_F3Coord_F3Normal_F2TextCoord>& outputVertexMass_, std::vector<UINT>& outputIndexMass_/*, bool reverseNormal_, bool reverseZ_*/)
+bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const std::string fileName_, std::vector<Vertex_F3Coord_F3Normal_F2TextCoord>& outputVertexMass_, 
+    std::vector<UINT>& outputIndexMass_, bool reverseNormal_, bool reverseVTexture_)
 {
  
     struct UINT3_For
@@ -512,15 +507,19 @@ bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const 
         else if (strcmp(lineHeader, "vt") == 0) {
             XMFLOAT2 uv;
             fscanf(file, "%f %f\n", &uv.x, &uv.y);
+            if (reverseVTexture_) {
+                uv.y = uv.y;
+                uv.x = uv.x;
+            }
             temp_uvs.push_back(uv);
             numberOfUVs++;
         }
         else if (strcmp(lineHeader, "vn") == 0) {
             XMFLOAT3 normals;
             fscanf(file, "%f %f %f \n", &normals.x, &normals.y, &normals.z);
-            /*if (reverseNormal_) {
+            if (reverseNormal_) {
                 normals.z *= -1.0f;
-            }*/
+            }
             temp_normals.push_back(normals);
             numberOfNormals++;
         }
@@ -582,8 +581,8 @@ bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const 
 
             checkDot = &dotIndices[i2];
             // check
-            if (dot.normalIndices == checkDot->normalIndices 
-                && dot.uvIndices == checkDot->uvIndices 
+            if (   dot.normalIndices == checkDot->normalIndices 
+                && dot.uvIndices     == checkDot->uvIndices 
                 && dot.vertexIndices == checkDot->vertexIndices) 
             { // if we have dublicate
                 outputIndexMass_.push_back(i2); // save index
@@ -594,5 +593,4 @@ bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const 
 
     return true;
 }
-
 

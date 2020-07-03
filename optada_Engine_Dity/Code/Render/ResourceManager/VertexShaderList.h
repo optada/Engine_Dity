@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <d3dx11.h> // for shader class
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 #include <xnamath.h>

@@ -365,6 +365,8 @@ OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_Mes
 //}
 
 
+//using namespace DirectX;
+
 bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_ForResoursManager& textureEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_)
 {
     OPTadaS_TextureStructure& cell = texture_Mass[textureEnum_];
@@ -379,10 +381,20 @@ bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_Fo
         return false;
     }
 
-    hr = D3DX11CreateShaderResourceViewFromFile(gDevice_, fileName_.c_str(), NULL, NULL, &cell.texture, NULL);
+
+    ID3D11Resource* texResource = nullptr;
+    hr = DirectX::CreateWICTextureFromFile(gDevice_, fileName_.c_str(), &texResource, &cell.texture);
+    //hr = DirectX::CreateDDSTextureFromFile(gDevice_, fileName_.c_str(), &texResource, &cell.texture);
     if (FAILED(hr)) {
         return false; // can't load texture from file
     }
+    SafeRelease(texResource);
+
+
+    //hr = D3DX11CreateShaderResourceViewFromFile(gDevice_, fileName_.c_str(), NULL, NULL, &cell.texture, NULL);
+    //if (FAILED(hr)) {
+    //    return false; // can't load texture from file
+    //}
 
     // create texture sampler state
     D3D11_SAMPLER_DESC sampDesc;
@@ -391,9 +403,25 @@ bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_Fo
     sampDesc.AddressU       = D3D11_TEXTURE_ADDRESS_WRAP;
     sampDesc.AddressV       = D3D11_TEXTURE_ADDRESS_WRAP;
     sampDesc.AddressW       = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.MipLODBias     = 0.0f;
     sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
     sampDesc.MinLOD         = 0;
     sampDesc.MaxLOD         = D3D11_FLOAT32_MAX;
+   
+    //sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    //sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    //sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    //sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    //sampDesc.MipLODBias = 1.0f;
+    //sampDesc.MaxAnisotropy = 1;
+    //sampDesc.ComparisonFunc = D3D11_COMPARISON_EQUAL;//D3D11_COMPARISON_NEVER; //D3D11_COMPARISON_LESS; // D3D11_COMPARISON_ALWAYS;
+    //sampDesc.BorderColor[0] = 0;
+    //sampDesc.BorderColor[1] = 0;
+    //sampDesc.BorderColor[2] = 0;
+    //sampDesc.BorderColor[3] = 0;
+    //sampDesc.MinLOD = 0;
+    //sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
 
     hr = gDevice_->CreateSamplerState(&sampDesc, &cell.textureSamplerState);
     if (FAILED(hr)) {
@@ -421,9 +449,9 @@ OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell_IfInGPU(OPTa
 bool OPTadaC_ResourceManager::Use_Texture(OPTadaE_TextureList_ForResoursManager& textureEnum_, ID3D11DeviceContext* gDeviceContext_, UINT resourceSlot_)
 {
     OPTadaS_TextureStructure* cell = &texture_Mass[textureEnum_];
-    if (cell->isInGPUMemory) {
-        gDeviceContext_->CSSetShaderResources(resourceSlot_, 0, &cell->texture);
-        gDeviceContext_->CSSetSamplers(resourceSlot_, 0, &cell->textureSamplerState);
+    if (cell->isInGPUMemory) {   
+        gDeviceContext_->PSSetShaderResources(resourceSlot_, 1, &(cell->texture));
+        gDeviceContext_->PSSetSamplers(resourceSlot_, 1, &(cell->textureSamplerState));
     }
 
     return false;

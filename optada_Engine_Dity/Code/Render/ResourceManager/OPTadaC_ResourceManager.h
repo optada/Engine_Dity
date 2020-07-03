@@ -12,6 +12,8 @@
 #include <d3dcompiler.h>
 
 #include "MamoryManager_x64\OPTada_MemoryManager.h"
+#include "DDSTextureLoader11.h"
+#include "WICTextureLoader11.h"
 #include "OPTadaC_ResourceManager_Settings.h"
 
 #include "PixelShaderList.h"

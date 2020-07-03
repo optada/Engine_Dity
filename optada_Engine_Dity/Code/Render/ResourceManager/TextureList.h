@@ -9,7 +9,7 @@ enum OPTadaE_TextureList_ForResoursManager
 {
 	ENUM_TextureList_NONE = 0,
 
-	//ENUM_TextureList_DefaultColoredBox_V_VertexPosColor_I_DXGI_FORMAT_R16_UINT = 1, // vertex structure VertexPosColor, index structure (WORD)
+	ENUM_TextureList_TextureForShare = 1, // vertex structure VertexPosColor, index structure (WORD)
 
 	ENUM_TextureList_ForResoursManager_MaxCount,
 };

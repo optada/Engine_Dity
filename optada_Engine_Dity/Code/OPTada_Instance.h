@@ -100,14 +100,27 @@ public:
 		const UINT offset = 0;
 
 
+
+
+		// Set shaders
+		OPTadaE_VertexShaderList_ForResoursManager verEnum = ENUM_VertexShaderList_SimpleMaterial_01;
+		OPTadaE_PixelShaderList_ForResoursManager pixEnum = ENUM_PixelShaderList_SimpleMaterial_01;
+		global_Render.resourceManager.Use_VertexShader(verEnum, global_Render.g_DeviceContext_d3d11);
+		global_Render.resourceManager.Use_PixelShader(pixEnum, global_Render.g_DeviceContext_d3d11);
+
+
 		OPTadaE_MeshList_ForResoursManager meshEnum = ENUM_MeshList_DefaultBox;
 		global_Render.resourceManager.Use_Mesh_WithIndexBuffer(meshEnum, global_Render.g_DeviceContext_d3d11);
 		OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(meshEnum);
+
+		OPTadaE_TextureList_ForResoursManager textureEnum = ENUM_TextureList_TextureForShare;
+		global_Render.resourceManager.Use_Texture(textureEnum, global_Render.g_DeviceContext_d3d11, 0);
 		//global_Render.g_DeviceContext_d3d11->IASetVertexBuffers(0, 1, &g_d3dVertexBuffer, &vertexStride, &offset);
 		//global_Render.g_DeviceContext_d3d11->IASetInputLayout(g_d3dInputLayout);
 		//global_Render.g_DeviceContext_d3d11->IASetIndexBuffer(g_d3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 		global_Render.g_DeviceContext_d3d11->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		
+
+
 		//global_Render.g_DeviceContext_d3d11->VSSetShader(g_d3dVertexShader, nullptr, 0);
 		global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
 

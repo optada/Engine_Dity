@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <d3dx11.h> // for vector and indexes
+#include <DirectXMath.h>
 #include <xnamath.h> // for DirectX types
 
 

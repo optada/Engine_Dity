@@ -191,7 +191,7 @@ bool OPTada_Render::InitializeSecondaryResources(int workspaceWidth_, int worksp
     D3D11_RASTERIZER_DESC rasterizerDesc;
     ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 
-    rasterizerDesc.AntialiasedLineEnable = FALSE;
+    rasterizerDesc.AntialiasedLineEnable = TRUE;
     rasterizerDesc.CullMode              = D3D11_CULL_BACK;  // do not draw backfront triangles
     rasterizerDesc.DepthBias             = 0;
     rasterizerDesc.DepthBiasClamp        = 0.0f;

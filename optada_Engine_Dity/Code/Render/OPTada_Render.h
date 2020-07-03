@@ -3,24 +3,19 @@
 
 #pragma once
 
+
 #include <string>
 
 // DirectX includes
 #include <dxgi.h> 
 #include <d3dcommon.h> 
-
-#include <d3dx11.h>
-#include <d3d11.h>
-#include <d3dx10.h>
-#include <d3d10.h>
+#include <d3dcompiler.h>
 
 #include <dinput.h>
 
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 #include <xnamath.h>
-
-#include <d3dcompiler.h>
 
 #include "OPTada_Render_Settings.h"
 #include "ResourceManager\OPTadaC_ResourceManager.h"

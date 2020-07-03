@@ -7,15 +7,6 @@
 #include "Render\ResourceManager\OPTadaC_ResourceManager.h"
 
 
-// Vertex buffer data
-ID3D11InputLayout* g_d3dInputLayout = nullptr;
-ID3D11Buffer* g_d3dVertexBuffer = nullptr;
-ID3D11Buffer* g_d3dIndexBuffer = nullptr;
-
-// Shader data
-ID3D11VertexShader* g_d3dVertexShader = nullptr;
-ID3D11PixelShader* g_d3dPixelShader = nullptr;
-
 // Shader resources
 enum ConstanBuffer
 {
@@ -32,34 +23,6 @@ XMMATRIX g_WorldMatrix;
 XMMATRIX g_ViewMatrix;
 XMMATRIX g_ProjectionMatrix;
 
-// Vertex data for a colored cube.
-struct VertexPosColor
-{
-    XMFLOAT3 Position;
-    XMFLOAT3 Color;
-};
-
-Vertex_F3Coord_F3Normal_F2TextCoord g_Vertices[8] =
-{
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) }, // 0
-    { XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) }, // 1
-    { XMFLOAT3(1.0f,  1.0f, -1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) }, // 2
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) }, // 3
-    { XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) }, // 4
-    { XMFLOAT3(-1.0f,  1.0f,  1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) }, // 5
-    { XMFLOAT3(1.0f,  1.0f,  1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) }, // 6
-    { XMFLOAT3(1.0f, -1.0f,  1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) }  // 7
-};
-
-WORD g_Indicies[36] =
-{
-    0, 1, 2, 0, 2, 3,
-    4, 6, 5, 4, 7, 6,
-    4, 5, 1, 4, 1, 0,
-    3, 2, 6, 3, 6, 7,
-    1, 5, 6, 1, 6, 2,
-    4, 0, 3, 4, 3, 7
-};
 
 
 
@@ -73,49 +36,7 @@ public:
 	{
         assert(global_Render.g_Device_d3d11);
 
-        // Create an initialize the vertex buffer.
-
-        D3D11_SUBRESOURCE_DATA resourceData;
-        ZeroMemory(&resourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-
-        D3D11_BUFFER_DESC vertexBufferDesc;
-        ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
-        vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-        vertexBufferDesc.ByteWidth = sizeof(Vertex_F3Coord_F3Normal_F2TextCoord) * _countof(g_Vertices);
-        vertexBufferDesc.CPUAccessFlags = 0;
-        vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        resourceData.pSysMem = g_Vertices;
-
-        HRESULT hr = global_Render.g_Device_d3d11->CreateBuffer(&vertexBufferDesc, &resourceData, &g_d3dVertexBuffer);
-        if (FAILED(hr))
-        {
-            return false;
-        }
-
-        // Create and initialize the index buffer.
-        D3D11_BUFFER_DESC indexBufferDesc;
-        ZeroMemory(&indexBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
-        indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-        indexBufferDesc.ByteWidth = sizeof(WORD) * _countof(g_Indicies);
-        indexBufferDesc.CPUAccessFlags = 0;
-        indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        resourceData.pSysMem = g_Indicies;
-
-        hr = global_Render.g_Device_d3d11->CreateBuffer(&indexBufferDesc, &resourceData, &g_d3dIndexBuffer);
-        if (FAILED(hr))
-        {
-            return false;
-        }
-
-
-
-
-
-
-
-
+        HRESULT hr; 
 
         // Create the constant buffers for the variables defined in the vertex shader.
         D3D11_BUFFER_DESC constantBufferDesc;
@@ -143,8 +64,6 @@ public:
         }
 
 
-
-
         // Load the compiled vertex shader.
         LPCWSTR compiledVertexShaderObject = L"VertexShader.cso";
 
@@ -167,13 +86,15 @@ public:
         global_Render.resourceManager.Create_PixelShader_FromBinaryFile(pixEnum, compiledPixelShaderObject, global_Render.g_Device_d3d11);
 
         OPTadaE_MeshList_ForResoursManager meshEnum = ENUM_MeshList_DefaultBox;
-        if (!global_Render.resourceManager.Create_Mesh_FromFileToMem(meshEnum, "mesh/share.obj", global_Render.g_Device_d3d11, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord), 0, DXGI_FORMAT_R32_UINT)) {
+        if (!global_Render.resourceManager.Create_Mesh_FromFileToMem(meshEnum, "mesh/box.obj", global_Render.g_Device_d3d11, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord), 0, DXGI_FORMAT_R32_UINT)) {
             MessageBox(NULL, L"Create mesh failed", L"Game level", NULL);
         }
-
         global_Render.resourceManager.Load_ToGPU_Mesh(meshEnum, global_Render.g_Device_d3d11);
 
-
+        OPTadaE_TextureList_ForResoursManager textureEnum = ENUM_TextureList_TextureForShare;
+        if (!global_Render.resourceManager.Create_Texture_LoadFromFile(textureEnum, L"mesh/tex123.png", global_Render.g_Device_d3d11)) {
+            MessageBox(NULL, L"Create texture failed", L"Game level", NULL);
+        }
 
 
         // Setup the projection matrix.
@@ -190,9 +111,6 @@ public:
         global_Render.g_DeviceContext_d3d11->UpdateSubresource(g_d3dConstantBuffers[CB_Appliation], 0, nullptr, &g_ProjectionMatrix, 0, 0);
 
 
-        // tested
-        global_Render.resourceManager.Use_VertexShader(verEnum, global_Render.g_DeviceContext_d3d11);
-        global_Render.resourceManager.Use_PixelShader(pixEnum, global_Render.g_DeviceContext_d3d11);
 
         return true;
 
@@ -204,11 +122,6 @@ public:
         SafeRelease(g_d3dConstantBuffers[CB_Appliation]);
         SafeRelease(g_d3dConstantBuffers[CB_Frame]);
         SafeRelease(g_d3dConstantBuffers[CB_Object]);
-        SafeRelease(g_d3dIndexBuffer);
-        SafeRelease(g_d3dVertexBuffer);
-        SafeRelease(g_d3dInputLayout);
-        SafeRelease(g_d3dVertexShader);
-        SafeRelease(g_d3dPixelShader);
 	}
 
 	// Tick function

@@ -27,6 +27,23 @@
 #define _RGB24BIT(r,g,b)   ((b) + ((g) << 8) + ((r) << 16))
 
 
+// Enum for OPTada_Render Rasterizer list mass
+enum OPTadaE_RasterizerMass_ForRender
+{
+	ENUM_RasterizerMass_DrawFront_ClipBack   = 0, // default rasteraizer - draw front triangles
+	ENUM_RasterizerMass_Debug_DrawAllLines   = 1, // debug mode, will draw all lines
+	ENUM_RasterizerMass_Debug_DrawFrontLines = 2, // debug mode, will draw front lines
+	ENUM_RasterizerMass_DrawBack_ClipFront   = 3, // draw back triangles
+};
+
+
+// Enum for OPTada_Render Blend state list mass
+enum OPTadaE_BlendStateMass_ForRender
+{
+	ENUM_BlendStateMass_NONE = 0,        // NONE - turn off bland state
+	ENUM_BlendStateMass_Transparent = 1, // blend state - transparent
+};
+
 // Renger
 class OPTada_Render
 {
@@ -46,7 +63,9 @@ public:
 	ID3D11Texture2D*        g_DepthStencilBuffer_d3d = nullptr; // A texture to associate to the depth stencil view.
 
 	ID3D11DepthStencilState* g_DepthStencilState_d3d = nullptr; // Define the functionality of the depth/stencil stages.
-	ID3D11RasterizerState*   g_RasterizerState_d3d   = nullptr; // Define the functionality of the rasterizer stage.
+
+	std::vector<ID3D11RasterizerState*> g_RasterizerMass; // rasterizer list (watch Init_AllRasterizerState()) (Use OPTadaE_RasterizerMass_ForRender)
+	std::vector<ID3D11BlendState*> g_BlendStateMass = { nullptr }; // blend state list (watch Init_AllBlendState()) (Use OPTadaE_BlendStateMass_ForRender)
 
 	D3D11_VIEWPORT g_Viewport = { 0 };
 
@@ -62,16 +81,22 @@ public:
 	// return = true - done | false - error
 	bool Initialization(HWND hwnd_, int countOfBackBuffers_, int workspaceWidth_, int workspaceHeight_, bool vSinc_, bool isWindowedMode_);
 
+	// init rasterizer list here
+	// return = true - done | false - error
+	bool Init_AllRasterizerState();
+
+	// init blend state list here
+	// return = true - done | false - error
+	bool Init_AllBlendState();
+
 	// and create support render resourses (depth buffer, viewPort, rasterither....)
 	// [in] int workspaceWidth_       // workspace Width
 	// [in] int workspaceHeight_      // workspace Height
-	// [in] D3D11_FILL_MODE fillMode_ // D3D11_FILL_SOLID - draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
 	// return = true - done | false - error
-	bool InitializeSecondaryResources(int workspaceWidth_, int workspaceHeight_, D3D11_FILL_MODE fillMode_);
+	bool InitializeSecondaryResources(int workspaceWidth_, int workspaceHeight_);
 
 	// Use this for free all resourses
 	void ShuttingDown();
-
 
 
 	// setup new settings for render
@@ -79,23 +104,25 @@ public:
 	// [in] int workspaceHeight_      // workspace Height
 	// [in] bool vSinc_               // true - enable | false - disable
 	// [in] int countOfBackBuffers_   // count of back buffers (1 - double bufferization) (2 - tripple bufferization)
-	// [in] D3D11_FILL_MODE fillMode_ // D3D11_FILL_SOLID - draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
 	// return = true - done | false - error
-	bool Setup_NewSettingsForRender(int workspaceWidth_, int workspaceHeight_, bool vSinc_, int countOfBackBuffers_, D3D11_FILL_MODE fillMode_);
+	bool Setup_NewSettingsForRender(int workspaceWidth_, int workspaceHeight_, bool vSinc_, int countOfBackBuffers_);
 
 	// setup fullscreen or windowed mode for render
+	// [in] bool isFullScreen_ // true - set fullScreen
 	void Setup_FullScreenMode(bool isFullScreen_);
 
 
-	// Create Vertex|Pixel shader from a binary object and the class linkage
-	// [in] ID3DBlob* pShaderBlob_             // a binary object
-	// [in] ID3D11ClassLinkage* pClassLinkage_ // a class linkage
-	// return = ShaderClass - if done | nullptr - if failed
-	template< class ShaderClass >
-	ShaderClass* CreateShaderFrom_BinaryObject(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_);
-
 	// Clear the color and depth buffers.
 	void PrepareBuffersForNewFrame(const FLOAT clearColor[4], FLOAT clearDepth, UINT8 clearStencil);
+
+	// setup new rasterizer for darw machine
+	// [in] OPTadaE_RasterizerMass_ForRender rasterizaerEnum_ // risterizer enum
+	void Setup_NewRasterizer(OPTadaE_RasterizerMass_ForRender rasterizaerEnum_);
+
+	// setup blend state for darw machine
+	// [in] OPTadaE_BlendStateMass_ForRender blendStateEnum_ // blend state enum
+	// [in] float* blendFactor_                              // blend factor
+	void Setup_NewBlendState(OPTadaE_BlendStateMass_ForRender blendStateEnum_, float* blendFactor_);
 
 	// Present frame
 	void PresentFrame();

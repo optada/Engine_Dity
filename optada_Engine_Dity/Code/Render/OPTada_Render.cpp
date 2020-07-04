@@ -82,7 +82,7 @@ bool OPTada_Render::Initialization(HWND hwnd_, int countOfBackBuffers_, int work
         return false;
     }
 
-    if (!InitializeSecondaryResources(workspaceWidth_, workspaceHeight_, D3D11_FILL_SOLID)) {
+    if (!InitializeSecondaryResources(workspaceWidth_, workspaceHeight_)) {
         return false;
     }
 
@@ -101,6 +101,18 @@ bool OPTada_Render::Initialization(HWND hwnd_, int countOfBackBuffers_, int work
     pDXGIDevice->Release(); // free DXGI device.
     pDXGIDevice = 0;
 
+    // ---- Setup rasterizer ----
+
+    if (!Init_AllRasterizerState()) {
+        return false;
+    }
+
+    // ---- Setup Blend State ----
+
+    if (!Init_AllBlendState()) {
+        return false;
+    }
+
     // ---- ALL initialization done ----
     
     if (!resourceManager.Init_ResourceManager()) {
@@ -110,7 +122,134 @@ bool OPTada_Render::Initialization(HWND hwnd_, int countOfBackBuffers_, int work
     return true;
 }
 
-bool OPTada_Render::InitializeSecondaryResources(int workspaceWidth_, int workspaceHeight_, D3D11_FILL_MODE fillMode_)
+bool OPTada_Render::Init_AllRasterizerState()
+{ 
+    D3D11_RASTERIZER_DESC rasterizerDesc;
+    ID3D11RasterizerState* g_RasterizerState_d3d = nullptr; // Define the functionality of the rasterizer stage.
+
+    // Setup rasterizer state default ENUM_RasterizerMass_Default_DrawFront
+    ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+
+    rasterizerDesc.AntialiasedLineEnable = TRUE;
+    rasterizerDesc.CullMode              = D3D11_CULL_BACK;  // do not draw backfront triangles
+    rasterizerDesc.DepthBias             = 0;
+    rasterizerDesc.DepthBiasClamp        = 0.0f;
+    rasterizerDesc.DepthClipEnable       = TRUE;             // clip z coord
+    rasterizerDesc.FillMode              = D3D11_FILL_SOLID; // draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
+    rasterizerDesc.FrontCounterClockwise = FALSE;            // a triangle will be considered front-facing if its vertices are counter-clockwise on the render target
+    rasterizerDesc.MultisampleEnable     = FALSE;
+    rasterizerDesc.ScissorEnable         = FALSE;            // is scissor-rectangle culling. TRUE - enable
+    rasterizerDesc.SlopeScaledDepthBias  = 0.0f;
+
+    // Create the rasterizer state object.
+    if (S_OK != g_Device_d3d11->CreateRasterizerState(&rasterizerDesc, &g_RasterizerState_d3d)) {
+        return false;
+    }
+    g_RasterizerMass.push_back(g_RasterizerState_d3d);
+    g_RasterizerState_d3d = nullptr;
+
+
+    // Setup rasterizer state default ENUM_RasterizerMass_Debug_DrawAllLines
+    ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+
+    rasterizerDesc.AntialiasedLineEnable = TRUE;
+    rasterizerDesc.CullMode              = D3D11_CULL_NONE;      // draw all triangles
+    rasterizerDesc.DepthBias             = 0;
+    rasterizerDesc.DepthBiasClamp        = 0.0f;
+    rasterizerDesc.DepthClipEnable       = FALSE;                // no clip z coord
+    rasterizerDesc.FillMode              = D3D11_FILL_WIREFRAME; // darw lines
+    rasterizerDesc.FrontCounterClockwise = FALSE;                // a triangle will be considered front-facing if its vertices are counter-clockwise on the render target
+    rasterizerDesc.MultisampleEnable     = FALSE;
+    rasterizerDesc.ScissorEnable         = FALSE;                // is scissor-rectangle culling. TRUE - enable
+    rasterizerDesc.SlopeScaledDepthBias  = 0.0f;
+
+    // Create the rasterizer state object.
+    if (S_OK != g_Device_d3d11->CreateRasterizerState(&rasterizerDesc, &g_RasterizerState_d3d)) {
+        return false;
+    }
+    g_RasterizerMass.push_back(g_RasterizerState_d3d);
+    g_RasterizerState_d3d = nullptr;
+
+
+    // Setup rasterizer state default ENUM_RasterizerMass_Debug_DrawFrontLines
+    ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+
+    rasterizerDesc.AntialiasedLineEnable = TRUE;
+    rasterizerDesc.CullMode              = D3D11_CULL_BACK;      // draw backfront triangles
+    rasterizerDesc.DepthBias             = 0;
+    rasterizerDesc.DepthBiasClamp        = 0.0f;
+    rasterizerDesc.DepthClipEnable       = FALSE;                // clip z coord
+    rasterizerDesc.FillMode              = D3D11_FILL_WIREFRAME; // darw lines
+    rasterizerDesc.FrontCounterClockwise = FALSE;                // a triangle will be considered front-facing if its vertices are counter-clockwise on the render target
+    rasterizerDesc.MultisampleEnable     = FALSE;
+    rasterizerDesc.ScissorEnable         = FALSE;                // is scissor-rectangle culling. TRUE - enable
+    rasterizerDesc.SlopeScaledDepthBias  = 0.0f;
+
+    // Create the rasterizer state object.
+    if (S_OK != g_Device_d3d11->CreateRasterizerState(&rasterizerDesc, &g_RasterizerState_d3d)) {
+        return false;
+    }
+    g_RasterizerMass.push_back(g_RasterizerState_d3d);
+    g_RasterizerState_d3d = nullptr;
+
+
+    // Setup rasterizer state default ENUM_RasterizerMass_DrawBack_ClipFront
+    ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+
+    rasterizerDesc.AntialiasedLineEnable = TRUE;
+    rasterizerDesc.CullMode              = D3D11_CULL_BACK;  // draw backfront triangles
+    rasterizerDesc.DepthBias             = 0;
+    rasterizerDesc.DepthBiasClamp        = 0.0f;
+    rasterizerDesc.DepthClipEnable       = FALSE;            // clip z coord
+    rasterizerDesc.FillMode              = D3D11_FILL_SOLID; // darw lines
+    rasterizerDesc.FrontCounterClockwise = TRUE;             // a triangle will be considered front-facing if its vertices are counter-clockwise on the render target
+    rasterizerDesc.MultisampleEnable     = FALSE;
+    rasterizerDesc.ScissorEnable         = FALSE;            // is scissor-rectangle culling. TRUE - enable
+    rasterizerDesc.SlopeScaledDepthBias  = 0.0f;
+
+    // Create the rasterizer state object.
+    if (S_OK != g_Device_d3d11->CreateRasterizerState(&rasterizerDesc, &g_RasterizerState_d3d)) {
+        return false;
+    }
+    g_RasterizerMass.push_back(g_RasterizerState_d3d);
+    g_RasterizerState_d3d = nullptr;
+
+}
+
+bool OPTada_Render::Init_AllBlendState()
+{
+    ID3D11BlendState* newBlendState = nullptr;
+
+    D3D11_BLEND_DESC blendDesc;
+    ZeroMemory(&blendDesc, sizeof(blendDesc));
+
+    D3D11_RENDER_TARGET_BLEND_DESC rtbd;
+    ZeroMemory(&rtbd, sizeof(rtbd));
+
+    rtbd.BlendEnable           = true;
+    rtbd.SrcBlend              = D3D11_BLEND_SRC_COLOR;
+    rtbd.DestBlend             = D3D11_BLEND_BLEND_FACTOR;
+    rtbd.BlendOp               = D3D11_BLEND_OP_ADD;
+    rtbd.SrcBlendAlpha         = D3D11_BLEND_ONE;
+    rtbd.DestBlendAlpha        = D3D11_BLEND_ZERO;
+    rtbd.BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+    rtbd.RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+    blendDesc.AlphaToCoverageEnable = false;
+    blendDesc.RenderTarget[0] = rtbd;
+
+    // Create the blend state object
+    if (S_OK != g_Device_d3d11->CreateBlendState(&blendDesc, &newBlendState)) {
+        return false;
+    }
+
+    g_BlendStateMass.push_back(newBlendState);
+    newBlendState = nullptr;
+
+    return true;
+}
+
+bool OPTada_Render::InitializeSecondaryResources(int workspaceWidth_, int workspaceHeight_)
 {
     //Create our BackBuffer
     ID3D11Texture2D* backBuffer;
@@ -185,28 +324,6 @@ bool OPTada_Render::InitializeSecondaryResources(int workspaceWidth_, int worksp
         return false;
     }
 
-    // ---- Setup rasterizer ----
-
-    // Setup rasterizer state.
-    D3D11_RASTERIZER_DESC rasterizerDesc;
-    ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
-
-    rasterizerDesc.AntialiasedLineEnable = TRUE;
-    rasterizerDesc.CullMode              = D3D11_CULL_BACK;  // do not draw backfront triangles
-    rasterizerDesc.DepthBias             = 0;
-    rasterizerDesc.DepthBiasClamp        = 0.0f;
-    rasterizerDesc.DepthClipEnable       = TRUE;             // clip z coord
-    rasterizerDesc.FillMode              = fillMode_;        // D3D11_FILL_SOLID - draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
-    rasterizerDesc.FrontCounterClockwise = FALSE;            // a triangle will be considered front-facing if its vertices are counter-clockwise on the render target
-    rasterizerDesc.MultisampleEnable     = FALSE;
-    rasterizerDesc.ScissorEnable         = FALSE;            // is scissor-rectangle culling. TRUE - enable
-    rasterizerDesc.SlopeScaledDepthBias  = 0.0f;
-
-    // Create the rasterizer state object.
-    if (S_OK != g_Device_d3d11->CreateRasterizerState(&rasterizerDesc, &g_RasterizerState_d3d)) {
-        return false;
-    }
-
     // ---- Setup viewport ----
 
     // Initialize the viewport to occupy the entire client area.
@@ -228,7 +345,10 @@ void OPTada_Render::ShuttingDown()
 
     g_SwapChain->SetFullscreenState(FALSE, NULL);    // switch to windowed mode
 
-    SafeRelease(g_RasterizerState_d3d);   // Define the functionality of the rasterizer stage.
+    for (int i = 0; i < g_RasterizerMass.size(); i++) {  // free rasterizer stage.
+        SafeRelease(g_RasterizerMass[i]);
+    }
+   
     SafeRelease(g_DepthStencilState_d3d); // Define the functionality of the depth/stencil stages.
 
     SafeRelease(g_DepthStencilBuffer_d3d); // A texture to associate to the depth stencil view.
@@ -242,13 +362,13 @@ void OPTada_Render::ShuttingDown()
 }
 
 
-bool OPTada_Render::Setup_NewSettingsForRender(int workspaceWidth_, int workspaceHeight_, bool vSinc_, int countOfBackBuffers_, D3D11_FILL_MODE fillMode_)
+bool OPTada_Render::Setup_NewSettingsForRender(int workspaceWidth_, int workspaceHeight_, bool vSinc_, int countOfBackBuffers_)
 {
     vSinc = vSinc_;
 
     // free all resourses
     g_DeviceContext_d3d11->OMSetRenderTargets(0, 0, 0);
-    SafeRelease(g_RasterizerState_d3d);    // Define the functionality of the rasterizer stage.
+    //SafeRelease(g_RasterizerState_d3d);    // Define the functionality of the rasterizer stage.
     SafeRelease(g_DepthStencilState_d3d);  // Define the functionality of the depth/stencil stages.
     SafeRelease(g_DepthStencilBuffer_d3d); // A texture to associate to the depth stencil view.
     SafeRelease(g_DepthStencilView_d3d);   // Depth/stencil view for use as a depth buffer.
@@ -278,7 +398,7 @@ bool OPTada_Render::Setup_NewSettingsForRender(int workspaceWidth_, int workspac
     g_SwapChain->ResizeBuffers(countOfBackBuffers_, workspaceWidth_, workspaceHeight_, DXGI_FORMAT_UNKNOWN, 0);
 
     // create all support resouses again
-    if (!InitializeSecondaryResources(workspaceWidth_, workspaceHeight_, fillMode_)) {
+    if (!InitializeSecondaryResources(workspaceWidth_, workspaceHeight_)) {
         return false;
     }
 
@@ -297,6 +417,21 @@ void OPTada_Render::PrepareBuffersForNewFrame(const FLOAT clearColor[4], FLOAT c
     g_DeviceContext_d3d11->ClearDepthStencilView(g_DepthStencilView_d3d, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, clearDepth, clearStencil);
 }
 
+void OPTada_Render::Setup_NewRasterizer(OPTadaE_RasterizerMass_ForRender rasterizaerEnum_)
+{
+    g_DeviceContext_d3d11->RSSetState(g_RasterizerMass[rasterizaerEnum_]);
+}
+
+void OPTada_Render::Setup_NewBlendState(OPTadaE_BlendStateMass_ForRender blendStateEnum_, float* blendFactor_)
+{
+    if (blendStateEnum_ == 0) { // turn off blend state
+        g_DeviceContext_d3d11->OMSetBlendState(0, 0, 0xffffffff);
+    }
+    else { // set blend state
+        global_Render.g_DeviceContext_d3d11->OMSetBlendState(g_BlendStateMass[blendStateEnum_], blendFactor_, 0xffffffff);
+    }
+}
+
 void OPTada_Render::PresentFrame()
 {
     if (vSinc) {
@@ -305,31 +440,6 @@ void OPTada_Render::PresentFrame()
     else {
         g_SwapChain->Present(0, 0);
     }
-}
-
-
-template<>
-ID3D11VertexShader* OPTada_Render::CreateShaderFrom_BinaryObject<ID3D11VertexShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
-{
-    assert(g_Device_d3d11);
-    assert(pShaderBlob_);
-
-    ID3D11VertexShader* pVertexShader = nullptr;
-    g_Device_d3d11->CreateVertexShader(pShaderBlob_->GetBufferPointer(), pShaderBlob_->GetBufferSize(), pClassLinkage_, &pVertexShader);
-
-    return pVertexShader;
-}
-
-template<>
-ID3D11PixelShader* OPTada_Render::CreateShaderFrom_BinaryObject<ID3D11PixelShader>(ID3DBlob* pShaderBlob_, ID3D11ClassLinkage* pClassLinkage_)
-{
-    assert(g_Device_d3d11);
-    assert(pShaderBlob_);
-
-    ID3D11PixelShader* pPixelShader = nullptr;
-    g_Device_d3d11->CreatePixelShader(pShaderBlob_->GetBufferPointer(), pShaderBlob_->GetBufferSize(), pClassLinkage_, &pPixelShader);
-
-    return pPixelShader;
 }
 
 

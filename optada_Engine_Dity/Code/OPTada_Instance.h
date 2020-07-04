@@ -96,41 +96,62 @@ public:
 	// All draw logic here
 	static int DrawScene(float deltaTime_) {
 
-		const UINT vertexStride = sizeof(Vertex_F3Coord_F3Normal_F2TextCoord);
-		const UINT offset = 0;
+		float zeroBlend[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // empty mass for zero blend
+		// ----------- update and prepeir all resources
 
 
+
+		// ----------- set default parameters
+
+		global_Render.Setup_NewRasterizer(ENUM_RasterizerMass_DrawFront_ClipBack); // he he classic
+		global_Render.Setup_NewBlendState(ENUM_BlendStateMass_NONE, zeroBlend);    //Set the default blend state (no blending) for opaque objects
+
+		global_Render.g_DeviceContext_d3d11->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // draw triangles	
+
+		global_Render.g_DeviceContext_d3d11->RSSetViewports(1, &global_Render.g_Viewport); // viewport
+
+		global_Render.g_DeviceContext_d3d11->OMSetRenderTargets(1, &global_Render.g_RenderTargetView_d3d, global_Render.g_DepthStencilView_d3d); // set DepthStencil buffer
+		global_Render.g_DeviceContext_d3d11->OMSetDepthStencilState(global_Render.g_DepthStencilState_d3d, 1);                                   // set depth stencil parameters
+
+		// ----------- draw opaque objects
+
+		//// Set shaders
+		//global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
+		//global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
+
+		//// Set Mesh
+		//global_Render.resourceManager.Use_Mesh_WithIndexBuffer(ENUM_MeshList_DefaultBox, global_Render.g_DeviceContext_d3d11);
+		//OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(ENUM_MeshList_DefaultBox);
+
+		//// Set texture
+		//global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
+
+		//// Set Constant buffers
+		//global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
+
+		
+		// ----------- draw blend objects
+		
+		float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f }; //"fine-tune" the blending equation
+
+		global_Render.Setup_NewBlendState(ENUM_BlendStateMass_Transparent, blendFactor); // set blend state
 
 
 		// Set shaders
-		OPTadaE_VertexShaderList_ForResoursManager verEnum = ENUM_VertexShaderList_SimpleMaterial_01;
-		OPTadaE_PixelShaderList_ForResoursManager pixEnum = ENUM_PixelShaderList_SimpleMaterial_01;
-		global_Render.resourceManager.Use_VertexShader(verEnum, global_Render.g_DeviceContext_d3d11);
-		global_Render.resourceManager.Use_PixelShader(pixEnum, global_Render.g_DeviceContext_d3d11);
+		global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
+		global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
 
+		// Set Mesh
+		global_Render.resourceManager.Use_Mesh_WithIndexBuffer(ENUM_MeshList_DefaultBox, global_Render.g_DeviceContext_d3d11);
+		OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(ENUM_MeshList_DefaultBox);
 
-		OPTadaE_MeshList_ForResoursManager meshEnum = ENUM_MeshList_DefaultBox;
-		global_Render.resourceManager.Use_Mesh_WithIndexBuffer(meshEnum, global_Render.g_DeviceContext_d3d11);
-		OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(meshEnum);
+		// Set texture
+		global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
 
-		OPTadaE_TextureList_ForResoursManager textureEnum = ENUM_TextureList_TextureForShare;
-		global_Render.resourceManager.Use_Texture(textureEnum, global_Render.g_DeviceContext_d3d11, 0);
-		//global_Render.g_DeviceContext_d3d11->IASetVertexBuffers(0, 1, &g_d3dVertexBuffer, &vertexStride, &offset);
-		//global_Render.g_DeviceContext_d3d11->IASetInputLayout(g_d3dInputLayout);
-		//global_Render.g_DeviceContext_d3d11->IASetIndexBuffer(g_d3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-		global_Render.g_DeviceContext_d3d11->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-		//global_Render.g_DeviceContext_d3d11->VSSetShader(g_d3dVertexShader, nullptr, 0);
+		// Set Constant buffers
 		global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
 
-		global_Render.g_DeviceContext_d3d11->RSSetState(global_Render.g_RasterizerState_d3d);
-		global_Render.g_DeviceContext_d3d11->RSSetViewports(1, &global_Render.g_Viewport);
 
-		//global_Render.g_DeviceContext_d3d11->PSSetShader(g_d3dPixelShader, nullptr, 0);
-
-		global_Render.g_DeviceContext_d3d11->OMSetRenderTargets(1, &global_Render.g_RenderTargetView_d3d, global_Render.g_DepthStencilView_d3d);
-		global_Render.g_DeviceContext_d3d11->OMSetDepthStencilState(global_Render.g_DepthStencilState_d3d, 1);
 
 		//global_Render.g_DeviceContext_d3d11->Draw(22, 0);
 		global_Render.g_DeviceContext_d3d11->DrawIndexed(/*_countof(g_Indicies)*/mesh->indexBufferCount, 0, 0);
@@ -147,7 +168,6 @@ public:
 	// [in] OPTadaS_Window_Size& newWindowSize_                // new window size
 	// [in] bool vSinc_                                        // true - enable vSinc | false - disable vSinc
 	// [in] int countOfBackBuffers_                            // count of back buffers (1 - double bufferization) (2 - tripple bufferization)
-	// [in] D3D11_FILL_MODE fillMode_                          // D3D11_FILL_SOLID - draw triangles formed // D3D11_FILL_WIREFRAME - darw lines
 	// return = true - done | false - error
 	static bool Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow newWindowState_, OPTadaS_Window_Size& newWindowSize_, bool vSinc_, int countOfBackBuffers_, D3D11_FILL_MODE fillMode_) {
 
@@ -157,7 +177,7 @@ public:
 
 		global_Render.Setup_FullScreenMode(newWindowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
 
-		if (!global_Render.Setup_NewSettingsForRender(newWindowSize_.width, newWindowSize_.height, vSinc_, countOfBackBuffers_, fillMode_)) {
+		if (!global_Render.Setup_NewSettingsForRender(newWindowSize_.width, newWindowSize_.height, vSinc_, countOfBackBuffers_)) {
 			return false;
 		}
 

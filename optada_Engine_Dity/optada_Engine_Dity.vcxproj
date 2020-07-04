@@ -147,7 +147,6 @@
   <ItemGroup>
     <ClCompile Include="Code\Main.cpp" />
     <ClCompile Include="Code\Render\OPTada_Render.cpp" />
-    <ClCompile Include="Code\Render\ResourceManager\DDSTextureLoader11.cpp" />
     <ClCompile Include="Code\Render\ResourceManager\MamoryManager_x64\OPTada_MemoryManager.cpp" />
     <ClCompile Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\CellBuffer\OPTadaC_MemoryCells_StaticCyclicBuffer.cpp" />
     <ClCompile Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\OPTadaC_MultithreadedSimpleMemoryBuffer.cpp" />
@@ -162,7 +161,6 @@
     <ClInclude Include="Code\Render\OPTada_Render.h" />
     <ClInclude Include="Code\Render\OPTada_Render_Settings.h" />
     <ClInclude Include="Code\Render\ResourceManager\ConstantBufferList.h" />
-    <ClInclude Include="Code\Render\ResourceManager\DDSTextureLoader11.h" />
     <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\OPTada_MemoryManager.h" />
     <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\OPTada_MemoryManager_Settings.h" />
     <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\CellBuffer\OPTadaC_MemoryCells_StaticCyclicBuffer.h" />
@@ -172,6 +170,7 @@
     <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\OPTadaC_TemplateOfMemoryBuffer.h" />
     <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\OPTadaS_TemplateMemoryBuffer_Element.h" />
     <ClInclude Include="Code\Render\ResourceManager\MeshList.h" />
+    <ClInclude Include="Code\Render\ResourceManager\OBJ_Loader.h" />
     <ClInclude Include="Code\Render\ResourceManager\OPTadaC_ResourceManager.h" />
     <ClInclude Include="Code\Render\ResourceManager\OPTadaC_ResourceManager_Settings.h" />
     <ClInclude Include="Code\Render\ResourceManager\PixelShaderList.h" />

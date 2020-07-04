@@ -22,7 +22,7 @@
     <Filter Include="Code\Render\ResourceManager\MemoryManager">
       <UniqueIdentifier>{78a5d4e5-b594-4661-a479-8e2faf05ddeb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Render\ResourceManager\TextureLoader">
+    <Filter Include="Code\Render\ResourceManager\Loader">
       <UniqueIdentifier>{753e5344-de46-481d-b318-1c0e293a1a43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -51,11 +51,8 @@
     <ClCompile Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\CellBuffer\OPTadaC_MemoryCells_StaticCyclicBuffer.cpp">
       <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Render\ResourceManager\DDSTextureLoader11.cpp">
-      <Filter>Code\Render\ResourceManager\TextureLoader</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Render\ResourceManager\WICTextureLoader11.cpp">
-      <Filter>Code\Render\ResourceManager\TextureLoader</Filter>
+      <Filter>Code\Render\ResourceManager\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,11 +119,11 @@
     <ClInclude Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\CellBuffer\OPTadaS_MemoryCell_Element.h">
       <Filter>Code\Render\ResourceManager\MemoryManager</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Render\ResourceManager\DDSTextureLoader11.h">
-      <Filter>Code\Render\ResourceManager\TextureLoader</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Render\ResourceManager\WICTextureLoader11.h">
-      <Filter>Code\Render\ResourceManager\TextureLoader</Filter>
+      <Filter>Code\Render\ResourceManager\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\ResourceManager\OBJ_Loader.h">
+      <Filter>Code\Render\ResourceManager\Loader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

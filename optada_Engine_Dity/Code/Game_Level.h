@@ -86,13 +86,13 @@ public:
         global_Render.resourceManager.Create_PixelShader_FromBinaryFile(pixEnum, compiledPixelShaderObject, global_Render.g_Device_d3d11);
 
         OPTadaE_MeshList_ForResoursManager meshEnum = ENUM_MeshList_DefaultBox;
-        if (!global_Render.resourceManager.Create_Mesh_FromFileToMem(meshEnum, "mesh/tex.obj", global_Render.g_Device_d3d11, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord), 0, DXGI_FORMAT_R32_UINT)) {
+        if (!global_Render.resourceManager.Create_Mesh_FromFileToMem(meshEnum, "mesh/monkey.obj", global_Render.g_Device_d3d11, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord), 0, DXGI_FORMAT_R32_UINT)) {
             MessageBox(NULL, L"Create mesh failed", L"Game level", NULL);
         }
         global_Render.resourceManager.Load_ToGPU_Mesh(meshEnum, global_Render.g_Device_d3d11);
 
         OPTadaE_TextureList_ForResoursManager textureEnum = ENUM_TextureList_TextureForShare;
-        if (!global_Render.resourceManager.Create_Texture_LoadFromFile(textureEnum, L"mesh/tex.png", global_Render.g_Device_d3d11)) {
+        if (!global_Render.resourceManager.Create_Texture_LoadFromFile(textureEnum, L"mesh/DC_monkey.png", global_Render.g_Device_d3d11)) {
             MessageBox(NULL, L"Create texture failed", L"Game level", NULL);
         }
 
@@ -106,7 +106,7 @@ public:
         float clientWidth = static_cast<float>(clientRect.right - clientRect.left);
         float clientHeight = static_cast<float>(clientRect.bottom - clientRect.top);
 
-        g_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(30.0f), clientWidth / clientHeight, 0.1f, 100.0f);
+        g_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(90.0f), clientWidth / clientHeight, 0.1f, 100.0f);
 
         global_Render.g_DeviceContext_d3d11->UpdateSubresource(g_d3dConstantBuffers[CB_Appliation], 0, nullptr, &g_ProjectionMatrix, 0, 0);
 
@@ -128,16 +128,18 @@ public:
 	// [in] float deltaTime_ // delta time
 	bool Tick(float deltaTime_)
 	{
-        XMVECTOR eyePosition = XMVectorSet(0, 0, -10, 1);
-        XMVECTOR focusPoint = XMVectorSet(0, 0, 0, 1);
-        XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0);
+        static float posi = 0.0f;
+        posi += 1.0f * deltaTime_;
+        XMVECTOR eyePosition = XMVectorSet(0, posi, -4, 1); // camera position
+        XMVECTOR focusPoint  = XMVectorSet(0, 0, 0, 1); // watch point (look at)
+        XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0); // up direction (rotate)
         g_ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
         global_Render.g_DeviceContext_d3d11->UpdateSubresource(g_d3dConstantBuffers[CB_Frame], 0, nullptr, &g_ViewMatrix, 0, 0);
 
 
-        static float angle = -45.0f;
+        static float angle = 0.0f;
         angle += 0.0f * deltaTime_;
-        XMVECTOR rotationAxis = XMVectorSet(1, 1, 0, 0);
+        XMVECTOR rotationAxis = XMVectorSet(1, 0, 0, 0);
 
         g_WorldMatrix = XMMatrixRotationAxis(rotationAxis, XMConvertToRadians(angle));
         global_Render.g_DeviceContext_d3d11->UpdateSubresource(g_d3dConstantBuffers[CB_Object], 0, nullptr, &g_WorldMatrix, 0, 0);

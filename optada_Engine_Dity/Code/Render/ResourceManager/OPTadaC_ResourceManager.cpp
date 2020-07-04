@@ -56,7 +56,7 @@ void OPTadaC_ResourceManager::FreeAll()
 }
 
 
-bool OPTadaC_ResourceManager::Create_PixelShader_FromBinaryFile(OPTadaE_PixelShaderList_ForResoursManager& shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_)
+bool OPTadaC_ResourceManager::Create_PixelShader_FromBinaryFile(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_)
 {
     ID3DBlob*          pixelShaderBlob;
     HRESULT            hr;
@@ -91,12 +91,12 @@ bool OPTadaC_ResourceManager::Create_PixelShader_FromBinaryFile(OPTadaE_PixelSha
     return true;
 }
 
-OPTadaS_PixelShaderStructure* OPTadaC_ResourceManager::Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResoursManager& shaderEnum_)
+OPTadaS_PixelShaderStructure* OPTadaC_ResourceManager::Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_)
 {
     return (shaderEnum_ != OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_ForResoursManager_MaxCount)?(&PS_Mass[shaderEnum_]):(nullptr);
 }
 
-bool OPTadaC_ResourceManager::Use_PixelShader(OPTadaE_PixelShaderList_ForResoursManager& shaderEnum_, ID3D11DeviceContext* gDeviceContext_)
+bool OPTadaC_ResourceManager::Use_PixelShader(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_, ID3D11DeviceContext* gDeviceContext_)
 {
     OPTadaS_PixelShaderStructure& cell = PS_Mass[shaderEnum_];
     if (cell.isInGPUMemory) {
@@ -107,7 +107,7 @@ bool OPTadaC_ResourceManager::Use_PixelShader(OPTadaE_PixelShaderList_ForResours
     return false;
 }
 
-bool OPTadaC_ResourceManager::Delete_PixelShader(OPTadaE_PixelShaderList_ForResoursManager& shaderEnum_)
+bool OPTadaC_ResourceManager::Delete_PixelShader(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_)
 {
     OPTadaS_PixelShaderStructure& cell = PS_Mass[shaderEnum_];
     if (cell.shaderEnum != OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_NONE) {
@@ -120,7 +120,7 @@ bool OPTadaC_ResourceManager::Delete_PixelShader(OPTadaE_PixelShaderList_ForReso
 }
 
 
-bool OPTadaC_ResourceManager::Create_VertexShader_FromBinaryFile(OPTadaE_VertexShaderList_ForResoursManager& shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_, D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_, UINT countOfvertexLayoutDesc_)
+bool OPTadaC_ResourceManager::Create_VertexShader_FromBinaryFile(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_, D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_, UINT countOfvertexLayoutDesc_)
 {
     ID3DBlob*           vertexShaderBlob;
     HRESULT             hr;
@@ -164,12 +164,12 @@ bool OPTadaC_ResourceManager::Create_VertexShader_FromBinaryFile(OPTadaE_VertexS
 
 }
 
-OPTadaS_VertexShaderStructure* OPTadaC_ResourceManager::Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResoursManager& shaderEnum_)
+OPTadaS_VertexShaderStructure* OPTadaC_ResourceManager::Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_)
 {
     return (shaderEnum_ != OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_ForResoursManager_MaxCount) ? (&VS_Mass[shaderEnum_]) : (nullptr);
 }
 
-bool OPTadaC_ResourceManager::Use_VertexShader(OPTadaE_VertexShaderList_ForResoursManager& shaderEnum_, ID3D11DeviceContext* gDeviceContext_)
+bool OPTadaC_ResourceManager::Use_VertexShader(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_, ID3D11DeviceContext* gDeviceContext_)
 {
     OPTadaS_VertexShaderStructure& cell = VS_Mass[shaderEnum_];
     if (cell.isInGPUMemory) {
@@ -181,7 +181,7 @@ bool OPTadaC_ResourceManager::Use_VertexShader(OPTadaE_VertexShaderList_ForResou
     return false;
 }
 
-bool OPTadaC_ResourceManager::Delete_VertexShader(OPTadaE_VertexShaderList_ForResoursManager& shaderEnum_)
+bool OPTadaC_ResourceManager::Delete_VertexShader(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_)
 {
     OPTadaS_VertexShaderStructure& cell = VS_Mass[shaderEnum_];
     if (cell.shaderEnum != OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_NONE) {
@@ -194,7 +194,7 @@ bool OPTadaC_ResourceManager::Delete_VertexShader(OPTadaE_VertexShaderList_ForRe
 }
 
 
-bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForResoursManager& meshName_, const std::string fileName_, ID3D11Device* gDevice_, UINT vertexStride_, UINT vertexOffset_, DXGI_FORMAT indexBufferFormat_)
+bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForResoursManager meshName_, const std::string fileName_, ID3D11Device* gDevice_, UINT vertexStride_, UINT vertexOffset_, DXGI_FORMAT indexBufferFormat_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
 
@@ -202,17 +202,15 @@ bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForReso
         return false;
     }
 
-    std::vector<Vertex_F3Coord_F3Normal_F2TextCoord> vertexMass;
-    std::vector<UINT> indexMass;
-
-    if (!load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(fileName_, vertexMass, indexMass, false, true)) {
+    Loader loader;
+    if (!loader.LoadFile(fileName_)) {
         return false;
     }
     
     // load mesh to our memory buffer
     int i = 0;
-    size_t maxVertex = vertexMass.size();
-    size_t maxIndex = indexMass.size();
+    size_t maxVertex = loader.LoadedMeshes[0].Vertices.size();  //vertexMass.size();
+    size_t maxIndex = loader.LoadedMeshes[0].Indices.size(); //indexMass.size();
 
     meshCell->vertexBuffer_InMEM = memManager.GetMemory(memKey1, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord) * maxVertex);
     meshCell->indexBuffer_InMEM = memManager.GetMemory(memKey1, sizeof(UINT) * maxIndex);
@@ -226,15 +224,22 @@ bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForReso
     //copy vertex to mem
     Vertex_F3Coord_F3Normal_F2TextCoord* vertexMassPointer = (Vertex_F3Coord_F3Normal_F2TextCoord*) meshCell->vertexBuffer_InMEM;
     for (i = 0; i < maxVertex; i++) {
-        vertexMassPointer[i].position     = vertexMass[i].position;
-        vertexMassPointer[i].normal       = vertexMass[i].normal;
-        vertexMassPointer[i].textureCoord = vertexMass[i].textureCoord;
+        vertexMassPointer[i].position.x = loader.LoadedMeshes[0].Vertices[i].Position.X;
+        vertexMassPointer[i].position.y = -loader.LoadedMeshes[0].Vertices[i].Position.Y; // fix coordinate for DirectX space
+        vertexMassPointer[i].position.z = -loader.LoadedMeshes[0].Vertices[i].Position.Z; // fix coordinate for DirectX space
+
+        vertexMassPointer[i].normal.x = loader.LoadedMeshes[0].Vertices[i].Normal.X;
+        vertexMassPointer[i].normal.y = loader.LoadedMeshes[0].Vertices[i].Normal.Y;
+        vertexMassPointer[i].normal.z = loader.LoadedMeshes[0].Vertices[i].Normal.Z;
+
+        vertexMassPointer[i].textureCoord.x = loader.LoadedMeshes[0].Vertices[i].TextureCoordinate.X;
+        vertexMassPointer[i].textureCoord.y = 1 - loader.LoadedMeshes[0].Vertices[i].TextureCoordinate.Y; // reverse V coordinete (UV)
     }
 
     //copy index to mem
     UINT* indexMassPointer = (UINT*)meshCell->indexBuffer_InMEM;
     for (i = 0; i < maxIndex; i++) {
-        indexMassPointer[i] = indexMass[i];
+        indexMassPointer[i] = loader.LoadedMeshes[0].Indices[i];
     }
 
     meshCell->ByteWidth_VertexBuffer_InMEM = sizeof(Vertex_F3Coord_F3Normal_F2TextCoord) * maxVertex;
@@ -250,7 +255,7 @@ bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForReso
     return true;
 }
 
-void OPTadaC_ResourceManager::SetToDefault_MeshCell(OPTadaE_MeshList_ForResoursManager& meshName_)
+void OPTadaC_ResourceManager::SetToDefault_MeshCell(OPTadaE_MeshList_ForResoursManager meshName_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
 
@@ -274,7 +279,7 @@ void OPTadaC_ResourceManager::SetToDefault_MeshCell(OPTadaE_MeshList_ForResoursM
     meshCell->meshName          = ENUM_MeshList_NONE;
 }
 
-bool OPTadaC_ResourceManager::Load_ToGPU_Mesh(OPTadaE_MeshList_ForResoursManager& meshName_, ID3D11Device* device_d3d11_)
+bool OPTadaC_ResourceManager::Load_ToGPU_Mesh(OPTadaE_MeshList_ForResoursManager meshName_, ID3D11Device* device_d3d11_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
 
@@ -323,13 +328,13 @@ bool OPTadaC_ResourceManager::Load_ToGPU_Mesh(OPTadaE_MeshList_ForResoursManager
     return true;
 }
 
-void OPTadaC_ResourceManager::Unload_FromGPU_Mesh(OPTadaE_MeshList_ForResoursManager& meshName_)
+void OPTadaC_ResourceManager::Unload_FromGPU_Mesh(OPTadaE_MeshList_ForResoursManager meshName_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
     meshCell->Free_GPU();
 }
 
-bool OPTadaC_ResourceManager::Use_Mesh_WithIndexBuffer(OPTadaE_MeshList_ForResoursManager& meshName_, ID3D11DeviceContext* gDeviceContext_)
+bool OPTadaC_ResourceManager::Use_Mesh_WithIndexBuffer(OPTadaE_MeshList_ForResoursManager meshName_, ID3D11DeviceContext* gDeviceContext_)
 {
     OPTadaS_MeshStructure& cell = mesh_Mass[meshName_];
     if (cell.isInGPUMemory) {
@@ -341,13 +346,13 @@ bool OPTadaC_ResourceManager::Use_Mesh_WithIndexBuffer(OPTadaE_MeshList_ForResou
     return false;
 }
 
-OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell(OPTadaE_MeshList_ForResoursManager& meshName_)
+OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell(OPTadaE_MeshList_ForResoursManager meshName_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
     return (meshCell->meshName != ENUM_MeshList_NONE) ? (meshCell) : (nullptr);
 }
 
-OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_MeshList_ForResoursManager& meshName_)
+OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_MeshList_ForResoursManager meshName_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
     return (meshCell->isInGPUMemory && meshCell->meshName != ENUM_MeshList_NONE) ? (meshCell) : (nullptr);
@@ -365,9 +370,7 @@ OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_Mes
 //}
 
 
-//using namespace DirectX;
-
-bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_ForResoursManager& textureEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_)
+bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_ForResoursManager textureEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_)
 {
     OPTadaS_TextureStructure& cell = texture_Mass[textureEnum_];
     HRESULT                   hr;
@@ -389,6 +392,7 @@ bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_Fo
     }
     SafeRelease(texResource);
 
+
     // create texture sampler state
     D3D11_SAMPLER_DESC sampDesc;
     ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -401,21 +405,6 @@ bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_Fo
     sampDesc.MinLOD         = 0;
     sampDesc.MaxLOD         = D3D11_FLOAT32_MAX;
     sampDesc.MaxAnisotropy  = 16;
-   
-    //sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    //sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    //sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    //sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-    //sampDesc.MipLODBias = 1.0f;
-    //sampDesc.MaxAnisotropy = 1;
-    //sampDesc.ComparisonFunc = D3D11_COMPARISON_EQUAL;//D3D11_COMPARISON_NEVER; //D3D11_COMPARISON_LESS; // D3D11_COMPARISON_ALWAYS;
-    //sampDesc.BorderColor[0] = 0;
-    //sampDesc.BorderColor[1] = 0;
-    //sampDesc.BorderColor[2] = 0;
-    //sampDesc.BorderColor[3] = 0;
-    //sampDesc.MinLOD = 0;
-    //sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
 
     hr = gDevice_->CreateSamplerState(&sampDesc, &cell.textureSamplerState);
     if (FAILED(hr)) {
@@ -429,18 +418,18 @@ bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_Fo
     return true;
 }
 
-OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell(OPTadaE_TextureList_ForResoursManager& textureEnum_)
+OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell(OPTadaE_TextureList_ForResoursManager textureEnum_)
 {
     return (textureEnum_ != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_ForResoursManager_MaxCount) ? (&texture_Mass[textureEnum_]) : (nullptr);
 }
 
-OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell_IfInGPU(OPTadaE_TextureList_ForResoursManager& textureEnum_)
+OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell_IfInGPU(OPTadaE_TextureList_ForResoursManager textureEnum_)
 {
     OPTadaS_TextureStructure* textureCell = &texture_Mass[textureEnum_];
     return (textureEnum_ != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_ForResoursManager_MaxCount && textureCell->isInGPUMemory) ? (textureCell) : (nullptr);;
 }
 
-bool OPTadaC_ResourceManager::Use_Texture(OPTadaE_TextureList_ForResoursManager& textureEnum_, ID3D11DeviceContext* gDeviceContext_, UINT resourceSlot_)
+bool OPTadaC_ResourceManager::Use_Texture(OPTadaE_TextureList_ForResoursManager textureEnum_, ID3D11DeviceContext* gDeviceContext_, UINT resourceSlot_)
 {
     OPTadaS_TextureStructure* cell = &texture_Mass[textureEnum_];
     if (cell->isInGPUMemory) {   
@@ -451,7 +440,7 @@ bool OPTadaC_ResourceManager::Use_Texture(OPTadaE_TextureList_ForResoursManager&
     return false;
 }
 
-bool OPTadaC_ResourceManager::Delete_Texture(OPTadaE_TextureList_ForResoursManager& textureEnum_)
+bool OPTadaC_ResourceManager::Delete_Texture(OPTadaE_TextureList_ForResoursManager textureEnum_)
 {
     OPTadaS_TextureStructure& cell = texture_Mass[textureEnum_];
     if (cell.textureEnum != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_NONE) {

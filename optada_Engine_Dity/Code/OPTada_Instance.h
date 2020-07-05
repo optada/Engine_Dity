@@ -130,14 +130,13 @@ public:
 		//// Set texture
 		//global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
 
-		//// Set Constant buffers
-		//global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
+
 
 		// ----------- draw clip objects
 
 		global_Render.Setup_NewRasterizer(ENUM_RasterizerMass_DrawAll);
 
-		global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
+		global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_VS_Color, global_Render.g_DeviceContext_d3d11);
 		global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
 
 		// Set Mesh
@@ -147,10 +146,7 @@ public:
 		// Set texture
 		global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
 
-		// Set Constant buffers
-		global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
 
-		
 		// ----------- draw blend objects
 		
 		//float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f }; //"fine-tune" the blending equation
@@ -169,8 +165,6 @@ public:
 		//// Set texture
 		//global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
 
-		//// Set Constant buffers
-		//global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
 
 
 

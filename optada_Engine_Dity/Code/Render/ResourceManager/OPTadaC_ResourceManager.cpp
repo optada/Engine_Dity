@@ -4,13 +4,98 @@
 #include "OPTadaC_ResourceManager.h"
 
 
-bool OPTadaC_ResourceManager::Init_ResourceManager()
+bool OPTadaC_ResourceManager::Init_ResourceManager(ID3D11Device* gDevice_, std::vector<UINT> constantBufferSizeList_)
 {
+    HRESULT hr;
+
     memManager.Init_Mamager(2);
     // 500000000 byte ~ 500 mb
     if (!(memKey1 = memManager.CreateNewMemoryBuffer(1, 500000000, 5000, 8, OPTadaE_BufferTypes_ForMemoryManager::ENUM_SimpleMemoryBuffer))) {
         return false;
     }
+
+    // ----------------- init all constant buffers
+
+    if (constantBufferSizeList_.size() != ENUM_ConstantBufferList_ForResourceManager_CountItems) {
+        return false;
+    }
+
+    // Create the constant buffers for the variables defined in the vertex shader.
+    D3D11_BUFFER_DESC constantBufferDesc;
+    ZeroMemory(&constantBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
+    constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    constantBufferDesc.CPUAccessFlags = 0;
+    constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    constantBufferDesc.MiscFlags = 0;
+
+    // cb application
+    constantBufferDesc.ByteWidth = constantBufferSizeList_[0];
+    hr = gDevice_->CreateBuffer(&constantBufferDesc, nullptr, &constantBuffers_Mass[ENUM_ConstantBufferList_Application]);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // cb frame
+    constantBufferDesc.ByteWidth = constantBufferSizeList_[1];
+    hr = gDevice_->CreateBuffer(&constantBufferDesc, nullptr, &constantBuffers_Mass[ENUM_ConstantBufferList_Frame]);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // cb object
+    constantBufferDesc.ByteWidth = constantBufferSizeList_[2];
+    hr = gDevice_->CreateBuffer(&constantBufferDesc, nullptr, &constantBuffers_Mass[ENUM_ConstantBufferList_ObjectData]);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // ----------------- init all sampler states
+  
+    D3D11_SAMPLER_DESC sampDesc;
+    ID3D11SamplerState* newSamplerState = nullptr;
+
+
+    // create texture sampler state ENUM_SamplerStateList_Linear_1
+    newSamplerState = nullptr;
+    ZeroMemory(&sampDesc, sizeof(sampDesc));
+
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.MipLODBias = 0.0f;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+    sampDesc.MaxAnisotropy = 1;
+
+    hr = gDevice_->CreateSamplerState(&sampDesc, &newSamplerState);
+    if (FAILED(hr)) {
+        return false; // can't create sample state
+    }
+    samplerState_Mass.push_back(newSamplerState);
+
+
+    // create texture sampler state ENUM_SamplerStateList_Linear_16
+    newSamplerState = nullptr;
+    ZeroMemory(&sampDesc, sizeof(sampDesc));
+
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.MipLODBias = 0.0f;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+    sampDesc.MaxAnisotropy = 16;
+
+    hr = gDevice_->CreateSamplerState(&sampDesc, &newSamplerState);
+    if (FAILED(hr)) {
+        return false; // can't create sample state
+    }
+    samplerState_Mass.push_back(newSamplerState);
 
     return true;
 }
@@ -19,52 +104,60 @@ void OPTadaC_ResourceManager::FreeAll()
 {
     // free all pixel shaders
     OPTadaS_PixelShaderStructure* shaderCell_PS = nullptr;
-    for (int i = 0; i < OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_ForResoursManager_MaxCount; i++) {
+    for (int i = 0; i < OPTadaE_PixelShaderList_ForResourceManager::ENUM_PixelShaderList_ForResourceManager_MaxCount; i++) {
         shaderCell_PS = &PS_Mass[i];
         shaderCell_PS->Free_GPU();
     }
 
     // free all vertex shaders
     OPTadaS_VertexShaderStructure* shaderCell_VS = nullptr;
-    for (int i = 0; i < OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_ForResoursManager_MaxCount; i++) {
+    for (int i = 0; i < OPTadaE_VertexShaderList_ForResourceManager::ENUM_VertexShaderList_ForResourceManager_MaxCount; i++) {
         shaderCell_VS = &VS_Mass[i];
         shaderCell_VS->Free_GPU();
     }
 
     // free all meshes from GPU memory
     OPTadaS_MeshStructure* meshCell = nullptr;
-    for (int i = 0; i < OPTadaE_MeshList_ForResoursManager::ENUM_MeshList_ForResoursManager_MaxCount; i++) {
+    for (int i = 0; i < OPTadaE_MeshList_ForResourceManager::ENUM_MeshList_ForResourceManager_MaxCount; i++) {
         meshCell = &mesh_Mass[i];
         meshCell->Free_GPU();
     }
 
+    // free all textures
+    OPTadaS_TextureStructure* textureCell = nullptr;
+    for (int i = 0; i < OPTadaE_TextureList_ForResourceManager::ENUM_TextureList_ForResourceManager_MaxCount; i++) {
+        textureCell = &texture_Mass[i];
+        textureCell->Free_GPU();
+    }
+
     // free all constant buffers
     ID3D11Buffer* constantBuffer = nullptr;
-    for (int i = 0; i < OPTadaE_ConstantBuffersList_ForResoursManager::OPTadaE_ConstantBuffersList_ForResoursManager_MaxCount; i++) {
+    for (int i = 0; i < OPTadaE_ConstantBufferList_ForResourceManager::ENUM_ConstantBufferList_ForResourceManager_CountItems; i++) {
         constantBuffer = constantBuffers_Mass[i];
         SafeRelease(constantBuffer);
     }
 
-    // free all textures
-    OPTadaS_TextureStructure* textureCell = nullptr;
-    for (int i = 0; i < OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_ForResoursManager_MaxCount; i++) {
-        textureCell = &texture_Mass[i];
-        textureCell->Free_GPU();
+    // free all Sampler States
+    ID3D11SamplerState* samplerState = nullptr;
+    for (int i = 0; i < samplerState_Mass.size(); i++) {
+        samplerState = samplerState_Mass[i];
+        SafeRelease(samplerState);
     }
+
 
     memManager.Free_Manager();
 }
 
 
-bool OPTadaC_ResourceManager::Create_PixelShader_FromBinaryFile(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_)
+bool OPTadaC_ResourceManager::Create_PixelShader_FromBinaryFile(OPTadaE_PixelShaderList_ForResourceManager shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_, std::vector<OPTadaE_SamplerStateList_ForResourceManager> SampleStateList_)
 {
     ID3DBlob*          pixelShaderBlob;
     HRESULT            hr;
 
     OPTadaS_PixelShaderStructure& cell = PS_Mass[shaderEnum_];
 
-    if (cell.shaderEnum != OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_NONE 
-        || shaderEnum_ == OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_NONE 
+    if (cell.shaderEnum != OPTadaE_PixelShaderList_ForResourceManager::ENUM_PixelShaderList_NONE 
+        || shaderEnum_ == OPTadaE_PixelShaderList_ForResourceManager::ENUM_PixelShaderList_NONE 
         || cell.pixelShader != nullptr
         || gDevice_ == nullptr) 
     {
@@ -85,32 +178,37 @@ bool OPTadaC_ResourceManager::Create_PixelShader_FromBinaryFile(OPTadaE_PixelSha
 
     SafeRelease(pixelShaderBlob);
 
+    cell.SampleStateList = SampleStateList_;
     cell.shaderEnum = shaderEnum_;
     cell.isInGPUMemory = true;
 
     return true;
 }
 
-OPTadaS_PixelShaderStructure* OPTadaC_ResourceManager::Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_)
+OPTadaS_PixelShaderStructure* OPTadaC_ResourceManager::Get_PixelShader_Cell(OPTadaE_PixelShaderList_ForResourceManager shaderEnum_)
 {
-    return (shaderEnum_ != OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_ForResoursManager_MaxCount)?(&PS_Mass[shaderEnum_]):(nullptr);
+    return (shaderEnum_ != OPTadaE_PixelShaderList_ForResourceManager::ENUM_PixelShaderList_ForResourceManager_MaxCount)?(&PS_Mass[shaderEnum_]):(nullptr);
 }
 
-bool OPTadaC_ResourceManager::Use_PixelShader(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_, ID3D11DeviceContext* gDeviceContext_)
+bool OPTadaC_ResourceManager::Use_PixelShader(OPTadaE_PixelShaderList_ForResourceManager shaderEnum_, ID3D11DeviceContext* gDeviceContext_)
 {
     OPTadaS_PixelShaderStructure& cell = PS_Mass[shaderEnum_];
     if (cell.isInGPUMemory) {
         gDeviceContext_->PSSetShader(cell.pixelShader, nullptr, 0);
+        int coutOfSampleStates = cell.SampleStateList.size();
+        for (int i = 0; i < coutOfSampleStates; i++) { // set sample states for PS
+            gDeviceContext_->PSGetSamplers(i, 1, &samplerState_Mass[cell.SampleStateList[i]]); // set semplers
+        }
         return true;
     }
 
     return false;
 }
 
-bool OPTadaC_ResourceManager::Delete_PixelShader(OPTadaE_PixelShaderList_ForResoursManager shaderEnum_)
+bool OPTadaC_ResourceManager::Delete_PixelShader(OPTadaE_PixelShaderList_ForResourceManager shaderEnum_)
 {
     OPTadaS_PixelShaderStructure& cell = PS_Mass[shaderEnum_];
-    if (cell.shaderEnum != OPTadaE_PixelShaderList_ForResoursManager::ENUM_PixelShaderList_NONE) {
+    if (cell.shaderEnum != OPTadaE_PixelShaderList_ForResourceManager::ENUM_PixelShaderList_NONE) {
         cell.Free_GPU();
         cell.shaderEnum = ENUM_PixelShaderList_NONE;
         return true;
@@ -120,15 +218,15 @@ bool OPTadaC_ResourceManager::Delete_PixelShader(OPTadaE_PixelShaderList_ForReso
 }
 
 
-bool OPTadaC_ResourceManager::Create_VertexShader_FromBinaryFile(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_, D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_, UINT countOfvertexLayoutDesc_)
+bool OPTadaC_ResourceManager::Create_VertexShader_FromBinaryFile(OPTadaE_VertexShaderList_ForResourceManager shaderEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_, D3D11_INPUT_ELEMENT_DESC* vertexLayoutDesc_, UINT countOfvertexLayoutDesc_)
 {
     ID3DBlob*           vertexShaderBlob;
     HRESULT             hr;
 
     OPTadaS_VertexShaderStructure& cell = VS_Mass[shaderEnum_];
 
-    if (cell.shaderEnum != OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_NONE
-        || shaderEnum_ == OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_NONE
+    if (cell.shaderEnum != OPTadaE_VertexShaderList_ForResourceManager::ENUM_VertexShaderList_NONE
+        || shaderEnum_ == OPTadaE_VertexShaderList_ForResourceManager::ENUM_VertexShaderList_NONE
         || cell.vertexShader != nullptr
         || cell.inputLayout != nullptr
         || gDevice_ == nullptr)
@@ -164,27 +262,28 @@ bool OPTadaC_ResourceManager::Create_VertexShader_FromBinaryFile(OPTadaE_VertexS
 
 }
 
-OPTadaS_VertexShaderStructure* OPTadaC_ResourceManager::Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_)
+OPTadaS_VertexShaderStructure* OPTadaC_ResourceManager::Get_VertexShader_Cell(OPTadaE_VertexShaderList_ForResourceManager shaderEnum_)
 {
-    return (shaderEnum_ != OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_ForResoursManager_MaxCount) ? (&VS_Mass[shaderEnum_]) : (nullptr);
+    return (shaderEnum_ != OPTadaE_VertexShaderList_ForResourceManager::ENUM_VertexShaderList_ForResourceManager_MaxCount) ? (&VS_Mass[shaderEnum_]) : (nullptr);
 }
 
-bool OPTadaC_ResourceManager::Use_VertexShader(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_, ID3D11DeviceContext* gDeviceContext_)
+bool OPTadaC_ResourceManager::Use_VertexShader(OPTadaE_VertexShaderList_ForResourceManager shaderEnum_, ID3D11DeviceContext* gDeviceContext_)
 {
     OPTadaS_VertexShaderStructure& cell = VS_Mass[shaderEnum_];
     if (cell.isInGPUMemory) {
         gDeviceContext_->IASetInputLayout(cell.inputLayout);
         gDeviceContext_->VSSetShader(cell.vertexShader, nullptr, 0);
+        gDeviceContext_->VSSetConstantBuffers(0, ENUM_ConstantBufferList_ForResourceManager_CountItems, constantBuffers_Mass);
         return true;
     }
 
     return false;
 }
 
-bool OPTadaC_ResourceManager::Delete_VertexShader(OPTadaE_VertexShaderList_ForResoursManager shaderEnum_)
+bool OPTadaC_ResourceManager::Delete_VertexShader(OPTadaE_VertexShaderList_ForResourceManager shaderEnum_)
 {
     OPTadaS_VertexShaderStructure& cell = VS_Mass[shaderEnum_];
-    if (cell.shaderEnum != OPTadaE_VertexShaderList_ForResoursManager::ENUM_VertexShaderList_NONE) {
+    if (cell.shaderEnum != OPTadaE_VertexShaderList_ForResourceManager::ENUM_VertexShaderList_NONE) {
         cell.Free_GPU();
         cell.shaderEnum = ENUM_VertexShaderList_NONE;
         return true;
@@ -194,11 +293,11 @@ bool OPTadaC_ResourceManager::Delete_VertexShader(OPTadaE_VertexShaderList_ForRe
 }
 
 
-bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForResoursManager meshName_, const std::string fileName_, ID3D11Device* gDevice_, UINT vertexStride_, UINT vertexOffset_, DXGI_FORMAT indexBufferFormat_)
+bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForResourceManager meshName_, const std::string fileName_, ID3D11Device* gDevice_, UINT vertexStride_, UINT vertexOffset_, DXGI_FORMAT indexBufferFormat_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
 
-    if (vertexStride_ == 0 || !gDevice_ || meshCell->meshName != OPTadaE_MeshList_ForResoursManager::ENUM_MeshList_NONE) {
+    if (vertexStride_ == 0 || !gDevice_ || meshCell->meshName != OPTadaE_MeshList_ForResourceManager::ENUM_MeshList_NONE) {
         return false;
     }
 
@@ -255,7 +354,7 @@ bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForReso
     return true;
 }
 
-void OPTadaC_ResourceManager::SetToDefault_MeshCell(OPTadaE_MeshList_ForResoursManager meshName_)
+void OPTadaC_ResourceManager::SetToDefault_MeshCell(OPTadaE_MeshList_ForResourceManager meshName_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
 
@@ -279,7 +378,7 @@ void OPTadaC_ResourceManager::SetToDefault_MeshCell(OPTadaE_MeshList_ForResoursM
     meshCell->meshName          = ENUM_MeshList_NONE;
 }
 
-bool OPTadaC_ResourceManager::Load_ToGPU_Mesh(OPTadaE_MeshList_ForResoursManager meshName_, ID3D11Device* device_d3d11_)
+bool OPTadaC_ResourceManager::Load_ToGPU_Mesh(OPTadaE_MeshList_ForResourceManager meshName_, ID3D11Device* device_d3d11_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
 
@@ -328,13 +427,13 @@ bool OPTadaC_ResourceManager::Load_ToGPU_Mesh(OPTadaE_MeshList_ForResoursManager
     return true;
 }
 
-void OPTadaC_ResourceManager::Unload_FromGPU_Mesh(OPTadaE_MeshList_ForResoursManager meshName_)
+void OPTadaC_ResourceManager::Unload_FromGPU_Mesh(OPTadaE_MeshList_ForResourceManager meshName_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
     meshCell->Free_GPU();
 }
 
-bool OPTadaC_ResourceManager::Use_Mesh_WithIndexBuffer(OPTadaE_MeshList_ForResoursManager meshName_, ID3D11DeviceContext* gDeviceContext_)
+bool OPTadaC_ResourceManager::Use_Mesh_WithIndexBuffer(OPTadaE_MeshList_ForResourceManager meshName_, ID3D11DeviceContext* gDeviceContext_)
 {
     OPTadaS_MeshStructure& cell = mesh_Mass[meshName_];
     if (cell.isInGPUMemory) {
@@ -346,39 +445,27 @@ bool OPTadaC_ResourceManager::Use_Mesh_WithIndexBuffer(OPTadaE_MeshList_ForResou
     return false;
 }
 
-OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell(OPTadaE_MeshList_ForResoursManager meshName_)
+OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell(OPTadaE_MeshList_ForResourceManager meshName_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
     return (meshCell->meshName != ENUM_MeshList_NONE) ? (meshCell) : (nullptr);
 }
 
-OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_MeshList_ForResoursManager meshName_)
+OPTadaS_MeshStructure* OPTadaC_ResourceManager::Get_MeshCell_IfInGPU(OPTadaE_MeshList_ForResourceManager meshName_)
 {
     OPTadaS_MeshStructure* meshCell = &mesh_Mass[meshName_];
     return (meshCell->isInGPUMemory && meshCell->meshName != ENUM_MeshList_NONE) ? (meshCell) : (nullptr);
 }
 
 
-//inline void OPTadaC_ResourceManager::Set_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_, ID3D11Buffer* constantBuffer_)
-//{
-//    constantBuffersMass[constantBufferID_] = constantBuffer_;
-//}
-
-//inline ID3D11Buffer* OPTadaC_ResourceManager::Get_ConstantBuffer(OPTadaE_ConstantBuffersList_ForResoursManager constantBufferID_)
-//{
-//    return constantBuffersMass[constantBufferID_];
-//}
-
-
-bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_ForResoursManager textureEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_)
+bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_ForResourceManager textureEnum_, const std::wstring& fileName_, ID3D11Device* gDevice_)
 {
     OPTadaS_TextureStructure& cell = texture_Mass[textureEnum_];
     HRESULT                   hr;
 
-    if (cell.textureEnum != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_NONE 
-        || textureEnum_ == OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_NONE
+    if (cell.textureEnum != OPTadaE_TextureList_ForResourceManager::ENUM_TextureList_NONE 
+        || textureEnum_ == OPTadaE_TextureList_ForResourceManager::ENUM_TextureList_NONE
         || cell.texture != nullptr
-        || cell.textureSamplerState != nullptr
         || gDevice_ == nullptr)
     {
         return false;
@@ -392,60 +479,39 @@ bool OPTadaC_ResourceManager::Create_Texture_LoadFromFile(OPTadaE_TextureList_Fo
     }
     SafeRelease(texResource);
 
-
-    // create texture sampler state
-    D3D11_SAMPLER_DESC sampDesc;
-    ZeroMemory(&sampDesc, sizeof(sampDesc));
-    sampDesc.Filter         = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sampDesc.AddressU       = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressV       = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressW       = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.MipLODBias     = 0.0f;
-    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    sampDesc.MinLOD         = 0;
-    sampDesc.MaxLOD         = D3D11_FLOAT32_MAX;
-    sampDesc.MaxAnisotropy  = 16;
-
-    hr = gDevice_->CreateSamplerState(&sampDesc, &cell.textureSamplerState);
-    if (FAILED(hr)) {
-        SafeRelease(cell.texture); // free texture
-        return false; // can't create sample state
-    }
-
     cell.textureEnum = textureEnum_;
     cell.isInGPUMemory = true;
 
     return true;
 }
 
-OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell(OPTadaE_TextureList_ForResoursManager textureEnum_)
+OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell(OPTadaE_TextureList_ForResourceManager textureEnum_)
 {
-    return (textureEnum_ != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_ForResoursManager_MaxCount) ? (&texture_Mass[textureEnum_]) : (nullptr);
+    return (textureEnum_ != OPTadaE_TextureList_ForResourceManager::ENUM_TextureList_ForResourceManager_MaxCount) ? (&texture_Mass[textureEnum_]) : (nullptr);
 }
 
-OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell_IfInGPU(OPTadaE_TextureList_ForResoursManager textureEnum_)
+OPTadaS_TextureStructure* OPTadaC_ResourceManager::Get_Texture_Cell_IfInGPU(OPTadaE_TextureList_ForResourceManager textureEnum_)
 {
     OPTadaS_TextureStructure* textureCell = &texture_Mass[textureEnum_];
-    return (textureEnum_ != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_ForResoursManager_MaxCount && textureCell->isInGPUMemory) ? (textureCell) : (nullptr);;
+    return (textureEnum_ != OPTadaE_TextureList_ForResourceManager::ENUM_TextureList_ForResourceManager_MaxCount && textureCell->isInGPUMemory) ? (textureCell) : (nullptr);;
 }
 
-bool OPTadaC_ResourceManager::Use_Texture(OPTadaE_TextureList_ForResoursManager textureEnum_, ID3D11DeviceContext* gDeviceContext_, UINT resourceSlot_)
+bool OPTadaC_ResourceManager::Use_Texture(OPTadaE_TextureList_ForResourceManager textureEnum_, ID3D11DeviceContext* gDeviceContext_, UINT resourceSlot_)
 {
     OPTadaS_TextureStructure* cell = &texture_Mass[textureEnum_];
     if (cell->isInGPUMemory) {   
         gDeviceContext_->PSSetShaderResources(resourceSlot_, 1, &(cell->texture));
-        gDeviceContext_->PSSetSamplers(resourceSlot_, 1, &(cell->textureSamplerState));
     }
 
     return false;
 }
 
-bool OPTadaC_ResourceManager::Delete_Texture(OPTadaE_TextureList_ForResoursManager textureEnum_)
+bool OPTadaC_ResourceManager::Delete_Texture(OPTadaE_TextureList_ForResourceManager textureEnum_)
 {
     OPTadaS_TextureStructure& cell = texture_Mass[textureEnum_];
-    if (cell.textureEnum != OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_NONE) {
+    if (cell.textureEnum != OPTadaE_TextureList_ForResourceManager::ENUM_TextureList_NONE) {
         cell.Free_GPU();
-        cell.textureEnum = OPTadaE_TextureList_ForResoursManager::ENUM_TextureList_NONE;
+        cell.textureEnum = OPTadaE_TextureList_ForResourceManager::ENUM_TextureList_NONE;
         return true;
     }
 
@@ -453,133 +519,145 @@ bool OPTadaC_ResourceManager::Delete_Texture(OPTadaE_TextureList_ForResoursManag
 }
 
 
-
-bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const std::string fileName_, std::vector<Vertex_F3Coord_F3Normal_F2TextCoord>& outputVertexMass_, 
-    std::vector<UINT>& outputIndexMass_, bool reverseNormal_, bool reverseVTexture_)
+void OPTadaC_ResourceManager::UpdateSubresource(OPTadaE_ConstantBufferList_ForResourceManager constantBufferEnum_, void* linkOnData_, ID3D11DeviceContext* gDeviceContext_)
 {
- 
-    struct UINT3_For
-    {
-        UINT vertexIndices;
-        UINT uvIndices;
-        UINT normalIndices;
-    };
-
-    UINT numberOfVertices = 0, numberOfNormals = 0, numberOfUVs = 0, numberOfFaces = 0;
-    std::vector<Vertex_F3Coord_F3Normal_F2TextCoord> outputDaMettere;
-
-    std::vector<XMFLOAT3> temp_vertices;
-    std::vector<XMFLOAT2> temp_uvs;
-    std::vector<XMFLOAT3> temp_normals;
-
-    std::vector<UINT3_For> dotIndices;
-    std::vector<UINT> indicesList;
-
-
-    FILE* file = fopen(fileName_.c_str(), "r");
-    if (file == NULL) {
-        MessageBox(0, L"Can't reade .OBJ file", 0, 0);
-        return false;
-    }
-    while (1) {
-        char lineHeader[128];
-        int res = fscanf(file, "%s \n", lineHeader);
-        if (res == EOF)
-            break;
-
-        if (strcmp(lineHeader, "v") == 0) {
-            XMFLOAT3 vertex;
-            int a = fscanf(file, "%f %f %f \n", &vertex.x, &vertex.y, &vertex.z);
-            temp_vertices.push_back(vertex);
-            numberOfVertices++;
-        }
-        else if (strcmp(lineHeader, "vt") == 0) {
-            XMFLOAT2 uv;
-            fscanf(file, "%f %f\n", &uv.x, &uv.y);
-            if (reverseVTexture_) {
-                uv.y = uv.y;
-                uv.x = uv.x;
-            }
-            temp_uvs.push_back(uv);
-            numberOfUVs++;
-        }
-        else if (strcmp(lineHeader, "vn") == 0) {
-            XMFLOAT3 normals;
-            fscanf(file, "%f %f %f \n", &normals.x, &normals.y, &normals.z);
-            if (reverseNormal_) {
-                normals.z *= -1.0f;
-            }
-            temp_normals.push_back(normals);
-            numberOfNormals++;
-        }
-        else if (strcmp(lineHeader, "f") == 0) {
-            char vertex1 = ' ', vertex2 = ' ', vertex3 = ' ';
-            UINT vertexIndex[3], uvIndex[3], normalIndex[3];
-            int matches = fscanf(file, "%i %c %i %c %i  %i %c %i %c %i  %i %c %i %c %i \n", 
-                &vertexIndex[0], &vertex1, &uvIndex[0], &vertex1, &normalIndex[0],
-                &vertexIndex[1], &vertex2, &uvIndex[1], &vertex2, &normalIndex[1],
-                &vertexIndex[2], &vertex3, &uvIndex[2], &vertex3, &normalIndex[2]);
-
-            if (matches != 15) {
-                MessageBox(0, L"File cant be read", 0, 0);
-                break;
-            }
-
-            UINT3_For newIndex1, newIndex2, newIndex3;
-
-            newIndex1.normalIndices = normalIndex[0];
-            newIndex1.uvIndices     = uvIndex[0];
-            newIndex1.vertexIndices = vertexIndex[0];
-
-            newIndex2.normalIndices = normalIndex[1];
-            newIndex2.uvIndices     = uvIndex[1];
-            newIndex2.vertexIndices = vertexIndex[1];
-
-            newIndex3.normalIndices = normalIndex[2];
-            newIndex3.uvIndices     = uvIndex[2];
-            newIndex3.vertexIndices = vertexIndex[2];
-
-            dotIndices.push_back(newIndex1);
-            dotIndices.push_back(newIndex2);
-            dotIndices.push_back(newIndex3);
-
-            numberOfFaces++;
-        }
+    if (constantBufferEnum_ == ENUM_ConstantBufferList_ForResourceManager_CountItems) {
+        return; // error mass
     }
 
-    numberOfFaces *= 3;
-    UINT sizeOfVertexBuffer = 0;
-    UINT3_For* checkDot = nullptr;
-    for (UINT i = 0; i < numberOfFaces; i++) {
-
-        UINT3_For& dot = dotIndices[i]; // get dot
-        
-        // try found dublicate
-        for (UINT i2 = 0;; i2++) {
-
-            if (i2 >= sizeOfVertexBuffer) { // we have no dublicates and this is out of mass
-                Vertex_F3Coord_F3Normal_F2TextCoord temp;
-                temp.position     = temp_vertices[dot.vertexIndices - 1];
-                temp.normal       = temp_normals[dot.normalIndices - 1];
-                temp.textureCoord = temp_uvs[dot.uvIndices - 1];
-                outputVertexMass_.push_back(temp); // add new point (dot)
-                sizeOfVertexBuffer++;
-                outputIndexMass_.push_back(i2); // save index
-                break; // out for
-            }
-
-            checkDot = &dotIndices[i2];
-            // check
-            if (   dot.normalIndices == checkDot->normalIndices 
-                && dot.uvIndices     == checkDot->uvIndices 
-                && dot.vertexIndices == checkDot->vertexIndices) 
-            { // if we have dublicate
-                outputIndexMass_.push_back(i2); // save index
-                break; // out for
-            }
-        }
-    }
-
-    return true;
+    gDeviceContext_->UpdateSubresource(constantBuffers_Mass[constantBufferEnum_], 0, nullptr, linkOnData_, 0, 0);
 }
+
+
+// Simple mesh loader
+
+//
+//bool load_SimpleMesh_FromOBJFile_Vertex_CoordTextCoordNormal_Indexes_UINT(const std::string fileName_, std::vector<Vertex_F3Coord_F3Normal_F2TextCoord>& outputVertexMass_, 
+//    std::vector<UINT>& outputIndexMass_, bool reverseNormal_, bool reverseVTexture_)
+//{
+// 
+//    struct UINT3_For
+//    {
+//        UINT vertexIndices;
+//        UINT uvIndices;
+//        UINT normalIndices;
+//    };
+//
+//    UINT numberOfVertices = 0, numberOfNormals = 0, numberOfUVs = 0, numberOfFaces = 0;
+//    std::vector<Vertex_F3Coord_F3Normal_F2TextCoord> outputDaMettere;
+//
+//    std::vector<XMFLOAT3> temp_vertices;
+//    std::vector<XMFLOAT2> temp_uvs;
+//    std::vector<XMFLOAT3> temp_normals;
+//
+//    std::vector<UINT3_For> dotIndices;
+//    std::vector<UINT> indicesList;
+//
+//
+//    FILE* file = fopen(fileName_.c_str(), "r");
+//    if (file == NULL) {
+//        MessageBox(0, L"Can't reade .OBJ file", 0, 0);
+//        return false;
+//    }
+//    while (1) {
+//        char lineHeader[128];
+//        int res = fscanf(file, "%s \n", lineHeader);
+//        if (res == EOF)
+//            break;
+//
+//        if (strcmp(lineHeader, "v") == 0) {
+//            XMFLOAT3 vertex;
+//            int a = fscanf(file, "%f %f %f \n", &vertex.x, &vertex.y, &vertex.z);
+//            temp_vertices.push_back(vertex);
+//            numberOfVertices++;
+//        }
+//        else if (strcmp(lineHeader, "vt") == 0) {
+//            XMFLOAT2 uv;
+//            fscanf(file, "%f %f\n", &uv.x, &uv.y);
+//            if (reverseVTexture_) {
+//                uv.y = uv.y;
+//                uv.x = uv.x;
+//            }
+//            temp_uvs.push_back(uv);
+//            numberOfUVs++;
+//        }
+//        else if (strcmp(lineHeader, "vn") == 0) {
+//            XMFLOAT3 normals;
+//            fscanf(file, "%f %f %f \n", &normals.x, &normals.y, &normals.z);
+//            if (reverseNormal_) {
+//                normals.z *= -1.0f;
+//            }
+//            temp_normals.push_back(normals);
+//            numberOfNormals++;
+//        }
+//        else if (strcmp(lineHeader, "f") == 0) {
+//            char vertex1 = ' ', vertex2 = ' ', vertex3 = ' ';
+//            UINT vertexIndex[3], uvIndex[3], normalIndex[3];
+//            int matches = fscanf(file, "%i %c %i %c %i  %i %c %i %c %i  %i %c %i %c %i \n", 
+//                &vertexIndex[0], &vertex1, &uvIndex[0], &vertex1, &normalIndex[0],
+//                &vertexIndex[1], &vertex2, &uvIndex[1], &vertex2, &normalIndex[1],
+//                &vertexIndex[2], &vertex3, &uvIndex[2], &vertex3, &normalIndex[2]);
+//
+//            if (matches != 15) {
+//                MessageBox(0, L"File cant be read", 0, 0);
+//                break;
+//            }
+//
+//            UINT3_For newIndex1, newIndex2, newIndex3;
+//
+//            newIndex1.normalIndices = normalIndex[0];
+//            newIndex1.uvIndices     = uvIndex[0];
+//            newIndex1.vertexIndices = vertexIndex[0];
+//
+//            newIndex2.normalIndices = normalIndex[1];
+//            newIndex2.uvIndices     = uvIndex[1];
+//            newIndex2.vertexIndices = vertexIndex[1];
+//
+//            newIndex3.normalIndices = normalIndex[2];
+//            newIndex3.uvIndices     = uvIndex[2];
+//            newIndex3.vertexIndices = vertexIndex[2];
+//
+//            dotIndices.push_back(newIndex1);
+//            dotIndices.push_back(newIndex2);
+//            dotIndices.push_back(newIndex3);
+//
+//            numberOfFaces++;
+//        }
+//    }
+//
+//    numberOfFaces *= 3;
+//    UINT sizeOfVertexBuffer = 0;
+//    UINT3_For* checkDot = nullptr;
+//    for (UINT i = 0; i < numberOfFaces; i++) {
+//
+//        UINT3_For& dot = dotIndices[i]; // get dot
+//        
+//        // try found dublicate
+//        for (UINT i2 = 0;; i2++) {
+//
+//            if (i2 >= sizeOfVertexBuffer) { // we have no dublicates and this is out of mass
+//                Vertex_F3Coord_F3Normal_F2TextCoord temp;
+//                temp.position     = temp_vertices[dot.vertexIndices - 1];
+//                temp.normal       = temp_normals[dot.normalIndices - 1];
+//                temp.textureCoord = temp_uvs[dot.uvIndices - 1];
+//                outputVertexMass_.push_back(temp); // add new point (dot)
+//                sizeOfVertexBuffer++;
+//                outputIndexMass_.push_back(i2); // save index
+//                break; // out for
+//            }
+//
+//            checkDot = &dotIndices[i2];
+//            // check
+//            if (   dot.normalIndices == checkDot->normalIndices 
+//                && dot.uvIndices     == checkDot->uvIndices 
+//                && dot.vertexIndices == checkDot->vertexIndices) 
+//            { // if we have dublicate
+//                outputIndexMass_.push_back(i2); // save index
+//                break; // out for
+//            }
+//        }
+//    }
+//
+//    return true;
+//}
 

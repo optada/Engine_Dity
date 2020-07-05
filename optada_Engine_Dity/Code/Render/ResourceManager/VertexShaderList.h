@@ -9,20 +9,21 @@
 
 
 // enum - contains types for vertex shader list
-enum OPTadaE_VertexShaderList_ForResoursManager
+enum OPTadaE_VertexShaderList_ForResourceManager
 {
 	ENUM_VertexShaderList_NONE = 0,
 
-	ENUM_VertexShaderList_SimpleMaterial_01 = 1, // vertex shader SimpleMaterial_01
+	ENUM_VertexShaderList_VS_Color          = 1, // vertex shader VS_Color   
+	ENUM_VertexShaderList_VS_ColorWithLight = 2, // vertex shader VS_ColorWithLight
 
-	ENUM_VertexShaderList_ForResoursManager_MaxCount,
+	ENUM_VertexShaderList_ForResourceManager_MaxCount,
 };
 
 
 // structure - Vertex shader cell
 struct OPTadaS_VertexShaderStructure
 {
-	OPTadaE_VertexShaderList_ForResoursManager shaderEnum = ENUM_VertexShaderList_NONE; // vertex shader type (Enum)
+	OPTadaE_VertexShaderList_ForResourceManager shaderEnum = ENUM_VertexShaderList_NONE; // vertex shader type (Enum)
 
 	bool isInGPUMemory = false; // true - we have this in GPU memory, and can draw | false - only CPU memory 
 

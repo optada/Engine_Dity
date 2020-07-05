@@ -2,20 +2,22 @@
 // - - - - - - - - - - - - - - - - - //
 
 
-cbuffer PerApplication : register(b0)
+cbuffer Application : register(b0)
 {
     matrix projectionMatrix;
 }
 
-cbuffer PerFrame : register(b1)
+cbuffer Frame : register(b1)
 {
     matrix viewMatrix;
 }
 
-cbuffer PerObject : register(b2)
+cbuffer Object : register(b2)
 {
     matrix worldMatrix;
 }
+
+
 
 // VS_IN
 struct AppData 
@@ -41,7 +43,7 @@ VertexShaderOutput VS_Material_Default(AppData IN)
 {
     VertexShaderOutput OUT;
 
-    matrix mvp = mul(projectionMatrix, mul(viewMatrix, worldMatrix));
+    matrix mvp       = mul(projectionMatrix, mul(viewMatrix, worldMatrix));
     OUT.position     = mul(mvp, float4(IN.position, 1.0f));
 
     OUT.normal       = float4(IN.normal, 1.0f);

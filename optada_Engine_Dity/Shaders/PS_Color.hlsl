@@ -2,8 +2,14 @@
 // - - - - - - - - - - - - - - - - - //
 
 Texture2D texture0 : register (t0);
+Texture2D texture1 : register (t1);
+Texture2D texture2 : register (t2);
+Texture2D texture3 : register (t3);
 
 SamplerState SampleLinear0 : register (s0);
+SamplerState SampleLinear1 : register (s1);
+SamplerState SampleLinear2 : register (s2);
+SamplerState SampleLinear3 : register (s3);
 
 
 // PS_IN

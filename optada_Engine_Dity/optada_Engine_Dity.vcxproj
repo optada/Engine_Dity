@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Code\Input\OPTada_Input.cpp" />
     <ClCompile Include="Code\Main.cpp" />
     <ClCompile Include="Code\Render\OPTada_Render.cpp" />
     <ClCompile Include="Code\Render\ResourceManager\MamoryManager_x64\OPTada_MemoryManager.cpp" />
@@ -157,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Game_Level.h" />
+    <ClInclude Include="Code\Input\OPTada_Input.h" />
     <ClInclude Include="Code\OPTada_Instance.h" />
     <ClInclude Include="Code\Render\OPTada_Render.h" />
     <ClInclude Include="Code\Render\OPTada_Render_Settings.h" />

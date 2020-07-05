@@ -25,6 +25,9 @@
     <Filter Include="Code\Render\ResourceManager\Loader">
       <UniqueIdentifier>{753e5344-de46-481d-b318-1c0e293a1a43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Input">
+      <UniqueIdentifier>{22485cb1-109e-4a28-9767-837447452548}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Main.cpp">
@@ -53,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="Code\Render\ResourceManager\WICTextureLoader11.cpp">
       <Filter>Code\Render\ResourceManager\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Input\OPTada_Input.cpp">
+      <Filter>Code\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="Code\Render\ResourceManager\OBJ_Loader.h">
       <Filter>Code\Render\ResourceManager\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Input\OPTada_Input.h">
+      <Filter>Code\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

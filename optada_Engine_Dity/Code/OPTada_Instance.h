@@ -5,6 +5,7 @@
 
 #include "Window\OPTada_Window.h" 
 #include "Render\OPTada_Render.h"
+#include "Input\OPTada_Input.h"
 
 #include "Game_Level.h"
 
@@ -41,6 +42,13 @@ public:
 			return false;
 		}
 
+		// create input
+		if (!global_Input.Initialization(hinstance_, hwnd)) {
+			MessageBox(NULL, L"Can't init input", L"Instance", NULL);
+			return false;
+		}
+
+
 		return true;
 	}
 
@@ -68,6 +76,9 @@ public:
 	// shutdown project project (free all global modules)
 	static void Global_ShutdownProject() {
 		
+		// free input
+		global_Input.ShuttingDown();;
+
 		lvl.Free();
 
 		// close DirectX
@@ -81,6 +92,8 @@ public:
 
 	// Global tick
 	static int Tick(float deltaTime_) {
+
+		global_Input.DetectInput(deltaTime_);
 
 		global_Render.PrepareBuffersForNewFrame(DirectX::Colors::CornflowerBlue, 1.0f, 0);
 

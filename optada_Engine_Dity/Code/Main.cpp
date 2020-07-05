@@ -30,8 +30,9 @@ case WM_KEYDOWN: {
 
 	case 0x46: { // pressed 'F' button
 
+		// debug
+		/*
 		//global_Window.Do_SwapMode_Fullscreen_LastWindowed();
-
 		static int cocos = 1;
 
 		OPTadaS_Window_Size newWindowSize;
@@ -46,46 +47,15 @@ case WM_KEYDOWN: {
 		}
 
 		if (cocos == 2) {
-			newWindowSize.width = 800;
-			newWindowSize.height = 600;
-			if (!OPTada_Instance::Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
-				MessageBox(NULL, L"cocos 2", L"cocos test", NULL);
-				return false;
-			}
+
 		}
 
 		if (cocos == 3) {
-			newWindowSize.width = 1280;
-			newWindowSize.height = 720;
-			if (!OPTada_Instance::Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
-				MessageBox(NULL, L"cocos 3", L"cocos test", NULL);
-				return false;
-			}
-		}
-
-		if (cocos == 4) {
-			newWindowSize.width = 800;
-			newWindowSize.height = 600;
-			if (!OPTada_Instance::Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
-				MessageBox(NULL, L"cocos 4", L"cocos test", NULL);
-				return false;
-			}
-		}
-
-		if (cocos == 5) {
-			newWindowSize.width = 800;
-			newWindowSize.height = 600;
-			if (!OPTada_Instance::Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
-				MessageBox(NULL, L"cocos 5", L"cocos test", NULL);
-				return false;
-			}
-		}
-
-		if (cocos == 6) {
 
 		}
 
 		cocos++;
+		*/
 
 	} break;
 

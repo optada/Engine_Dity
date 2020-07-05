@@ -11,8 +11,6 @@
 #include <d3dcommon.h> 
 #include <d3dcompiler.h>
 
-#include <dinput.h>
-
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 #include <xnamath.h>

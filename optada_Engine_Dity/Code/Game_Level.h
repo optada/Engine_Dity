@@ -92,7 +92,7 @@ public:
         global_Render.resourceManager.Load_ToGPU_Mesh(meshEnum, global_Render.g_Device_d3d11);
 
         OPTadaE_TextureList_ForResoursManager textureEnum = ENUM_TextureList_TextureForShare;
-        if (!global_Render.resourceManager.Create_Texture_LoadFromFile(textureEnum, L"mesh/DC_monkey.png", global_Render.g_Device_d3d11)) {
+        if (!global_Render.resourceManager.Create_Texture_LoadFromFile(textureEnum, L"mesh/DC_monkeyA.bmp", global_Render.g_Device_d3d11)) {
             MessageBox(NULL, L"Create texture failed", L"Game level", NULL);
         }
 
@@ -129,7 +129,7 @@ public:
 	bool Tick(float deltaTime_)
 	{
         static float posi = 0.0f;
-        posi += 1.0f * deltaTime_;
+        posi += 0.25f * deltaTime_;
         XMVECTOR eyePosition = XMVectorSet(0, posi, -4, 1); // camera position
         XMVECTOR focusPoint  = XMVectorSet(0, 0, 0, 1); // watch point (look at)
         XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0); // up direction (rotate)

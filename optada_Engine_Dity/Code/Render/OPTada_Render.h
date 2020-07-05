@@ -34,6 +34,7 @@ enum OPTadaE_RasterizerMass_ForRender
 	ENUM_RasterizerMass_Debug_DrawAllLines   = 1, // debug mode, will draw all lines
 	ENUM_RasterizerMass_Debug_DrawFrontLines = 2, // debug mode, will draw front lines
 	ENUM_RasterizerMass_DrawBack_ClipFront   = 3, // draw back triangles
+	ENUM_RasterizerMass_DrawAll              = 4, // draw all tringles
 };
 
 

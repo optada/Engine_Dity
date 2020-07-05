@@ -214,6 +214,27 @@ bool OPTada_Render::Init_AllRasterizerState()
     g_RasterizerMass.push_back(g_RasterizerState_d3d);
     g_RasterizerState_d3d = nullptr;
 
+
+    // Setup rasterizer state default ENUM_RasterizerMass_DrawAll
+    ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+
+    rasterizerDesc.AntialiasedLineEnable = TRUE;
+    rasterizerDesc.CullMode              = D3D11_CULL_NONE;  // draw all triangles
+    rasterizerDesc.DepthBias             = 0;
+    rasterizerDesc.DepthBiasClamp        = 0.0f;
+    rasterizerDesc.DepthClipEnable       = FALSE;            // clip z coord
+    rasterizerDesc.FillMode              = D3D11_FILL_SOLID; // darw lines
+    rasterizerDesc.FrontCounterClockwise = FALSE;            // a triangle will be considered front-facing if its vertices are counter-clockwise on the render target
+    rasterizerDesc.MultisampleEnable     = FALSE;
+    rasterizerDesc.ScissorEnable         = FALSE;            // is scissor-rectangle culling. TRUE - enable
+    rasterizerDesc.SlopeScaledDepthBias  = 0.0f;
+
+    // Create the rasterizer state object.
+    if (S_OK != g_Device_d3d11->CreateRasterizerState(&rasterizerDesc, &g_RasterizerState_d3d)) {
+        return false;
+    }
+    g_RasterizerMass.push_back(g_RasterizerState_d3d);
+    g_RasterizerState_d3d = nullptr;
 }
 
 bool OPTada_Render::Init_AllBlendState()

@@ -88,6 +88,8 @@ public:
 
 		DrawScene(deltaTime_);
 
+		//lvl.DrawText();
+
 		global_Render.PresentFrame();
 
 		return 0;
@@ -99,7 +101,9 @@ public:
 		float zeroBlend[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // empty mass for zero blend
 		// ----------- update and prepeir all resources
 
-
+			// sort opaque objects
+		    // sort clip objects
+			// sort blend objects
 
 		// ----------- set default parameters
 
@@ -129,15 +133,10 @@ public:
 		//// Set Constant buffers
 		//global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
 
-		
-		// ----------- draw blend objects
-		
-		float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f }; //"fine-tune" the blending equation
+		// ----------- draw clip objects
 
-		global_Render.Setup_NewBlendState(ENUM_BlendStateMass_Transparent, blendFactor); // set blend state
+		global_Render.Setup_NewRasterizer(ENUM_RasterizerMass_DrawAll);
 
-
-		// Set shaders
 		global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
 		global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
 
@@ -150,6 +149,28 @@ public:
 
 		// Set Constant buffers
 		global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
+
+		
+		// ----------- draw blend objects
+		
+		//float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f }; //"fine-tune" the blending equation
+
+		//global_Render.Setup_NewBlendState(ENUM_BlendStateMass_Transparent, blendFactor); // set blend state
+
+
+		//// Set shaders
+		//global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
+		//global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
+
+		//// Set Mesh
+		//global_Render.resourceManager.Use_Mesh_WithIndexBuffer(ENUM_MeshList_DefaultBox, global_Render.g_DeviceContext_d3d11);
+		//OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(ENUM_MeshList_DefaultBox);
+
+		//// Set texture
+		//global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
+
+		//// Set Constant buffers
+		//global_Render.g_DeviceContext_d3d11->VSSetConstantBuffers(0, 3, g_d3dConstantBuffers);
 
 
 

@@ -18,51 +18,54 @@ static LRESULT CALLBACK WindowProc(
 {
 PAINTSTRUCT	ps;  // using in WM_PAINT
 HDC			hdc; // getting device context
-KBDLLHOOKSTRUCT* hookstruct = (KBDLLHOOKSTRUCT*)(lparam);
 
 // get massage
 switch (msg)
 {
+case WM_SYSKEYDOWN: {
 
-case WM_KEYDOWN: {
-	switch (wparam)
-	{
+	if (GetKeyState(VK_MENU) & 0x8000) { // ALT +
 
-	case 0x46: { // pressed 'F' button
-
-		// debug
-		/*
-		//global_Window.Do_SwapMode_Fullscreen_LastWindowed();
-		static int cocos = 1;
-
-		OPTadaS_Window_Size newWindowSize;
-
-		if (cocos == 1) {
-			newWindowSize.width = 1200;
-			newWindowSize.height = 720;
-			if (!OPTada_Instance::Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
-				MessageBox(NULL, L"cocos 1", L"cocos test", NULL);
-				return false;
-			}
+		if (GetKeyState(VK_RETURN) & 0x8000) { // ALT + ENTER
+			OPTada_Instance::Do_Reaction_AltEnter();
+			return 1;
 		}
 
-		if (cocos == 2) {
-
+		if (GetKeyState(VK_TAB) & 0x8000) { // ALT + TAB
+			OPTada_Instance::Do_Reaction_AltTab();
+			return 1;
 		}
 
-		if (cocos == 3) {
-
-		}
-
-		cocos++;
-		*/
-
-	} break;
-
-	default: break;
-
+		if (GetKeyState(VK_F4) & 0x8000) { // ALT + F4
+			PostMessage(hwnd, WM_DESTROY, 0, 0);
+			return 1;
+		}		
 	}
-} break;
+}
+
+//case WM_KEYDOWN: {
+//	switch (wparam)
+//	{
+//
+//	case 0x46: { // pressed 'F' button
+//
+//		int i = 0;
+//		// window debug place here
+//
+//	} break;
+//
+//	default: break;
+//
+//	}
+//} break;
+//
+//case WM_KILLFOCUS: {
+//	OPTada_Instance::Do_Reaction_LooseFocus();
+//}
+//
+//case  WM_SETFOCUS: {
+//	OPTada_Instance::Do_Reaction_TakeFocus();
+//}
 
 case WM_ACTIVATE: {
 
@@ -111,75 +114,6 @@ return (DefWindowProc(hwnd, msg, wparam, lparam));
 // --------------------------------------------------------------------------------------------------------------------------------------
 
 
-////////////////////////// low - level keyboard processing code /////////////////////////
-
-HHOOK ExistingKeyboardProc;
-// low-level keyboard polling to control (alt + tab) and (alt + win) presses
-LRESULT CALLBACK KeyboardProcLowLevel(int nCode, WPARAM wParam, LPARAM lParam)
-{
-	KBDLLHOOKSTRUCT* hookstruct = (KBDLLHOOKSTRUCT*)(lParam);
-
-	switch (wParam)
-	{
-	case WM_KEYDOWN:
-		break;
-	case WM_SYSKEYDOWN:
-		// Take no Action, Signal app to take action in main loop
-		if ((((hookstruct->flags) >> 5) & 1)) {
-			// ALT +
-			switch (hookstruct->vkCode)
-			{
-
-			case VK_TAB: { // ALT+TAB
-
-				OPTada_Instance::Do_Reaction_AltTab();
-
-			} break;
-
-			case VK_RETURN: { // ALT+ENTER 
-
-				OPTada_Instance::Do_Reaction_AltEnter();
-				return 1;
-			} break;
-
-			case VK_ESCAPE: break; // ALT+ESC	
-
-			case VK_DELETE: break; // ALT+DEL	
-
-			};
-
-		}
-		break;
-
-	}
-
-	return CallNextHookEx(ExistingKeyboardProc, nCode, wParam, lParam);
-}
-bool HookKeyboardProc(HINSTANCE hinst)
-{
-	ExistingKeyboardProc = SetWindowsHookEx(
-		WH_KEYBOARD_LL,			// int idHook,
-		KeyboardProcLowLevel,	// HOOKPROC lpfn,
-		hinst,					// HINSTANCE hMod,
-		NULL);					// DWORD dwThreadId
-
-	if (!ExistingKeyboardProc) {
-		MessageBox(NULL, L"Hook failed", L"WinMain, HookKeyboardProc()", NULL);
-		return false;
-	}
-	else {
-		//Succeeded.
-		return true;
-	}
-}
-
-////////////////////////// low - level keyboard processing code /////////////////////////
-
-
-
-// --------------------------------------------------------------------------------------------------------------------------------------
-
-
 int WINAPI WinMain(
 	HINSTANCE hinstance,     // application instance descriptor - acts as an identifier for a window procedure
 	HINSTANCE hprevinstance, // in WIN32 is not used
@@ -187,12 +121,6 @@ int WINAPI WinMain(
 	int ncmdshow             // window display mode (needed for further WindowShow () functions)
 	)
 {	
-
-	// hook low-level keyboard command(s) for process
-	if (!HookKeyboardProc(hinstance)) {
-		return (global_Window.main_window_msg.wParam); // hook failed - close
-	}
-
 	// init project and setup progect
 	if (
 		OPTada_Instance::Global_InitProject(hinstance, WindowProc) &&

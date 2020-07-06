@@ -195,6 +195,7 @@ bool OPTada_Window::Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow ne
 		GetWindowPlacement(main_window_handle, &windowPlacement_FullScreen);
 
 		windowState = new_WindowState_; // save new window state
+		Update_WindowSizeWithBorders();
 
 		return true;
 
@@ -253,7 +254,7 @@ bool OPTada_Window::Do_SwapMode_Fullscreen_LastWindowed()
 	if (windowState == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen) { // is fullscreen - change to windowed
 		if (!Change_DisplayOfWindow(lastWindowedMode, workplaceSize)) {
 			MessageBox(NULL, L"Swich mode to window error", L"ERROR optada_window", NULL);
-			return true;
+			return false;
 		};
 
 		return true;
@@ -261,7 +262,7 @@ bool OPTada_Window::Do_SwapMode_Fullscreen_LastWindowed()
 	else { // is windowed - change to fullscreen
 		if (!Change_DisplayOfWindow(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen, workplaceSize)) {
 			MessageBox(NULL, L"Swich mode to fullscreen error", L"ERROR optada_window", NULL);
-			return true;
+			return false;
 		};
 
 		return true;

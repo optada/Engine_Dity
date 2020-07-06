@@ -5,6 +5,7 @@
 
 #include "Render\OPTada_Render.h"
 #include "Render\ResourceManager\OPTadaC_ResourceManager.h"
+#include "Input\OPTada_Input.h"
 
 
 // Demo parameters
@@ -78,6 +79,7 @@ public:
 
 	}
 
+
 	// Tick function
 	// [in] float deltaTime_ // delta time
 	bool Tick(float deltaTime_)
@@ -92,7 +94,7 @@ public:
 
 
         static float angle = 0.0f;
-        angle += 0.1f * deltaTime_;
+        angle += 0.0f * deltaTime_;
         XMVECTOR rotationAxis = XMVectorSet(1, 0, 0, 0);
 
         g_WorldMatrix = XMMatrixRotationAxis(rotationAxis, XMConvertToRadians(0.0f));

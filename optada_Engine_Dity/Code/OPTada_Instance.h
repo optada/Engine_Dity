@@ -43,7 +43,9 @@ public:
 		}
 
 		// create input
-		if (!global_Input.Initialization(hinstance_, hwnd)) {
+		OPTadaS_Window_Size workspaceWindow;
+		global_Window.Get_WorkplaceSize(workspaceWindow);
+		if (!global_Input.Initialization(hinstance_, hwnd, workspaceWindow.width, workspaceWindow.height, true, false)) {
 			MessageBox(NULL, L"Can't init input", L"Instance", NULL);
 			return false;
 		}
@@ -52,21 +54,20 @@ public:
 		return true;
 	}
 
-
 	// Do start setup here (Calling after Global_InitProject)
 	// return = true - done | false - error
 	static bool Global_SetupProject() {
 
 		// chage window size and mode (define)
 		OPTadaS_Window_Size newWindowSize;
-		newWindowSize.width = 1280;
-		newWindowSize.height = 720;
-		if (!Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1, D3D11_FILL_SOLID)) {
+		newWindowSize.width = 800;
+		newWindowSize.height = 600;
+		if (!Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1)) {
 			MessageBox(NULL, L"Can't change window size or state", L"Instance", NULL);
 			return false;
 		}
 
-
+		// init level params
 		lvl.Init();
 
 
@@ -79,6 +80,7 @@ public:
 		// free input
 		global_Input.ShuttingDown();;
 
+		// free level data
 		lvl.Free();
 
 		// close DirectX
@@ -93,12 +95,41 @@ public:
 	// Global tick
 	static int Tick(float deltaTime_) {
 
-		global_Input.DetectInput(deltaTime_);
+		// input
+		POINT mouseCoordinate;
+		POINT mouseDelta;
+		unsigned char* kb_Mass = nullptr;
+		unsigned char* m_Mass = nullptr;
+		global_Input.Update();
+		global_Input.Get_Input_8Mouse_256Keyboard(mouseCoordinate, mouseDelta, &m_Mass, &kb_Mass);
 
+
+		if (_B_DOWN(kb_Mass[DIK_F])) {
+
+		}
+		if (_B_UP(kb_Mass[DIK_F])) {
+
+		}
+		if (_B_DOWN(kb_Mass[DIK_A])) {
+
+		}
+		if (_B_UP(kb_Mass[DIK_A])) {
+
+		}
+		if (_B_DOWN(kb_Mass[DIK_D])) {
+
+		}
+		if (_B_UP(kb_Mass[DIK_D])) {
+
+		}
+
+		// prepare render
 		global_Render.PrepareBuffersForNewFrame(DirectX::Colors::CornflowerBlue, 1.0f, 0);
 
-		lvl.Tick(deltaTime_);
+		// game tick
+		lvl.Tick(deltaTime_); //TODO add input data
 
+		// draw
 		DrawScene(deltaTime_);
 
 		//lvl.DrawText();
@@ -197,7 +228,7 @@ public:
 	// [in] bool vSinc_                                        // true - enable vSinc | false - disable vSinc
 	// [in] int countOfBackBuffers_                            // count of back buffers (1 - double bufferization) (2 - tripple bufferization)
 	// return = true - done | false - error
-	static bool Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow newWindowState_, OPTadaS_Window_Size& newWindowSize_, bool vSinc_, int countOfBackBuffers_, D3D11_FILL_MODE fillMode_) {
+	static bool Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow newWindowState_, OPTadaS_Window_Size& newWindowSize_, bool vSinc_, int countOfBackBuffers_) {
 
 		if (!global_Window.Change_DisplayOfWindow(newWindowState_, newWindowSize_)) {
 			return false;
@@ -209,6 +240,11 @@ public:
 			return false;
 		}
 
+		// update window size for input cursor
+		OPTadaS_Window_Size workspaceWindow;
+		global_Window.Get_WorkplaceSize(workspaceWindow);
+		global_Input.Set_Workspace(workspaceWindow.width, workspaceWindow.height);
+
 		return true;
 	}
 
@@ -217,6 +253,7 @@ public:
 	static void Do_Reaction_LooseFocus() {
 		global_Render.Setup_FullScreenMode(false);
 		global_Window.Do_LooseFocusInFullscreenMode();
+		global_Input.Set_HaveFocus(false);
 	}
 
 	// call this when your window is taking focus
@@ -225,6 +262,8 @@ public:
 		OPTadaE_WindowState_ForClassWindow newWindowState_;
 		global_Window.Get_WindowState(newWindowState_);
 		global_Render.Setup_FullScreenMode(newWindowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
+		SetFocus(global_Window.Get_MainWindowHandle());
+		global_Input.Set_HaveFocus(true);
 	}
 
 
@@ -236,11 +275,18 @@ public:
 
 	// call this for (ALT+ENTER) reaction (Swap window mode fullscreen|Windowed)
 	static void Do_Reaction_AltEnter() {
-		global_Window.Do_SwapMode_Fullscreen_LastWindowed();
+		OPTadaE_WindowState_ForClassWindow windowState_;
+		global_Window.Get_WindowState(windowState_);
 
-		OPTadaE_WindowState_ForClassWindow newWindowState_;
-		global_Window.Get_WindowState(newWindowState_);
-		global_Render.Setup_FullScreenMode(newWindowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
+		if (windowState_ != OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen) { // set fullscreen
+			global_Window.Do_SwapMode_Fullscreen_LastWindowed();
+			global_Render.Setup_FullScreenMode(windowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
+			SetFocus(global_Window.Get_MainWindowHandle());
+		}
+		else { // set windowed
+			global_Render.Setup_FullScreenMode(windowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
+			global_Window.Do_SwapMode_Fullscreen_LastWindowed();
+		}
 	}
 
 };

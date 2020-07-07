@@ -160,6 +160,11 @@
     <ClInclude Include="Code\Game_Level.h" />
     <ClInclude Include="Code\Input\OPTada_Input.h" />
     <ClInclude Include="Code\OPTada_Instance.h" />
+    <ClInclude Include="Code\Render\OPTadaC_Obj_Camera.h" />
+    <ClInclude Include="Code\Render\OPTadaC_Obj_Draw.h" />
+    <ClInclude Include="Code\Render\OPTadaC_Obj_Light.h" />
+    <ClInclude Include="Code\Render\OPTadaS_WorldNavigationData.h" />
+    <ClInclude Include="Code\Render\OPTada_ConstantBuffers.h" />
     <ClInclude Include="Code\Render\OPTada_Render.h" />
     <ClInclude Include="Code\Render\OPTada_Render_Settings.h" />
     <ClInclude Include="Code\Render\ResourceManager\ConstantBufferList.h" />

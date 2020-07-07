@@ -26,7 +26,7 @@ float4 PS_Material_Default(PixelShaderInput IN) : SV_TARGET
 
     finalColor = texture0.Sample(SampleLinear0, IN.textureCoord);
 
-    clip(finalColor.b - 0.90f);
+    //clip(finalColor.b - 0.90f);
 
     //finalColor += IN.normal;
     //finalColor = textureColor.Sample(SampleLinear, IN.textureCoord);

@@ -15,6 +15,12 @@
 #include <DirectXColors.h>
 #include <xnamath.h>
 
+#include "OPTada_ConstantBuffers.h"
+#include "OPTadaS_WorldNavigationData.h"
+#include "OPTadaC_Obj_Camera.h"
+#include "OPTadaC_Obj_Draw.h"
+#include "OPTadaC_Obj_Light.h"
+
 #include "OPTada_Render_Settings.h"
 #include "ResourceManager\OPTadaC_ResourceManager.h"
 

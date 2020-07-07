@@ -28,6 +28,9 @@
     <Filter Include="Code\Input">
       <UniqueIdentifier>{22485cb1-109e-4a28-9767-837447452548}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Render\ResourceManager\GameObjects">
+      <UniqueIdentifier>{f35ff16b-17e0-4883-a20b-39146a388319}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Main.cpp">
@@ -133,6 +136,21 @@
     </ClInclude>
     <ClInclude Include="Code\Input\OPTada_Input.h">
       <Filter>Code\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\OPTada_ConstantBuffers.h">
+      <Filter>Code\Render\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\OPTadaS_WorldNavigationData.h">
+      <Filter>Code\Render\ResourceManager\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\OPTadaC_Obj_Camera.h">
+      <Filter>Code\Render\ResourceManager\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\OPTadaC_Obj_Draw.h">
+      <Filter>Code\Render\ResourceManager\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Render\OPTadaC_Obj_Light.h">
+      <Filter>Code\Render\ResourceManager\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

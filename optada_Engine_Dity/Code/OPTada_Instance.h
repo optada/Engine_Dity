@@ -60,8 +60,8 @@ public:
 
 		// chage window size and mode (define)
 		OPTadaS_Window_Size newWindowSize;
-		newWindowSize.width = 800;
-		newWindowSize.height = 600;
+		newWindowSize.width = 1280;
+		newWindowSize.height = 720;
 		if (!Do_Change_WindowSettings(OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_Windowed, newWindowSize, true, 1)) {
 			MessageBox(NULL, L"Can't change window size or state", L"Instance", NULL);
 			return false;
@@ -163,23 +163,7 @@ public:
 
 		// ----------- draw opaque objects
 
-		//// Set shaders
-		//global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
-		//global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
-
-		//// Set Mesh
-		//global_Render.resourceManager.Use_Mesh_WithIndexBuffer(ENUM_MeshList_DefaultBox, global_Render.g_DeviceContext_d3d11);
-		//OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(ENUM_MeshList_DefaultBox);
-
-		//// Set texture
-		//global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
-
-
-
-		// ----------- draw clip objects
-
-		global_Render.Setup_NewRasterizer(ENUM_RasterizerMass_DrawAll);
-
+		// Set shaders
 		global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_VS_Color, global_Render.g_DeviceContext_d3d11);
 		global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
 
@@ -189,6 +173,22 @@ public:
 
 		// Set texture
 		global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
+
+
+
+		// ----------- draw clip objects
+
+		//global_Render.Setup_NewRasterizer(ENUM_RasterizerMass_DrawAll);
+
+		//global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_VS_Color, global_Render.g_DeviceContext_d3d11);
+		//global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
+
+		//// Set Mesh
+		//global_Render.resourceManager.Use_Mesh_WithIndexBuffer(ENUM_MeshList_DefaultBox, global_Render.g_DeviceContext_d3d11);
+		//OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(ENUM_MeshList_DefaultBox);
+
+		//// Set texture
+		//global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
 
 
 		// ----------- draw blend objects

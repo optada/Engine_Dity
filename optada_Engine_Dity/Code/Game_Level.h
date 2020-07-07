@@ -62,10 +62,10 @@ public:
 
         // Compute the exact client dimensions.
         // This is required for a correct projection matrix.
-        float clientWidth = static_cast<float>(clientRect.right - clientRect.left);
+        float clientWidth  = static_cast<float>(clientRect.right - clientRect.left);
         float clientHeight = static_cast<float>(clientRect.bottom - clientRect.top);
 
-        g_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(90.0f), clientWidth / clientHeight, 0.1f, 100.0f);
+        g_ProjectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), clientWidth / clientHeight, 0.1f, 100.0f);
 
         global_Render.resourceManager.UpdateSubresource(ENUM_ConstantBufferList_Application, &g_ProjectionMatrix, global_Render.g_DeviceContext_d3d11);
 
@@ -85,21 +85,35 @@ public:
 	bool Tick(float deltaTime_)
 	{
         static float posi = 0.0f;
-        posi += 0.0f * deltaTime_;
-        XMVECTOR eyePosition = XMVectorSet(0, posi, -4, 1); // camera position
-        XMVECTOR focusPoint  = XMVectorSet(0, 0, 0, 1); // watch point (look at)
-        XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0); // up direction (rotate)
+        posi += 1.0f * deltaTime_;
+        XMVECTOR eyePosition = XMVectorSet(0, 0, -10, 1);    // camera position
+        XMVECTOR focusPoint  = XMVectorSet(0, 0, 0, 1);      // watch point (look at)
+        XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0);      // up direction (rotate)
         g_ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
+
         global_Render.resourceManager.UpdateSubresource(ENUM_ConstantBufferList_Frame, &g_ViewMatrix, global_Render.g_DeviceContext_d3d11);
 
 
-        static float angle = 0.0f;
-        angle += 0.0f * deltaTime_;
-        XMVECTOR rotationAxis = XMVectorSet(1, 0, 0, 0);
+        static OPTadaS_WorldNavigationData test;
+        test.position.X = 0;//test.position.X += 0.5f * deltaTime_; 
+        test.rotation.Z += 0.0f * deltaTime_;
+        test.scaling.X += 0.0f * deltaTime_;
+        test.scaling.Y += 0.0f * deltaTime_;
+        XMMATRIX position;
+        XMMATRIX rotation;
+        XMMATRIX scale;
+        test.calcPosition(position);
+        test.calcRotation(rotation);
+        test.calcScaling(scale);
+        test.calcMatrix_SRT(scale, rotation, position);
 
-        g_WorldMatrix = XMMatrixRotationAxis(rotationAxis, XMConvertToRadians(0.0f));
-        g_WorldMatrix = XMMatrixTranslation(0.0f, 0.0f, angle);
-        global_Render.resourceManager.UpdateSubresource(ENUM_ConstantBufferList_ObjectData, &g_WorldMatrix, global_Render.g_DeviceContext_d3d11);
+      /*  static float angle = -1.0f;
+        angle += 0.1f * deltaTime_;
+        XMVECTOR rotationAxis = XMVectorSet(angle, 0, 0, 0);
+        g_WorldMatrix = XMMatrixRotationAxis(rotationAxis, XMConvertToRadians(25.0f));
+        g_WorldMatrix = XMMatrixTranslation(0.0f, 0.0f, 0.0f);*/
+
+        global_Render.resourceManager.UpdateSubresource(ENUM_ConstantBufferList_ObjectData, &test.matrix, global_Render.g_DeviceContext_d3d11);
 
         return true;
 	}

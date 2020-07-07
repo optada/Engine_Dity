@@ -3,7 +3,7 @@
 
 #pragma once  
 
-#include "ResourceManager\OPTadaC_ResourceManager.h"
+#include "OPTadaS_WorldNavigationData.h"
 
 
 // struct for draw pipeline
@@ -17,5 +17,4 @@ public:
 	OPTadaE_MeshList_ForResourceManager         mesh;            // mesh
 
 	std::vector<OPTadaE_TextureList_ForResourceManager> texture_mass; // texture pack
-
 };

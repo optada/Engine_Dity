@@ -11,7 +11,7 @@ enum OPTadaE_PixelShaderList_ForResourceManager
 {
 	ENUM_PixelShaderList_NONE = 0,
 
-	ENUM_PixelShaderList_SimpleMaterial_01 = 1, // pixel shader SimpleMaterial_01
+	ENUM_PixelShaderList_PS_Color = 1, // pixel shader SimpleMaterial_01
 
 	ENUM_PixelShaderList_ForResourceManager_MaxCount,
 };

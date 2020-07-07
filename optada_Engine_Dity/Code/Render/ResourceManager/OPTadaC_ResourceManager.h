@@ -23,7 +23,6 @@
 #include "TextureList.h"
 
 
-
 // class for managering all resources (like a textures, models, shaders)
 class OPTadaC_ResourceManager
 {

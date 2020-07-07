@@ -274,6 +274,7 @@ bool OPTadaC_ResourceManager::Use_VertexShader(OPTadaE_VertexShaderList_ForResou
         gDeviceContext_->IASetInputLayout(cell.inputLayout);
         gDeviceContext_->VSSetShader(cell.vertexShader, nullptr, 0);
         gDeviceContext_->VSSetConstantBuffers(0, ENUM_ConstantBufferList_ForResourceManager_CountItems, constantBuffers_Mass);
+        gDeviceContext_->PSSetConstantBuffers(0, ENUM_ConstantBufferList_ForResourceManager_CountItems, constantBuffers_Mass);
         return true;
     }
 

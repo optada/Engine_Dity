@@ -1,20 +1,33 @@
 // Created by OPTada // Free for use //
 // - - - - - - - - - - - - - - - - - //
 
+struct Light
+{
+    float3 pos;
+    float  range;
+    float3 dir;
+    float  cone;
+    float3 att;
+    float4 ambient;
+    float4 diffuse;
+};
+
 
 cbuffer Application : register(b0)
 {
-    matrix projectionMatrix;
+    matrix NONE;
 }
 
 cbuffer Frame : register(b1)
 {
-    matrix viewMatrix;
+    Light light_mass[100];
+    float4 light_param;
 }
 
 cbuffer Object : register(b2)
 {
-    matrix worldMatrix;
+    matrix WVP;
+    matrix World;
 }
 
 
@@ -33,6 +46,7 @@ struct VertexShaderOutput
 {
     float4 normal :       NORMAL;
     float2 textureCoord : TEXCOORD;
+    float4 worldPos :     POSITION;
 
     float4 position :     SV_POSITION;
 };
@@ -43,10 +57,11 @@ VertexShaderOutput VS_Material_Default(AppData IN)
 {
     VertexShaderOutput OUT;
 
-    matrix mvp       = mul(projectionMatrix, mul(viewMatrix, worldMatrix));
-    OUT.position     = mul(mvp, float4(IN.position, 1.0f));
+    OUT.position     = mul(WVP, float4(IN.position, 1.0f));
+    OUT.worldPos     = mul(World, float4(IN.position, 1.0f));
 
-    OUT.normal       = float4(IN.normal, 1.0f);
+    OUT.normal       = mul(World, float4(IN.normal, 1.0f));
+    
     OUT.textureCoord = IN.textureCoord;
 
     return OUT;

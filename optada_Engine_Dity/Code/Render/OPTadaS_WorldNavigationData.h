@@ -6,6 +6,8 @@
 #include <DirectXMath.h>
 #include <xnamath.h>
 
+#include "ResourceManager\OPTadaC_ResourceManager.h"
+
 
 // 3Float vector
 struct FVec3

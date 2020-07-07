@@ -3,45 +3,61 @@
 
 #pragma once
 
-#include "OPTadaS_WorldNavigationData.h"
+#include "OPTadaC_Obj_Camera.h"
+#include "OPTadaC_Obj_Draw.h"
 #include "OPTadaC_Obj_Light.h"
 
-//// constant buffer per frame
-//struct OPTadaS_CB_FrameData
-//{
-//    OPTadaS_CB_FrameData()
-//    {
-//        ZeroMemory(this, sizeof(OPTadaS_CB_FrameData));
-//    }
-//
-//    XMFLOAT3 dir;
-//    float pad;
-//    XMFLOAT4 ambient;
-//    XMFLOAT4 diffuse;
-//};
-//
-//OPTadaS_CB_FrameData CB_FrameData;
-//
-//// -----------------------------------------------------------------------
-//
-//
-//// constant buffer per object
-//struct OPTadaS_CB_ObjectData
-//{
-//    OPTadaS_CB_ObjectData()
-//    {
-//        ZeroMemory(this, sizeof(OPTadaS_CB_ObjectData));
-//    }
-//
-//    
-//};
-//
-//OPTadaS_CB_ObjectData CB_ObjectData;
+
+
+// constant buffer per global
+struct OPTadaS_CB_GlobalData
+{
+    OPTadaS_CB_GlobalData()
+    {
+        ZeroMemory(this, sizeof(OPTadaS_CB_GlobalData));
+    }
+
+    XMFLOAT4 NONE;
+};
+
+static OPTadaS_CB_GlobalData cb_GlobalData;
+
 
 // -----------------------------------------------------------------------
 
 
+// constant buffer per frame
+struct OPTadaS_CB_FrameData
+{
+    OPTadaS_CB_FrameData()
+    {
+        ZeroMemory(this, sizeof(OPTadaS_CB_FrameData));
+    }
 
-//CB_ObjectData.dir     = XMFLOAT3(0.25f, 0.5f, -1.0f);
-//CB_ObjectData.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-//CB_ObjectData.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    OPTadaS_Light light_Mass[100]; // 100 light mass (0 -  global)
+
+    XMFLOAT4 light_param; // X - count simple | Y - count point | Z - count spotlight
+};
+
+static OPTadaS_CB_FrameData cb_FrameData;
+
+
+// -----------------------------------------------------------------------
+
+
+// constant buffer per object
+struct OPTadaS_CB_ObjectData
+{
+    OPTadaS_CB_ObjectData()
+    {
+        ZeroMemory(this, sizeof(OPTadaS_CB_ObjectData));
+    }
+    
+    XMMATRIX WVP;
+    XMMATRIX World;
+};
+
+static OPTadaS_CB_ObjectData cb_ObjectData;
+
+
+// -----------------------------------------------------------------------

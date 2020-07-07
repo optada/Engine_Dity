@@ -145,9 +145,20 @@ public:
 		float zeroBlend[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // empty mass for zero blend
 		// ----------- update and prepeir all resources
 
+		std::vector<OPTadaC_Obj_Draw*> d_opaque; // draw list
+		std::vector<OPTadaC_Obj_Draw*> d_clip;   // draw clip list
+		std::vector<OPTadaC_Obj_Draw*> d_blend;  // draw blend list
+
 			// sort opaque objects
+
 		    // sort clip objects
+
 			// sort blend objects
+
+
+		// sort and set light
+
+		// set cb_Frame
 
 		// ----------- set default parameters
 
@@ -165,7 +176,7 @@ public:
 
 		// Set shaders
 		global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_VS_Color, global_Render.g_DeviceContext_d3d11);
-		global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_SimpleMaterial_01, global_Render.g_DeviceContext_d3d11);
+		global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_PS_Color, global_Render.g_DeviceContext_d3d11);
 
 		// Set Mesh
 		global_Render.resourceManager.Use_Mesh_WithIndexBuffer(ENUM_MeshList_DefaultBox, global_Render.g_DeviceContext_d3d11);
@@ -174,6 +185,7 @@ public:
 		// Set texture
 		global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
 
+		global_Render.g_DeviceContext_d3d11->DrawIndexed(/*_countof(g_Indicies)*/mesh->indexBufferCount, 0, 0);
 
 
 		// ----------- draw clip objects
@@ -190,6 +202,7 @@ public:
 		//// Set texture
 		//global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
 
+		//global_Render.g_DeviceContext_d3d11->DrawIndexed(/*_countof(g_Indicies)*/mesh->indexBufferCount, 0, 0);
 
 		// ----------- draw blend objects
 		
@@ -209,11 +222,14 @@ public:
 		//// Set texture
 		//global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
 
+		//global_Render.g_DeviceContext_d3d11->DrawIndexed(/*_countof(g_Indicies)*/mesh->indexBufferCount, 0, 0);
 
+
+		// --------------------------------------------------------------------------------------------------------
 
 
 		//global_Render.g_DeviceContext_d3d11->Draw(22, 0);
-		global_Render.g_DeviceContext_d3d11->DrawIndexed(/*_countof(g_Indicies)*/mesh->indexBufferCount, 0, 0);
+		//global_Render.g_DeviceContext_d3d11->DrawIndexed(/*_countof(g_Indicies)*/mesh->indexBufferCount, 0, 0);
 
 		return 1;
 	}

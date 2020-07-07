@@ -115,7 +115,7 @@ bool OPTada_Render::Initialization(HWND hwnd_, int countOfBackBuffers_, int work
 
     // ---- ALL initialization done ----
     
-    if (!resourceManager.Init_ResourceManager(g_Device_d3d11, { sizeof(XMMATRIX), sizeof(XMMATRIX), sizeof(XMMATRIX) })) {
+    if (!resourceManager.Init_ResourceManager(g_Device_d3d11, { sizeof(OPTadaS_CB_GlobalData), sizeof(OPTadaS_CB_FrameData), sizeof(OPTadaS_CB_ObjectData) })) {
         return false;
     }
 

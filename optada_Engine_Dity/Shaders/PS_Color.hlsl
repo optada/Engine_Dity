@@ -45,6 +45,7 @@ SamplerState SampleLinear3 : register (s3);
 // PS_IN
 struct PixelShaderInput
 {
+    float4 Wnormal :      WNORMAL;
     float4 normal :       NORMAL;
     float2 textureCoord : TEXCOORD;
     float4 worldPos :     POSITION;
@@ -54,6 +55,7 @@ struct PixelShaderInput
 float4 PS_Material_Default(PixelShaderInput IN) : SV_TARGET
 {
     float4 diffuse = texture0.Sample(SampleLinear0, IN.textureCoord);
+    IN.Wnormal = normalize(IN.Wnormal);
     IN.normal = normalize(IN.normal);;
 
     float3 finalAmbient;
@@ -65,17 +67,18 @@ float4 PS_Material_Default(PixelShaderInput IN) : SV_TARGET
     // for cicle optimization //
     float3 lightToPixelVec;
     float d;
+    int i;
     float howMuchLight;
     Light light;
     // for cicle optimization //
 
 
     // global light
-    finalColor += saturate(dot(light_mass[0].dir, IN.normal) * light_mass[0].diffuse * diffuse); // global light
+    finalColor += dot(float4(light_mass[0].dir, 1.0f), IN.normal) * diffuse * light_mass[0].diffuse; // global light
 
 
     // point light calculate
-    for (int i = 1; i < 2; i++) {
+    for (i = 1; i < 2; i++) {
         light = light_mass[i];
 
         lightToPixelVec = light.pos - IN.worldPos; //Create the vector between light position and pixels position    
@@ -90,7 +93,7 @@ float4 PS_Material_Default(PixelShaderInput IN) : SV_TARGET
 
         //Calculate how much light the pixel gets by the angle
         //in which the light strikes the pixels surface
-        howMuchLight = dot(lightToPixelVec, IN.normal);
+        howMuchLight = dot(lightToPixelVec, IN.Wnormal);
 
         //If light is striking the front side of the pixel
         if (howMuchLight > 0.0f) {     
@@ -100,10 +103,8 @@ float4 PS_Material_Default(PixelShaderInput IN) : SV_TARGET
     }
 
 
-
-
     // SpotLight light calculate
-    for (int i = 2; i < 3; i++) {
+    for (i = 2; i < 3; i++) {
         light = light_mass[i];
 
         lightToPixelVec = light.pos - IN.worldPos; //Create the vector between light position and pixels position    
@@ -118,7 +119,7 @@ float4 PS_Material_Default(PixelShaderInput IN) : SV_TARGET
 
         //Calculate how much light the pixel gets by the angle
         //in which the light strikes the pixels surface
-        howMuchLight = dot(lightToPixelVec, IN.normal);
+        howMuchLight = dot(lightToPixelVec, IN.Wnormal);
 
         //If light is striking the front side of the pixel
         if (howMuchLight > 0.0f) {            

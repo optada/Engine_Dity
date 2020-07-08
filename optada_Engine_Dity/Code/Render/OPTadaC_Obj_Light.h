@@ -27,7 +27,7 @@ struct OPTadaS_Light
 
 enum OPTadaE_Obj_Light_Type
 {
-    ENUM_Obj_Light_Simple     = 0, // simple
+    ENUM_Obj_Light_Global     = 0, // simple (global)
     ENUM_Obj_Light_Point      = 1, // point
     ENUM_Obj_Light_Spotlights = 2, // spotlight
 };
@@ -38,7 +38,7 @@ class OPTadaC_Obj_Light
 {
 public:
 
-    OPTadaE_Obj_Light_Type type = ENUM_Obj_Light_Simple; // enum OPTadaE_Obj_Light_Type
+    OPTadaE_Obj_Light_Type type = ENUM_Obj_Light_Global; // enum OPTadaE_Obj_Light_Type
 
     OPTadaS_Light Light; // light parameters
 

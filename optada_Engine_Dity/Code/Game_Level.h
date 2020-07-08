@@ -9,13 +9,15 @@
 
 class GameLevel
 {
-private:
+public:
 
     OPTadaC_Obj_Camera PrimaryCamera;
 
-    //std::vector<OPTadaC_Obj_Draw*> draw_opaque; // draw list
-    //std::vector<OPTadaC_Obj_Draw*> draw_clip;   // draw clip list
-    //std::vector<OPTadaC_Obj_Draw*> draw_blend;  // draw blend list
+    std::vector<OPTadaC_Obj_Draw*> draw_opaque; // draw list
+    std::vector<OPTadaC_Obj_Draw*> draw_clip;   // draw clip list
+    std::vector<OPTadaC_Obj_Draw*> draw_blend;  // draw blend list
+
+    std::vector<OPTadaC_Obj_Light*> draw_light; // draw light objects
 
 public:
 	
@@ -62,6 +64,11 @@ public:
         global_Window.Get_WorkplaceSize(workspaceSize);
         PrimaryCamera.Setup_ProjectionMatrix(workspaceSize.width, workspaceSize.height, 60.0f);
 
+        // update camera
+        PrimaryCamera.position.X = 10;
+        PrimaryCamera.position.Y = 2;
+        PrimaryCamera.position.Z = 0;
+
         global_Render.resourceManager.UpdateSubresource(ENUM_ConstantBufferList_Application, &cb_ObjectData, global_Render.g_DeviceContext_d3d11);
 
         return true;
@@ -81,42 +88,66 @@ public:
 	{
 
         // update camera
-        PrimaryCamera.position.X = 0;
-        PrimaryCamera.position.Y = 0;
-        PrimaryCamera.position.Z = -5;
+        if (PrimaryCamera.position.Z > 6) {
+            PrimaryCamera.position.Z = -6;
+        }
+
+        //PrimaryCamera.position.X = 5;
+        PrimaryCamera.position.X += 0.0 * deltaTime_;
+        //PrimaryCamera.position.Z = 0;
 
         PrimaryCamera.Update_ViewMatrix();
 
 
         // update light
 
-        cb_FrameData.light_Mass[0].dir     = XMFLOAT3(0.0f, 0.0f, 1.0f);
-        cb_FrameData.light_Mass[0].ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-        cb_FrameData.light_Mass[0].diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+        static OPTadaC_Obj_Light light1;
+        static OPTadaC_Obj_Light light2;
+        static OPTadaC_Obj_Light light3;
+        draw_light.clear();
+        draw_light.push_back(&light1);
+        draw_light.push_back(&light2);
+        draw_light.push_back(&light3);
 
+        draw_light[0]->type = ENUM_Obj_Light_Global;
+        draw_light[0]->Light.dir     = XMFLOAT3(0.0f, 0.0f, -1.0f); // invert coordinate direction
+        draw_light[0]->Light.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+        draw_light[0]->Light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-        cb_FrameData.light_Mass[1].pos     = XMFLOAT3(0.0f, 0.0f, 0.0f);
-        cb_FrameData.light_Mass[1].range   = 100.0f;
-        cb_FrameData.light_Mass[1].att     = XMFLOAT3(0.0f, 0.2f, 0.0f);
-        cb_FrameData.light_Mass[1].ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-        cb_FrameData.light_Mass[1].diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+        draw_light[1]->type = ENUM_Obj_Light_Point;
+        draw_light[1]->Light.pos     = XMFLOAT3(0.0f, 5.0f, 3.0f);
+        draw_light[1]->Light.range   = 20.0f;
+        draw_light[1]->Light.att     = XMFLOAT3(0.0f, 0.1f, 0.0f);
+        draw_light[1]->Light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-
-        cb_FrameData.light_Mass[2].pos     = XMFLOAT3(0.0f, 2.0f, 0.0f);
-        cb_FrameData.light_Mass[2].dir     = XMFLOAT3(0.0f, -1.0f, 0.0f);
-        cb_FrameData.light_Mass[2].range   = 1000.0f;
-        cb_FrameData.light_Mass[2].cone    = 20.0f;
-        cb_FrameData.light_Mass[2].att     = XMFLOAT3(0.4f, 0.02f, 0.0f);
-        cb_FrameData.light_Mass[2].ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-        cb_FrameData.light_Mass[2].diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+        draw_light[2]->type = ENUM_Obj_Light_Spotlights;
+        draw_light[2]->Light.pos     = XMFLOAT3(0.0f, 5.0f, 3.0f);
+        draw_light[2]->Light.dir     = XMFLOAT3(0.0f, -1.0f, 0.0f);
+        draw_light[2]->Light.range   = 0.0f;
+        draw_light[2]->Light.cone    = 2.0f;
+        draw_light[2]->Light.att     = XMFLOAT3(0.1f, 0.1f, 0.0f);
+        draw_light[2]->Light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
         global_Render.resourceManager.UpdateSubresource(ENUM_ConstantBufferList_Frame, &cb_FrameData, global_Render.g_DeviceContext_d3d11);
 
+
+
         // update object
+        
+        static OPTadaC_Obj_Draw sobject;
+        draw_opaque.clear();
+        draw_opaque.push_back(&sobject);
+
+        sobject.mesh = ENUM_MeshList_DefaultBox;
+        sobject.PS = ENUM_PixelShaderList_PS_Color;
+        sobject.VS = ENUM_VertexShaderList_VS_Color;
+        sobject.texture_mass = { ENUM_TextureList_TextureForShare };
+        
 
         static OPTadaS_WorldNavigationData test;
-        test.position.Z = 0;//test.position.X += 0.5f * deltaTime_; 
-        test.rotation.Y += 5.0f * deltaTime_;
+        //test.position.Z = 0;
+        test.position.Z += 1.0f * deltaTime_; 
+        test.rotation.Y += 0.0f * deltaTime_;
         test.scaling.X += 0.0f * deltaTime_;
         test.scaling.Y += 0.0f * deltaTime_;
         XMMATRIX position;
@@ -127,8 +158,12 @@ public:
         test.calcScaling(scale);
         test.calcMatrix_SRT(scale, rotation, position);
 
-        cb_ObjectData.WVP = test.matrix * PrimaryCamera.view_Matrix * PrimaryCamera.projection_Matrix;
-        cb_ObjectData.World = XMMatrixTranspose(cb_ObjectData.WVP);
+        sobject.world = &test;
+
+        //cb_ObjectData.WVP = test.matrix * PrimaryCamera.view_Matrix * PrimaryCamera.projection_Matrix;
+        //cb_ObjectData.World = test.matrix;
+
+        //cb_ObjectData.World = XMMatrixTranspose(cb_ObjectData.WVP);
 
       /*  static float angle = -1.0f;
         angle += 0.1f * deltaTime_;
@@ -136,7 +171,7 @@ public:
         g_WorldMatrix = XMMatrixRotationAxis(rotationAxis, XMConvertToRadians(25.0f));
         g_WorldMatrix = XMMatrixTranslation(0.0f, 0.0f, 0.0f);*/
 
-        global_Render.resourceManager.UpdateSubresource(ENUM_ConstantBufferList_ObjectData, &cb_ObjectData, global_Render.g_DeviceContext_d3d11);
+        //global_Render.resourceManager.UpdateSubresource(ENUM_ConstantBufferList_ObjectData, &cb_ObjectData, global_Render.g_DeviceContext_d3d11);
 
         return true;
 	}

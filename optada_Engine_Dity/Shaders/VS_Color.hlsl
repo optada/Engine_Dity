@@ -44,6 +44,7 @@ struct AppData
 // VS_OUT
 struct VertexShaderOutput 
 {
+    float4 Wnormal :      WNORMAL;
     float4 normal :       NORMAL;
     float2 textureCoord : TEXCOORD;
     float4 worldPos :     POSITION;
@@ -60,7 +61,8 @@ VertexShaderOutput VS_Material_Default(AppData IN)
     OUT.position     = mul(WVP, float4(IN.position, 1.0f));
     OUT.worldPos     = mul(World, float4(IN.position, 1.0f));
 
-    OUT.normal       = mul(World, float4(IN.normal, 1.0f));
+    OUT.Wnormal      = mul(World, float4(IN.normal, 1.0f));
+    OUT.normal       = float4(IN.normal, 1.0f);
     
     OUT.textureCoord = IN.textureCoord;
 

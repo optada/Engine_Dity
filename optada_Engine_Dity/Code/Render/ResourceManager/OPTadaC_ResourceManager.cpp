@@ -329,8 +329,8 @@ bool OPTadaC_ResourceManager::Create_Mesh_FromFileToMem(OPTadaE_MeshList_ForReso
         vertexMassPointer[i].position.z = -loader.LoadedMeshes[0].Vertices[i].Position.Z; // fix coordinate for DirectX space
 
         vertexMassPointer[i].normal.x = loader.LoadedMeshes[0].Vertices[i].Normal.X;
-        vertexMassPointer[i].normal.y = loader.LoadedMeshes[0].Vertices[i].Normal.Y;
-        vertexMassPointer[i].normal.z = loader.LoadedMeshes[0].Vertices[i].Normal.Z;
+        vertexMassPointer[i].normal.y = -loader.LoadedMeshes[0].Vertices[i].Normal.Y;
+        vertexMassPointer[i].normal.z = -loader.LoadedMeshes[0].Vertices[i].Normal.Z;
 
         vertexMassPointer[i].textureCoord.x = loader.LoadedMeshes[0].Vertices[i].TextureCoordinate.X;
         vertexMassPointer[i].textureCoord.y = 1 - loader.LoadedMeshes[0].Vertices[i].TextureCoordinate.Y; // reverse V coordinete (UV)

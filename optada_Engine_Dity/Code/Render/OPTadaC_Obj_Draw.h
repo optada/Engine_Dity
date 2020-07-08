@@ -16,5 +16,7 @@ public:
 	OPTadaS_WorldNavigationData*                world = nullptr; // world matrix for object (set->constant buffer update)
 	OPTadaE_MeshList_ForResourceManager         mesh;            // mesh
 
+	double hash = 0;
+
 	std::vector<OPTadaE_TextureList_ForResourceManager> texture_mass; // texture pack
 };

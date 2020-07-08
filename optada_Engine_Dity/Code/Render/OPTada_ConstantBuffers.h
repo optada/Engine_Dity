@@ -36,7 +36,7 @@ struct OPTadaS_CB_FrameData
 
     OPTadaS_Light light_Mass[100]; // 100 light mass (0 -  global)
 
-    XMFLOAT4 light_param; // X - count simple | Y - count point | Z - count spotlight
+    XMFLOAT4 light_param; // X - count global (simple) | Y - count point | Z - count spotlight
 };
 
 static OPTadaS_CB_FrameData cb_FrameData;

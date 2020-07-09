@@ -78,13 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(IncludePath);$(DXSDK_DIR)Include</IncludePath>
-    <LibraryPath>$(LibraryPath);$(DXSDK_DIR)Lib\x64</LibraryPath>
+    <IncludePath>$(OutDir);$(IncludePath);$(DXSDK_DIR)Include</IncludePath>
+    <LibraryPath>$(OutDir);$(LibraryPath);$(DXSDK_DIR)Lib\x64</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(IncludePath);$(DXSDK_DIR)Include</IncludePath>
-    <LibraryPath>$(LibraryPath);$(DXSDK_DIR)Lib\x64</LibraryPath>
+    <IncludePath>$(OutDir);$(IncludePath);$(DXSDK_DIR)Include</IncludePath>
+    <LibraryPath>$(OutDir);$(LibraryPath);$(DXSDK_DIR)Lib\x64</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -120,6 +120,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,6 +137,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,13 +158,59 @@
     <ClCompile Include="Code\Render\ResourceManager\MamoryManager_x64\SupportBuffers\OPTadaC_SimpleMemoryBuffer.cpp" />
     <ClCompile Include="Code\Render\ResourceManager\OPTadaC_ResourceManager.cpp" />
     <ClCompile Include="Code\Render\ResourceManager\WICTextureLoader11.cpp" />
+    <ClCompile Include="Code\Sound\include\dr_impl.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_alsa.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_audiosource.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_bus.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_coreaudio.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_core_3d.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_core_basicops.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_core_faderops.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_core_filterops.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_core_getters.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_core_setters.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_core_voicegroup.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_core_voiceops.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_fader.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_fft.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_fft_lut.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_file.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_filter.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_jack.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_miniaudio.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_misc.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_nosound.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_null.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_openal.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_openal_dll.c" />
+    <ClCompile Include="Code\Sound\include\soloud_opensles.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_oss.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_portaudio.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_portaudio_dll.c" />
+    <ClCompile Include="Code\Sound\include\soloud_queue.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_sdl1.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_sdl1_dll.c" />
+    <ClCompile Include="Code\Sound\include\soloud_sdl2.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_sdl2_dll.c" />
+    <ClCompile Include="Code\Sound\include\soloud_sdl2_static.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_sdl_static.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_thread.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_wasapi.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_wav.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_wavstream.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_winmm.cpp" />
+    <ClCompile Include="Code\Sound\include\soloud_xaudio2.cpp" />
+    <ClCompile Include="Code\Sound\include\stb_vorbis.c" />
     <ClCompile Include="Code\Window\OPTada_Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Game_Level.h" />
     <ClInclude Include="Code\Input\OPTada_Input.h" />
     <ClInclude Include="Code\OPTada_Instance.h" />
+    <ClInclude Include="Code\Physics\q3.h" />
     <ClInclude Include="Code\Render\OPTadaC_Obj_Camera.h" />
+    <ClInclude Include="Code\Render\OPTadaC_Obj_Collision.h" />
     <ClInclude Include="Code\Render\OPTadaC_Obj_Draw.h" />
     <ClInclude Include="Code\Render\OPTadaC_Obj_Light.h" />
     <ClInclude Include="Code\Render\OPTadaS_WorldNavigationData.h" />
@@ -184,6 +234,46 @@
     <ClInclude Include="Code\Render\ResourceManager\TextureList.h" />
     <ClInclude Include="Code\Render\ResourceManager\VertexShaderList.h" />
     <ClInclude Include="Code\Render\ResourceManager\WICTextureLoader11.h" />
+    <ClInclude Include="Code\Sound\include\dr_flac.h" />
+    <ClInclude Include="Code\Sound\include\dr_mp3.h" />
+    <ClInclude Include="Code\Sound\include\dr_wav.h" />
+    <ClInclude Include="Code\Sound\include\miniaudio.h" />
+    <ClInclude Include="Code\Sound\include\soloud.h" />
+    <ClInclude Include="Code\Sound\include\soloud_audiosource.h" />
+    <ClInclude Include="Code\Sound\include\soloud_bassboostfilter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_biquadresonantfilter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_bus.h" />
+    <ClInclude Include="Code\Sound\include\soloud_c.h" />
+    <ClInclude Include="Code\Sound\include\soloud_dcremovalfilter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_echofilter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_error.h" />
+    <ClInclude Include="Code\Sound\include\soloud_fader.h" />
+    <ClInclude Include="Code\Sound\include\soloud_fft.h" />
+    <ClInclude Include="Code\Sound\include\soloud_fftfilter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_file.h" />
+    <ClInclude Include="Code\Sound\include\soloud_file_hack_off.h" />
+    <ClInclude Include="Code\Sound\include\soloud_file_hack_on.h" />
+    <ClInclude Include="Code\Sound\include\soloud_filter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_flangerfilter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_freeverbfilter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_internal.h" />
+    <ClInclude Include="Code\Sound\include\soloud_lofifilter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_misc.h" />
+    <ClInclude Include="Code\Sound\include\soloud_monotone.h" />
+    <ClInclude Include="Code\Sound\include\soloud_noise.h" />
+    <ClInclude Include="Code\Sound\include\soloud_openmpt.h" />
+    <ClInclude Include="Code\Sound\include\soloud_queue.h" />
+    <ClInclude Include="Code\Sound\include\soloud_robotizefilter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_sfxr.h" />
+    <ClInclude Include="Code\Sound\include\soloud_speech.h" />
+    <ClInclude Include="Code\Sound\include\soloud_tedsid.h" />
+    <ClInclude Include="Code\Sound\include\soloud_thread.h" />
+    <ClInclude Include="Code\Sound\include\soloud_vic.h" />
+    <ClInclude Include="Code\Sound\include\soloud_vizsn.h" />
+    <ClInclude Include="Code\Sound\include\soloud_wav.h" />
+    <ClInclude Include="Code\Sound\include\soloud_waveshaperfilter.h" />
+    <ClInclude Include="Code\Sound\include\soloud_wavstream.h" />
+    <ClInclude Include="Code\Sound\include\stb_vorbis.h" />
     <ClInclude Include="Code\Window\OPTada_Window.h" />
     <ClInclude Include="Code\Window\OPTada_Window_Settings.h" />
   </ItemGroup>

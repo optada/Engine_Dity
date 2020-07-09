@@ -26,6 +26,7 @@
 #include "OPTadaC_Obj_Camera.h"
 #include "OPTadaC_Obj_Draw.h"
 #include "OPTadaC_Obj_Light.h"
+#include "OPTadaC_Obj_Collision.h"
 
 
 

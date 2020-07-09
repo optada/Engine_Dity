@@ -6,6 +6,7 @@
 #include "Window\OPTada_Window.h" 
 #include "Render\OPTada_Render.h"
 #include "Input\OPTada_Input.h"
+//#include "Physics\q3.h" // Physics lib by RandyGaul https://github.com/RandyGaul/qu3e  qu3e.lib
 
 #include "Game_Level.h"
 
@@ -103,9 +104,14 @@ public:
 		global_Input.Update();
 		global_Input.Get_Input_8Mouse_256Keyboard(mouseCoordinate, mouseDelta, &m_Mass, &kb_Mass);
 
+		if (_B_PRESSED(kb_Mass[DIK_F])) {
+			//lvl.body->ApplyLinearForce(q3Vec3(0.0f, 0.0f, -10.0f));
+			lvl.body->ApplyTorque(q3Vec3(0.0f, 0.0f, -10.0f));
+		}
+
 
 		if (_B_DOWN(kb_Mass[DIK_F])) {
-
+		
 		}
 		if (_B_UP(kb_Mass[DIK_F])) {
 

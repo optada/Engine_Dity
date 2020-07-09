@@ -6,6 +6,7 @@
 #include "OPTadaS_WorldNavigationData.h"
 
 
+// light setup struct 
 struct OPTadaS_Light
 {
     OPTadaS_Light()
@@ -24,7 +25,7 @@ struct OPTadaS_Light
 };
 
 
-
+// light type enum
 enum OPTadaE_Obj_Light_Type
 {
     ENUM_Obj_Light_Global     = 0, // simple (global)
@@ -33,7 +34,7 @@ enum OPTadaE_Obj_Light_Type
 };
 
 
-
+// light class
 class OPTadaC_Obj_Light
 {
 public:

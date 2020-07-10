@@ -113,6 +113,12 @@ bool OPTada_Render::Initialization(HWND hwnd_, int countOfBackBuffers_, int work
         return false;
     }
 
+    // ---- Init shadow ----
+
+    if (!g_shadow.init(g_Device_d3d11, 256, 0.1f, 100.0f)) {
+        return false;
+    }
+
     // ---- ALL initialization done ----
     
     if (!resourceManager.Init_ResourceManager(g_Device_d3d11, { sizeof(OPTadaS_CB_GlobalData), sizeof(OPTadaS_CB_FrameData), sizeof(OPTadaS_CB_ObjectData) })) {

@@ -22,6 +22,7 @@ cbuffer Frame : register(b1)
 {
     Light light_mass[100];
     float4 light_param;
+    matrix WVPlight;
 }
 
 cbuffer Object : register(b2)
@@ -44,12 +45,14 @@ struct AppData
 // VS_OUT
 struct VertexShaderOutput 
 {
-    float4 Wnormal :      WNORMAL;
-    float4 normal :       NORMAL;
-    float2 textureCoord : TEXCOORD;
-    float4 worldPos :     POSITION;
+    float4 Wnormal :           WNORMAL;
+    float4 normal :            NORMAL;
+    float2 textureCoord :      TEXCOORD;
+    float4 worldPos :          POSITION;
 
-    float4 position :     SV_POSITION;
+    //float4 lightViewPosition : TEXCOORD1;
+
+    float4 position :          SV_POSITION;
 };
 
 

@@ -66,16 +66,16 @@ C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\xnamathmisc.inl
 D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Render\ResourceManager\OBJ_Loader.h(949,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
 D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Game_Level.h(16,48): warning C4305: 'argument': truncation from 'double' to 'r32'
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Game_Level.h(85,80): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Game_Level.h(85,59): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Game_Level.h(170,1): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(168,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(171,36): warning C4838: conversion from 'OPTadaE_PixelShaderList_ForResourceManager' to 'short' requires a narrowing conversion
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(171,49): warning C4838: conversion from 'OPTadaE_VertexShaderList_ForResourceManager' to 'short' requires a narrowing conversion
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(171,62): warning C4838: conversion from 'OPTadaE_MeshList_ForResourceManager' to 'short' requires a narrowing conversion
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(197,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(259,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(273,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(302,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(159,38): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Game_Level.h(104,80): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Game_Level.h(104,59): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Game_Level.h(194,1): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(171,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(174,36): warning C4838: conversion from 'OPTadaE_PixelShaderList_ForResourceManager' to 'short' requires a narrowing conversion
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(174,49): warning C4838: conversion from 'OPTadaE_VertexShaderList_ForResourceManager' to 'short' requires a narrowing conversion
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(174,62): warning C4838: conversion from 'OPTadaE_MeshList_ForResourceManager' to 'short' requires a narrowing conversion
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(200,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(329,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(343,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\OPTada_Instance.h(372,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\GIT\Engine_Dity\optada_Engine_Dity\Code\Main.cpp(161,38): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
   optada_Engine_Dity.vcxproj -> D:\GIT\Engine_Dity\optada_Engine_Dity\x64\Debug\optada_Engine_Dity.exe

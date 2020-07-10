@@ -210,9 +210,9 @@
     <ClInclude Include="Code\OPTada_Instance.h" />
     <ClInclude Include="Code\Physics\q3.h" />
     <ClInclude Include="Code\Render\OPTadaC_Obj_Camera.h" />
-    <ClInclude Include="Code\Render\OPTadaC_Obj_Collision.h" />
     <ClInclude Include="Code\Render\OPTadaC_Obj_Draw.h" />
     <ClInclude Include="Code\Render\OPTadaC_Obj_Light.h" />
+    <ClInclude Include="Code\Render\OPTadaC_ShadowClass.h" />
     <ClInclude Include="Code\Render\OPTadaS_WorldNavigationData.h" />
     <ClInclude Include="Code\Render\OPTada_ConstantBuffers.h" />
     <ClInclude Include="Code\Render\OPTada_Render.h" />
@@ -292,7 +292,7 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0_level_9_3</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0_level_9_3</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Shaders\PS_ColorWithLight.hlsl">
+    <FxCompile Include="Shaders\PS_Shadow.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -312,7 +312,7 @@
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">inc/VertexShader.h</HeaderFileOutput>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">inc/VertexShader.h</HeaderFileOutput>
     </FxCompile>
-    <FxCompile Include="Shaders\VS_ColorWithLight.hlsl">
+    <FxCompile Include="Shaders\VS_Shadow.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS_Material_Default</EntryPointName>

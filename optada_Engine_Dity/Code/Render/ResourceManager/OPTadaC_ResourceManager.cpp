@@ -97,6 +97,46 @@ bool OPTadaC_ResourceManager::Init_ResourceManager(ID3D11Device* gDevice_, std::
     }
     samplerState_Mass.push_back(newSamplerState);
 
+
+    // create texture sampler state ENUM_SamplerStateList_Linear_Depth_Wrap
+    newSamplerState = nullptr;
+    ZeroMemory(&sampDesc, sizeof(sampDesc));
+
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.MipLODBias = 0.0f;
+    sampDesc.MaxAnisotropy = 1;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+    sampDesc.BorderColor[0] = 0;
+    sampDesc.BorderColor[1] = 0;
+    sampDesc.BorderColor[2] = 0;
+    sampDesc.BorderColor[3] = 0;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+    hr = gDevice_->CreateSamplerState(&sampDesc, &newSamplerState);
+    if (FAILED(hr)) {
+        return false; // can't create sample state
+    }
+    samplerState_Mass.push_back(newSamplerState);
+
+
+    // create texture sampler state ENUM_SamplerStateList_Linear_Depth_Clamp
+    // set adress texture CLAMP
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+
+    hr = gDevice_->CreateSamplerState(&sampDesc, &newSamplerState);
+    if (FAILED(hr)) {
+        return false; // can't create sample state
+    }
+    samplerState_Mass.push_back(newSamplerState);
+
+
+
     return true;
 }
 

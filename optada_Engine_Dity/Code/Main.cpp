@@ -9,6 +9,7 @@
 #include "OPTada_Instance.h"
 
 
+
 // process messages of the main window
 static LRESULT CALLBACK WindowProc(
 	HWND hwnd,
@@ -121,6 +122,7 @@ int WINAPI WinMain(
 	int ncmdshow             // window display mode (needed for further WindowShow () functions)
 	)
 {	
+
 	// init project and setup progect
 	if (
 		OPTada_Instance::Global_InitProject(hinstance, WindowProc) &&

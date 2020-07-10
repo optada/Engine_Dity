@@ -28,6 +28,7 @@
 #include "OPTadaC_Obj_Light.h"
 #include "OPTadaC_Obj_Collision.h"
 
+#include "OPTadaC_ShadowClass.h"
 
 
 // macros for building 32 - bit color A.8.8.8 format(8 - bit alpha mode)
@@ -73,11 +74,13 @@ public:
 	ID3D11Texture2D*        g_DepthStencilBuffer_d3d = nullptr; // A texture to associate to the depth stencil view.
 
 	ID3D11DepthStencilState* g_DepthStencilState_d3d = nullptr; // Define the functionality of the depth/stencil stages.
+	OPTadaC_ShadowClass g_shadow;
 
 	std::vector<ID3D11RasterizerState*> g_RasterizerMass; // rasterizer list (watch Init_AllRasterizerState()) (Use OPTadaE_RasterizerMass_ForRender)
 	std::vector<ID3D11BlendState*> g_BlendStateMass = { nullptr }; // blend state list (watch Init_AllBlendState()) (Use OPTadaE_BlendStateMass_ForRender)
 
 	D3D11_VIEWPORT g_Viewport = { 0 };
+
 
 public:
 

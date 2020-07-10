@@ -290,9 +290,6 @@
     <ClInclude Include="Code\Render\OPTadaC_Obj_Light.h">
       <Filter>Code\Render\ResourceManager\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Render\OPTadaC_Obj_Collision.h">
-      <Filter>Code\Render\ResourceManager\GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Physics\q3.h">
       <Filter>Code\Physics</Filter>
     </ClInclude>
@@ -416,6 +413,9 @@
     <ClInclude Include="Code\Sound\include\stb_vorbis.h">
       <Filter>Code\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Render\OPTadaC_ShadowClass.h">
+      <Filter>Code\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PS_Color.hlsl">
@@ -424,10 +424,10 @@
     <FxCompile Include="Shaders\VS_Color.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\PS_ColorWithLight.hlsl">
+    <FxCompile Include="Shaders\PS_Shadow.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\VS_ColorWithLight.hlsl">
+    <FxCompile Include="Shaders\VS_Shadow.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

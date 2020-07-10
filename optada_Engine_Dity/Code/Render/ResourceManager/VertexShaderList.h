@@ -13,8 +13,8 @@ enum OPTadaE_VertexShaderList_ForResourceManager
 {
 	ENUM_VertexShaderList_NONE = 0,
 
-	ENUM_VertexShaderList_VS_Color          = 1, // vertex shader VS_Color   
-	ENUM_VertexShaderList_VS_ColorWithLight = 2, // vertex shader VS_ColorWithLight
+	ENUM_VertexShaderList_VS_Color  = 1, // vertex shader VS_Color   
+	ENUM_VertexShaderList_VS_Shadow = 2, // vertex shader VS_Shadow
 
 	ENUM_VertexShaderList_ForResourceManager_MaxCount,
 };

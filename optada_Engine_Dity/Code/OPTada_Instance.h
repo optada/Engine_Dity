@@ -20,6 +20,7 @@ class OPTada_Instance
 {
 public:
 
+
 	// Do all initialization here (init all global modules)
 	// [in] HINSTANCE hinstance_ // hinstance_ of process
 	// [in] WNDPROC& windowProc_ // event structure
@@ -153,6 +154,8 @@ public:
 		// ----------- update and prepeir all resources
 
 		OPTadaC_Obj_Draw* lastDrawObject = nullptr; // for cheking need to change resources
+		OPTadaC_Obj_Draw* current_opaque = nullptr;
+		int opaque_Count = 0;
 
 		std::vector<OPTadaC_Obj_Draw*> d_opaque; // draw list
 
@@ -231,6 +234,10 @@ public:
 			}
 		}
 
+		// setup viev matrix for shadow camera
+
+		//global_Render.g_shadow.camera.Update_ViewMatrix();
+		//cb_FrameData.wvplight =  global_Render.g_shadow.camera.view_Matrix * global_Render.g_shadow.camera.projection_Matrix; // save shadow wvp
 
 		// -- set cb_Frame
 
@@ -247,6 +254,67 @@ public:
 
 		global_Render.g_DeviceContext_d3d11->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // draw triangles	
 
+		//global_Render.g_DeviceContext_d3d11->RSSetViewports(1, &global_Render.g_Viewport); // viewport
+
+		//global_Render.g_DeviceContext_d3d11->OMSetRenderTargets(1, &global_Render.g_RenderTargetView_d3d, global_Render.g_DepthStencilView_d3d); // set DepthStencil buffer
+		//global_Render.g_DeviceContext_d3d11->OMSetDepthStencilState(global_Render.g_DepthStencilState_d3d, 1);                                   // set depth stencil parameters
+
+
+		// ----------- create shadow data
+
+
+		//global_Render.g_shadow.SetRenderTarget(global_Render.g_DeviceContext_d3d11);
+		//global_Render.g_shadow.ClearRenderTarget(global_Render.g_DeviceContext_d3d11, 0.0f, 0.0f, 0.0f, 1.0f);
+		//
+		//// Set shaders
+		//global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_VS_Shadow, global_Render.g_DeviceContext_d3d11);
+		//global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_PS_Shadow, global_Render.g_DeviceContext_d3d11);
+
+		//OPTadaC_Obj_Draw* current_opaque = nullptr;
+		//int opaque_Count = d_opaque.size();
+		//for (int i = 0; i < opaque_Count; i++) {
+		//	current_opaque = d_opaque[i];
+
+		//	if (i == 0) { // if first cycle -> just set all			
+
+		//		// Set Mesh
+		//		global_Render.resourceManager.Use_Mesh_WithIndexBuffer(current_opaque->mesh, global_Render.g_DeviceContext_d3d11);
+		//		OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(current_opaque->mesh);
+
+		//		// -- set cb_Object
+		//		cb_ObjectData.WVP = current_opaque->world->matrix * lvl.PrimaryCamera.view_Matrix * lvl.PrimaryCamera.projection_Matrix;
+		//		cb_ObjectData.World = current_opaque->world->matrix;
+		//		global_Render.resourceManager.UpdateSubresource(ENUM_ConstantBufferList_ObjectData, &cb_ObjectData, global_Render.g_DeviceContext_d3d11);
+
+		//		global_Render.g_DeviceContext_d3d11->DrawIndexed(mesh->indexBufferCount, 0, 0); // draw
+
+		//		lastDrawObject = current_opaque;
+		//	}
+		//	else { // we have 
+
+		//		// Set Mesh
+		//		if (lastDrawObject->mesh != current_opaque->mesh) {
+		//			global_Render.resourceManager.Use_Mesh_WithIndexBuffer(current_opaque->mesh, global_Render.g_DeviceContext_d3d11);
+		//		}
+		//		OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(current_opaque->mesh);
+
+		//		// -- set cb_Object
+		//		if (lastDrawObject->world != current_opaque->world) {
+		//			cb_ObjectData.WVP = current_opaque->world->matrix * lvl.PrimaryCamera.view_Matrix * lvl.PrimaryCamera.projection_Matrix;
+		//			cb_ObjectData.World = current_opaque->world->matrix;
+		//			global_Render.resourceManager.UpdateSubresource(ENUM_ConstantBufferList_ObjectData, &cb_ObjectData, global_Render.g_DeviceContext_d3d11);
+		//		}
+
+		//		global_Render.g_DeviceContext_d3d11->DrawIndexed(mesh->indexBufferCount, 0, 0); // draw
+
+		//		lastDrawObject = current_opaque;
+		//	}
+		//}
+
+
+		// ----------- set default parameters again XD
+
+
 		global_Render.g_DeviceContext_d3d11->RSSetViewports(1, &global_Render.g_Viewport); // viewport
 
 		global_Render.g_DeviceContext_d3d11->OMSetRenderTargets(1, &global_Render.g_RenderTargetView_d3d, global_Render.g_DepthStencilView_d3d); // set DepthStencil buffer
@@ -255,8 +323,10 @@ public:
 
 		// ----------- draw opaque objects
 
-		OPTadaC_Obj_Draw* current_opaque = nullptr;
-		int opaque_Count = d_opaque.size();
+		global_Render.g_DeviceContext_d3d11->PSSetShaderResources(3, 1, &global_Render.g_shadow.sh_SRV); // set shadow texture --> texture3 (3t)
+
+		current_opaque = nullptr;
+		opaque_Count = d_opaque.size();
 		for (int i = 0; i < opaque_Count; i++) {
 			current_opaque = d_opaque[i];
 
@@ -315,19 +385,6 @@ public:
 				lastDrawObject = current_opaque;
 			}
 		}
-
-		// Set shaders
-		global_Render.resourceManager.Use_VertexShader(ENUM_VertexShaderList_VS_Color, global_Render.g_DeviceContext_d3d11);
-		global_Render.resourceManager.Use_PixelShader(ENUM_PixelShaderList_PS_Color, global_Render.g_DeviceContext_d3d11);
-
-		// Set Mesh
-		global_Render.resourceManager.Use_Mesh_WithIndexBuffer(ENUM_MeshList_DefaultBox, global_Render.g_DeviceContext_d3d11);
-		OPTadaS_MeshStructure* mesh = global_Render.resourceManager.Get_MeshCell_IfInGPU(ENUM_MeshList_DefaultBox);
-
-		// Set texture
-		global_Render.resourceManager.Use_Texture(ENUM_TextureList_TextureForShare, global_Render.g_DeviceContext_d3d11, 0);
-
-		global_Render.g_DeviceContext_d3d11->DrawIndexed(/*_countof(g_Indicies)*/mesh->indexBufferCount, 0, 0);
 
 
 		// ----------- draw clip objects
@@ -437,17 +494,22 @@ public:
 	// call this for (ALT+ENTER) reaction (Swap window mode fullscreen|Windowed)
 	static void Do_Reaction_AltEnter() {
 		OPTadaE_WindowState_ForClassWindow windowState_;
+		OPTadaS_Window_Size worspaceSize;
+		global_Window.Get_WorkplaceSize(worspaceSize);
 		global_Window.Get_WindowState(windowState_);
+		Do_Change_WindowSettings((windowState_ == ENUM_WindowState_Windowed) ? (ENUM_WindowState_WindowedWithNoBurders) : (ENUM_WindowState_Windowed), worspaceSize, true, 1);
 
-		if (windowState_ != OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen) { // set fullscreen
-			global_Window.Do_SwapMode_Fullscreen_LastWindowed();
-			global_Render.Setup_FullScreenMode(windowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
-			SetFocus(global_Window.Get_MainWindowHandle());
-		}
-		else { // set windowed
-			global_Render.Setup_FullScreenMode(windowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
-			global_Window.Do_SwapMode_Fullscreen_LastWindowed();
-		}
+		//	if (windowState_ != OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen) { // set fullscreen
+		//		global_Window.Do_SwapMode_Fullscreen_LastWindowed();
+		//		global_Render.Setup_FullScreenMode(windowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
+		//		//SetFocus(global_Window.Get_MainWindowHandle());
+		//	}
+		//	else { // set windowed
+		//		global_Render.Setup_FullScreenMode(windowState_ == OPTadaE_WindowState_ForClassWindow::ENUM_WindowState_FullScreen);
+		//		global_Window.Do_SwapMode_Fullscreen_LastWindowed();
+		//		global_Window.Update_WindowSizeWithBorders();
+		//		//SetFocus(global_Window.Get_MainWindowHandle());
+		//	}
 	}
 
 };

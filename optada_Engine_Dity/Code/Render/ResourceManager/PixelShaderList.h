@@ -11,7 +11,8 @@ enum OPTadaE_PixelShaderList_ForResourceManager
 {
 	ENUM_PixelShaderList_NONE = 0,
 
-	ENUM_PixelShaderList_PS_Color = 1, // pixel shader SimpleMaterial_01
+	ENUM_PixelShaderList_PS_Color  = 1, // pixel shader color
+	ENUM_PixelShaderList_PS_Shadow = 2, // pixel shader shadow
 
 	ENUM_PixelShaderList_ForResourceManager_MaxCount,
 };
@@ -20,8 +21,10 @@ enum OPTadaE_PixelShaderList_ForResourceManager
 
 enum OPTadaE_SamplerStateList_ForResourceManager
 {
-	ENUM_SamplerStateList_Linear_1  = 0, // linear sempler x1
-	ENUM_SamplerStateList_Linear_16 = 1, // linear sempler x16
+	ENUM_SamplerStateList_Linear_1           = 0, // linear sempler x1
+	ENUM_SamplerStateList_Linear_16          = 1, // linear sempler x16
+	ENUM_SamplerStateList_Linear_Depth_Wrap  = 2, // for shadow depth shader
+	ENUM_SamplerStateList_Linear_Depth_Clamp = 3, // for shadow depth shader
 };
 
 //  ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----

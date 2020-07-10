@@ -1,7 +1,6 @@
 // Created by OPTada // Free for use //
 // - - - - - - - - - - - - - - - - - //
 
-
 struct Light
 {
     float3 pos;
@@ -23,6 +22,7 @@ cbuffer Frame : register(b1)
 {
     Light light_mass[100];
     float4 light_param;
+    matrix WVPlight;
 }
 
 cbuffer Object : register(b2)
@@ -73,11 +73,15 @@ float4 PS_Material_Default(PixelShaderInput IN) : SV_TARGET
     // for cicle optimization //
 
 
+    // ---------------------------------------------------------------------------------------------------------------
     // global light
+
     finalColor += dot(float4(light_mass[0].dir, 1.0f), IN.normal) * diffuse * light_mass[0].diffuse; // global light
 
 
+    // ---------------------------------------------------------------------------------------------------------------
     // point light calculate
+
     for (i = 1; i < 2; i++) {
         light = light_mass[i];
 
@@ -103,7 +107,9 @@ float4 PS_Material_Default(PixelShaderInput IN) : SV_TARGET
     }
 
 
+    // ---------------------------------------------------------------------------------------------------------------
     // SpotLight light calculate
+
     for (i = 2; i < 3; i++) {
         light = light_mass[i];
 
@@ -130,6 +136,8 @@ float4 PS_Material_Default(PixelShaderInput IN) : SV_TARGET
     }
 
 
+    // ---------------------------------------------------------------------------------------------------------------
+    // calculate final color
 
     finalColor = saturate(finalColor + finalAmbient); //make sure the values are between 1 and 0, and add the ambient
 

@@ -45,8 +45,11 @@ public:
 	{
         assert(global_Render.g_Device_d3d11);
 
-        // Load the compiled vertex shader.
-        LPCWSTR compiledVertexShaderObject = L"VS_Color.cso";
+
+        // -------------------------- Load the compiled vertex shaders -----------------------------
+
+        LPCWSTR compiledVertexShaderObject;
+        OPTadaE_VertexShaderList_ForResourceManager verEnum;
 
         // Create the input layout for the vertex shader.
         D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
@@ -55,22 +58,38 @@ public:
             { "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(Vertex_F3Coord_F3Normal_F2TextCoord, normal),       D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, offsetof(Vertex_F3Coord_F3Normal_F2TextCoord, textureCoord), D3D11_INPUT_PER_VERTEX_DATA, 0 },
         };
-
-        OPTadaE_VertexShaderList_ForResourceManager verEnum = ENUM_VertexShaderList_VS_Color;
+        
+        verEnum = ENUM_VertexShaderList_VS_Color;
+        compiledVertexShaderObject = L"VS_Color.cso";
+        global_Render.resourceManager.Create_VertexShader_FromBinaryFile(verEnum, compiledVertexShaderObject, global_Render.g_Device_d3d11, vertexLayoutDesc, _countof(vertexLayoutDesc));     
+        verEnum = ENUM_VertexShaderList_VS_Shadow;
+        compiledVertexShaderObject = L"VS_Shadow.cso";
         global_Render.resourceManager.Create_VertexShader_FromBinaryFile(verEnum, compiledVertexShaderObject, global_Render.g_Device_d3d11, vertexLayoutDesc, _countof(vertexLayoutDesc));
 
 
-        // Load the compiled pixel shader.
-        LPCWSTR compiledPixelShaderObject = L"PS_Color.cso";
+        // ---------------------------- Load the compiled pixel shaders ---------------------------
 
-        OPTadaE_PixelShaderList_ForResourceManager pixEnum = ENUM_PixelShaderList_PS_Color;
+        LPCWSTR compiledPixelShaderObject;
+        OPTadaE_PixelShaderList_ForResourceManager pixEnum;
+
+        pixEnum = ENUM_PixelShaderList_PS_Color;
+        compiledPixelShaderObject = L"PS_Color.cso";
         global_Render.resourceManager.Create_PixelShader_FromBinaryFile(pixEnum, compiledPixelShaderObject, global_Render.g_Device_d3d11, { ENUM_SamplerStateList_Linear_16 } );
+        pixEnum = ENUM_PixelShaderList_PS_Shadow;
+        compiledPixelShaderObject = L"PS_Shadow.cso";
+        global_Render.resourceManager.Create_PixelShader_FromBinaryFile(pixEnum, compiledPixelShaderObject, global_Render.g_Device_d3d11, { ENUM_SamplerStateList_Linear_Depth_Clamp, ENUM_SamplerStateList_Linear_Depth_Wrap });
+
+
+        // -------------------------------- Load Meshes -------------------------------------------
 
         OPTadaE_MeshList_ForResourceManager meshEnum = ENUM_MeshList_DefaultBox;
         if (!global_Render.resourceManager.Create_Mesh_FromFileToMem(meshEnum, "mesh/monkey.obj", global_Render.g_Device_d3d11, sizeof(Vertex_F3Coord_F3Normal_F2TextCoord), 0, DXGI_FORMAT_R32_UINT)) {
             MessageBox(NULL, L"Create mesh failed", L"Game level", NULL);
         }
         global_Render.resourceManager.Load_ToGPU_Mesh(meshEnum, global_Render.g_Device_d3d11);
+
+
+        // -------------------------------- Load Textures -------------------------------------------
 
         OPTadaE_TextureList_ForResourceManager textureEnum = ENUM_TextureList_TextureForShare;
         if (!global_Render.resourceManager.Create_Texture_LoadFromFile(textureEnum, L"mesh/DC_monkeyA.bmp", global_Render.g_Device_d3d11)) {
@@ -131,7 +150,12 @@ public:
 
         gSoloud.init(); // Initialize SoLoud
         gWave.load("Sound/ch6_32bit.wav"); // Load a wave
-        gSoloud.play(gWave);
+        SoLoud::handle voiseH = gSoloud.play3d(gWave, 20, 0, 0);
+        gSoloud.set3dListenerPosition(0, 0, 0);
+        gSoloud.set3dListenerUp(0, 1, 0);
+        gSoloud.set3dListenerAt(0, 0, 1); 
+        //gSoloud.set3dSourcePosition(voiseH, 10, 0, 0);
+        gSoloud.update3dAudio();
 
         return true;
 
@@ -148,7 +172,7 @@ public:
 	// [in] float deltaTime_ // delta time
 	bool Tick(float deltaTime_)
 	{
-
+        // update physic
         static f32 accumulator = 0;
         accumulator += deltaTime_;
         accumulator = q3Clamp01(accumulator);

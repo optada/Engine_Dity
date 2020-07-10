@@ -43,13 +43,15 @@ private:
 	HINSTANCE main_window_hinstance = nullptr; // window procedure indicator
 
 
+public:
+
+	MSG main_window_msg; // window message descriptor (for processing window messages)
+
+
 	// set new parameters of window (for changing size) | widnowSize and workplaceSize
 	// [in] OPTadaS_Window_Size& new_WorkplaceSize_ // new workplace size
 	void Update_WindowSizeWithBorders();
 
-public:
-
-	MSG main_window_msg; // window message descriptor (for processing window messages)
 
 
 	// method initializes the class and creates a standard window
